@@ -24,6 +24,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPENDDLPARSER_OPENDDLPARSER_H_INC
 #define OPENDDLPARSER_OPENDDLPARSER_H_INC
 
+#ifdef _WIN32
+#   define TAG_DLL_EXPORT __declspec(dllexport)
+#   define TAG_DLL_IMPORT __declspec(dllimport )
+#   ifdef DOPENDDLPARSER_BUILD
+#       define DLL_ODDLPARSER_EXPORT TAG_DLL_EXPORT
+#   else
+#        define DLL_ODDLPARSER_EXPORT TAG_DLL_IMPORT
+#   endif
+#   pragma warning( disable : 4251 )
+#else
+#   define DLL_CPPCORE_EXPORT
+#endif
+
 namespace OpenDDLParser {
 
     enum PrimitiveType {
@@ -41,6 +54,11 @@ namespace OpenDDLParser {
         ddl_ref
     };
 
+    class DLL_ODDLPARSER_EXPORT OpenDDLParser {
+    public:
+        OpenDDLParser() {}
+        ~OpenDDLParser() {}
+    };
 } // Namespace OpenDDLParser
 
 #endif // OPENDDLPARSER_OPENDDLPARSER_H_INC
