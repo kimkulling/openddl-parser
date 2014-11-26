@@ -1,0 +1,16 @@
+*.vcxproj
+*.cache
+*.log
+*.tlog
+*.suo
+CMakeFiles/2.8.12.2/CompilerIdCXX/CMakeCXXCompilerId.cpp
+*.bin
+CMakeFiles/2.8.12.2/CMakeCCompiler.cmake
+CMakeFiles/2.8.12.2/CMakeRCCompiler.cmake
+CMakeFiles/2.8.12.2/CMakeSystem.cmake
+*.exe
+CMakeFiles/generate.stamp
+CMakeFiles/cmake.check_cache
+CMakeFiles/1965a11616015a994507837bb167b874/generate.stamp.rule
+openddl_parser.dir/Debug/vc120.pdb
+*.filters
