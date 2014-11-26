@@ -14,14 +14,14 @@ add_definitions( -DOPENDDLPARSER_BUILD )
 add_definitions( -D_VARIADIC_MAX=10 )
 
 INCLUDE_DIRECTORIES(
-	../
-	../include/
-    ../contrib/gtest-1.7.0/include
-    ../contrib/gtest-1.7.0/
+	./
+	include/
+    contrib/gtest-1.7.0/include
+    contrib/gtest-1.7.0/
 )
 
 link_directories(
-	../
+	./
 )
 
 SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/lib )
@@ -46,50 +46,18 @@ SET ( openddl_parser_src
 	code/OpenDDLParser.cpp
     include/openddlparser/OpenDDLParser.h
 )
-
-SET ( cppcore_common_src
-    ../include/cppcore/Common/Hash.h
-    ../include/cppcore/Common/CString.h
-    ../include/cppcore/Common/TStringBase.h
-	../include/cppcore/Common/Variant.h
-    ../code/Common/CString.cpp
-)
-
-SET ( cppcore_container_src
-    ../include/cppcore/Container/THashMap.h
-    ../include/cppcore/Container/TArray.h
-    ../include/cppcore/Container/TList.h
-    ../include/cppcore/Container/TQueue.h
-)
  
-SOURCE_GROUP( code            FILES ${cppcore_src} )
-SOURCE_GROUP( code\\common    FILES ${cppcore_common_src} )
-SOURCE_GROUP( code\\container FILES ${cppcore_container_src} )
+SOURCE_GROUP( code            FILES ${openddl_parser_src} )
 
-ADD_LIBRARY( cppcore SHARED
-    ${cppcore_container_src}
-    ${cppcore_common_src}
-	${cppcore_src}
+ADD_LIBRARY( openddl_parser SHARED
+    ${openddl_parser_src}
 )
 
-SET( cppcore_test_src  
-    ../test/CPPCoreCommonTest.cpp 
+SET( openddl_parser_test_src  
+    ../test/OpenDDLParserTest.cpp 
 )
 
-SET( cppcore_common_test_src
-	../test/common/HashTest.cpp
-    ../test/common/StringTest.cpp
-    ../test/common/VariantTest.cpp
-)
-
-SET( cppcore_container_test_src
-    ../test/container/TArrayTest.cpp
-    ../test/container/THashMapTest.cpp
-    ../test/container/TListTest.cpp
-    ../test/container/TQueueTest.cpp
-)
-
-SET ( GTEST_PATH ../contrib/gtest-1.7.0 )
+SET ( GTEST_PATH contrib/gtest-1.7.0 )
 
 SET ( gtest_src
     ${GTEST_PATH}/src/gtest-death-test.cc
@@ -102,16 +70,4 @@ SET ( gtest_src
     ${GTEST_PATH}/src/gtest.cc
     ${GTEST_PATH}/src/gtest_main.cc
 )
-SOURCE_GROUP( code            FILES ${cppcore_test_src} )
-SOURCE_GROUP( code\\common    FILES ${cppcore_common_test_src} )
-SOURCE_GROUP( code\\container FILES ${cppcore_container_test_src} )
-SOURCE_GROUP( contrib\\gtest  FILES ${gtest_src} )
-
-ADD_EXECUTABLE( cppcore_test
-    ${gtest_src}
-    ${cppcore_test_src}
-    ${cppcore_common_test_src}
-    ${cppcore_container_test_src}
-)
-
-target_link_libraries( cppcore_test cppcore ${CMAKE_THREAD_LIBS_INIT} )
+SOURCE_GROUP( code            FILES ${openddl_parser_test_src} )
