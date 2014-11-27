@@ -38,60 +38,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #else
 #   define DLL_CPPCORE_EXPORT
 #endif
-
-<<<<<<< HEAD
-namespace ODDLParser {
-
-    enum PrimitiveType {
-        ddl_bool,
-        ddl_int8,
-        ddl_int32,
-        ddl_int64,
-        ddl_unsigned_int8,
-        ddl_unsigned_int32,
-        ddl_unsigned_int64,
-        ddl, half,
-        ddl_float,
-        ddl_double,
-        ddl_string,
-        ddl_ref
-    };
-
-    struct DDLNode {
-        DDLNode *m_parent;
-        std::vector<DDLNode*> m_children;
-        DDLNode() 
-        : m_parent( nullptr )
-        , m_children() {
-            // empty
-        }
-    };
-
-    class DLL_ODDLPARSER_EXPORT OpenDDLParser {
-    public:
-        OpenDDLParser();
-        ~OpenDDLParser();
-        bool parse( const std::vector<char> &buffer );
-        bool parseDataList( const std::vector<char> &buffer, size_t index );
-        bool parseName();
-        bool parseDataArrayList( const std::vector<char> &buffer, size_t index );
-        bool parseIdentifier();
-        bool parsePrimitiveDataType( const std::vector<char> &buffer, size_t index );
-        bool parseReference();
-        bool parseProperty();
-
-    private:
-        DDLNode *m_root;
-    };
-
-} // Namespace ODDLParser
-=======
 #define BEGIN_ODDLPARSER_NS namespace ODDLParser {
 #define END_ODDLPARSER_NS   }
->>>>>>> 06e70cc8fb249232f44b21fb5d179d25e7dea6d5
 
 BEGIN_ODDLPARSER_NS
-
+    
 enum PrimitiveType {
     ddl_bool,
     ddl_int8,
@@ -107,29 +58,19 @@ enum PrimitiveType {
     ddl_ref
 };
 
-struct DDLNode {
-    DDLNode *m_parent;
-    std::vector<DDLNode*> m_children;
-    DDLNode() 
-    : m_parent( nullptr )
-    , m_children() {
-        // empty
-    }
-};
-
 template<class T>
 inline
-bool isUpperCase(const T in) {
-    return (in >= 'A' && in <= 'Z');
+    bool isUpperCase( const T in ) {
+    return ( in >= 'A' && in <= 'Z' );
 }
 
 template<class T>
 inline
-bool isLowerCase(const T in) {
-    return (in >= 'a' && in <= 'z');
+    bool isLowerCase( const T in ) {
+    return ( in >= 'a' && in <= 'z' );
 }
 
-static const unsigned char chartype_table[256] = {
+static const unsigned char chartype_table[ 256 ] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0-15
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16-31
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32-47
@@ -153,19 +94,40 @@ static const unsigned char chartype_table[256] = {
 
 template<class T>
 inline
-bool isNumeric(const T in) {
-    return (in >= '0' && in <= '9');
+    bool isNumeric( const T in ) {
+    return ( in >= '0' && in <= '9' );
     //return ( chartype_table[in] );
     /*if (in >= '0' &&  in <= '9' )
-        return true;
+    return true;
 
     return false;*/
 }
+
+struct DDLNode {
+    DDLNode *m_parent;
+    std::vector<DDLNode*> m_children;
+    DDLNode() 
+    : m_parent( nullptr )
+    , m_children() {
+        // empty
+    }
+};
 
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {
 public:
     OpenDDLParser();
     ~OpenDDLParser();
+    bool parse( const std::vector<char> &buffer );
+    bool parseDataList( const std::vector<char> &buffer, size_t index );
+    bool parseName();
+    bool parseDataArrayList( const std::vector<char> &buffer, size_t index );
+    bool parseIdentifier();
+    bool parsePrimitiveDataType( const std::vector<char> &buffer, size_t index );
+    bool parseReference();
+    bool parseProperty();
+
+private:
+    DDLNode *m_root;
 };
 
 END_ODDLPARSER_NS
