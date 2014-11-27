@@ -24,10 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPENDDLPARSER_OPENDDLPARSER_H_INC
 #define OPENDDLPARSER_OPENDDLPARSER_H_INC
 
+#include <vector>
+
 #ifdef _WIN32
 #   define TAG_DLL_EXPORT __declspec(dllexport)
 #   define TAG_DLL_IMPORT __declspec(dllimport )
-#   ifdef DOPENDDLPARSER_BUILD
+#   ifdef OPENDDLPARSER_BUILD
 #       define DLL_ODDLPARSER_EXPORT TAG_DLL_EXPORT
 #   else
 #        define DLL_ODDLPARSER_EXPORT TAG_DLL_IMPORT
@@ -37,7 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #   define DLL_CPPCORE_EXPORT
 #endif
 
-namespace OpenDDLParser {
+namespace ODDLParser {
 
     enum PrimitiveType {
         ddl_bool,
@@ -54,12 +56,23 @@ namespace OpenDDLParser {
         ddl_ref
     };
 
+    struct DDLNode {
+        DDLNode *m_parent;
+        std::vector<DDLNode*> m_children;
+        DDLNode() 
+        : m_parent( nullptr )
+        , m_children() {
+            // empty
+        }
+    };
+
     class DLL_ODDLPARSER_EXPORT OpenDDLParser {
     public:
-        OpenDDLParser() {}
-        ~OpenDDLParser() {}
+        OpenDDLParser();
+        ~OpenDDLParser();
     };
-} // Namespace OpenDDLParser
+
+} // Namespace ODDLParser
 
 #endif // OPENDDLPARSER_OPENDDLPARSER_H_INC
 

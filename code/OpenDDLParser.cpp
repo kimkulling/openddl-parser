@@ -22,15 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/OpenDDLParser.h>
 
-#include <vector>
-
-
-namespace Assimp {
-
-    struct DDLNode {
-        DDLNode *m_parent;
-        std::vector<DDLNode*> m_children;
-    };
+namespace ODDLParser {
 
     template<class T>
     inline
@@ -86,4 +78,10 @@ namespace Assimp {
         return true;
     }
 
-} // Namespace Assimp
+    OpenDDLParser::OpenDDLParser() {
+    }
+
+    OpenDDLParser::~OpenDDLParser() {
+    }
+
+} // Namespace
