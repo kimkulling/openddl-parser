@@ -70,6 +70,17 @@ namespace ODDLParser {
     public:
         OpenDDLParser();
         ~OpenDDLParser();
+        bool parse( const std::vector<char> &buffer );
+        bool parseDataList( const std::vector<char> &buffer, size_t index );
+        bool parseName();
+        bool parseDataArrayList( const std::vector<char> &buffer, size_t index );
+        bool parseIdentifier();
+        bool parsePrimitiveDataType( const std::vector<char> &buffer, size_t index );
+        bool parseReference();
+        bool parseProperty();
+
+    private:
+        DDLNode *m_root;
     };
 
 } // Namespace ODDLParser
