@@ -43,19 +43,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
     
-enum PrimitiveType {
-    ddl_bool,
+enum PrimitiveDataType {
+    ddl_none = -1,
+    ddl_bool = 0,
     ddl_int8,
+    ddl_int16,
     ddl_int32,
     ddl_int64,
     ddl_unsigned_int8,
+    unsigned_int16,
     ddl_unsigned_int32,
     ddl_unsigned_int64,
-    ddl, half,
+    ddl_half,
     ddl_float,
     ddl_double,
     ddl_string,
-    ddl_ref
+    ddl_ref,
+    ddl_types_max
 };
 
 template<class T>
@@ -103,6 +107,19 @@ inline
     return false;*/
 }
 
+struct PrimData {
+    PrimitiveDataType m_type;
+    size_t m_size;
+    unsigned char *m_data;
+
+    PrimData()
+        : m_type( ddl_none )
+        , m_size( 0 )
+        , m_data( nullptr ) {
+        // empty
+    }
+};
+
 struct DDLNode {
     DDLNode *m_parent;
     std::vector<DDLNode*> m_children;
@@ -116,17 +133,24 @@ struct DDLNode {
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {
 public:
     OpenDDLParser();
+    OpenDDLParser( const std::vector<char> &buffer );
     ~OpenDDLParser();
-    bool parse( const std::vector<char> &buffer );
+    bool parse();
+    static PrimData *parsePrimitiveDataType( const char *in, size_t len, size_t &offset );
     bool parseDataList( const std::vector<char> &buffer, size_t index );
     bool parseName();
     bool parseDataArrayList( const std::vector<char> &buffer, size_t index );
     bool parseIdentifier();
-    bool parsePrimitiveDataType( const std::vector<char> &buffer, size_t index );
     bool parseReference();
     bool parseProperty();
+    DDLNode *getRoot() const;
 
 private:
+    OpenDDLParser( const OpenDDLParser & );
+    OpenDDLParser &operator = ( const OpenDDLParser & );
+
+private:
+    const std::vector<char> *m_buffer;
     DDLNode *m_root;
 };
 

@@ -24,21 +24,125 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+static const char* PrimitiveTypes[ ddl_types_max ] = {
+    "bool",
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "unsigned_int8",
+    "unsigned_int16",
+    "unsigned_int32",
+    "unsigned_int64",
+    "half",
+    "float",
+    "double,"
+    "string",
+    "ref"
+};
+
+static PrimData *allocPrimData( PrimitiveDataType type ) {
+    PrimData *data = new PrimData;
+    data->m_type = type;
+    if( type == ddl_none ) {
+        return data;
+    }
+
+    switch( type ) {
+        case ddl_bool:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_int8:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_int32:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_int64:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_unsigned_int8:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_unsigned_int32:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_unsigned_int64:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_half:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_float:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_double:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_string:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_ref:
+            data->m_size = sizeof( bool );
+            break;
+        case ddl_none:
+        case ddl_types_max:
+        default:
+            break;
+    }
+
+    if( data->m_size ) {
+        data->m_data = new unsigned char[ data->m_size ];
+    }
+
+    return data;
+}
+
+static void releasePrimData( PrimData * data ) {
+    if( !data ) {
+        return;
+    }
+
+    delete data;
+}
+
 template<class T>
 inline
 bool isValidToken( std::string &token, size_t index ) {
+
     return true;
 }
 
-int getNextToken(const std::vector<char> &buffer, size_t index) {
+int getNextToken( const std::vector<char> &buffer, size_t index ) {
     return true;
 }
 
-bool parse( const std::vector<char> &buffer ) {
+OpenDDLParser::OpenDDLParser()
+: m_buffer( nullptr )
+, m_root( nullptr ) {
+    // empty;
+}
+
+OpenDDLParser::OpenDDLParser( const std::vector<char> &buffer ) 
+: m_buffer( &buffer )
+, m_root( nullptr ) {
+    // empty
+}
+
+OpenDDLParser::~OpenDDLParser() {
+    delete m_root;
+    m_root = nullptr;
+}
+
+bool OpenDDLParser::parse() {
+    if( !m_buffer ) {
+        return false;
+    }
+
     size_t index( 0 );
-    const size_t buffersize( buffer.size() );
+    const size_t buffersize( m_buffer->size() );
     while( index < buffersize ) {
-        int next = getNextToken( buffer, index );
+        int next = getNextToken( *m_buffer, index );
         if( -1 == next ) {
             break;
         }
@@ -48,39 +152,57 @@ bool parse( const std::vector<char> &buffer ) {
     return true;
 }
 
-bool parseDataList( const std::vector<char> &buffer, size_t index ) {
+PrimData *OpenDDLParser::parsePrimitiveDataType( const char *in, size_t len, size_t &offset ) {
+    if( !in ) {
+        return nullptr;
+    }
+
+    PrimitiveDataType type( ddl_none );
+    for( unsigned int i = 0; i < ddl_types_max; i++ ) {
+        if( 0 == strncmp( in, PrimitiveTypes[ i ], strlen( PrimitiveTypes[ i ] ) ) ) {
+            type = ( PrimitiveDataType ) i;
+            break;
+        }
+    }
+    offset += strlen( PrimitiveTypes[ type ] );
+
+    if( ddl_none == type ) {
+        return nullptr;
+    }
+
+    PrimData *data = allocPrimData( type );
+    if( !data ) {
+        return nullptr;
+    }
+    return data;
+}
+
+bool OpenDDLParser::parseDataList( const std::vector<char> &buffer, size_t index ) {
     return true;
 }
 
-bool parseName() {
+bool OpenDDLParser::parseName() {
     return true;
 }
 
-bool parseDataArrayList( const std::vector<char> &buffer, size_t index ) {
+bool OpenDDLParser::parseDataArrayList( const std::vector<char> &buffer, size_t index ) {
     return true;
 }
 
-bool parseIdentifier() {
+bool OpenDDLParser::parseIdentifier() {
     return true;
 }
 
-bool parsePrimitiveDataType( const std::vector<char> &buffer, size_t index ) {
+bool OpenDDLParser::parseReference() {
     return true;
 }
 
-
-bool parseReference() {
+bool OpenDDLParser::parseProperty() {
     return true;
 }
 
-bool parseProperty() {
-    return true;
-}
-
-OpenDDLParser::OpenDDLParser() {
-}
-
-OpenDDLParser::~OpenDDLParser() {
+DDLNode *OpenDDLParser::getRoot() const {
+    return m_root;
 }
 
 END_ODDLPARSER_NS
