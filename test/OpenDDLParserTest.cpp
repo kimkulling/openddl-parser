@@ -81,15 +81,31 @@ TEST_F( OpenDDLParserTest, createTest ) {
 
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
     PrimData *data( nullptr );
-    
+
     size_t offset( 0 );
     data = OpenDDLParser::parsePrimitiveDataType( nullptr, 1, offset );
     EXPECT_EQ( nullptr, data );
+
+    const char token1[] = "float";
+    const size_t len( strlen( token1 ) );
+    data = OpenDDLParser::parsePrimitiveDataType( token1, len, offset );
+    EXPECT_NE( nullptr, data );
+
+    const char invalidToken[] = "foat";
+    const size_t len1( strlen( invalidToken ) );
+
+    data = OpenDDLParser::parsePrimitiveDataType( invalidToken, len1, offset );
+    EXPECT_EQ( nullptr, data );
+}
  
-    const char token[] = "float";
+TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithArrayTest ) {
+    size_t offset( 0 );
+    PrimData *data( nullptr );
+    const char token[] = "float[3]";
     data = OpenDDLParser::parsePrimitiveDataType( token, strlen( token ), offset );
     ASSERT_NE( nullptr, data );
     EXPECT_EQ( ddl_float, data->m_type );
 }
+
 
 END_ODDLPARSER_NS

@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/OpenDDLParser.h>
 
+#include <windows.h>
+
 BEGIN_ODDLPARSER_NS
 
 static const char* PrimitiveTypes[ ddl_types_max ] = {
@@ -36,54 +38,57 @@ static const char* PrimitiveTypes[ ddl_types_max ] = {
     "unsigned_int64",
     "half",
     "float",
-    "double,"
+    "double",
     "string",
     "ref"
 };
 
-static PrimData *allocPrimData( PrimitiveDataType type ) {
-    PrimData *data = new PrimData;
-    data->m_type = type;
-    if( type == ddl_none ) {
-        return data;
+static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 ) {
+    if( type == ddl_none || ddl_types_max == type ) {
+        return nullptr;
     }
 
+    PrimData *data = new PrimData;
+    data->m_type = type;
     switch( type ) {
         case ddl_bool:
             data->m_size = sizeof( bool );
             break;
         case ddl_int8:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( char );
+            break;
+        case ddl_int16:
+            data->m_size = sizeof( short );
             break;
         case ddl_int32:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( int );
             break;
         case ddl_int64:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( long );
             break;
         case ddl_unsigned_int8:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( unsigned char );
             break;
         case ddl_unsigned_int32:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( unsigned int );
             break;
         case ddl_unsigned_int64:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( unsigned long );
             break;
         case ddl_half:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( short );
             break;
         case ddl_float:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( float );
             break;
         case ddl_double:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( double );
             break;
         case ddl_string:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( char ) * len;
             break;
         case ddl_ref:
-            data->m_size = sizeof( bool );
+            data->m_size = sizeof( char ) * len;
             break;
         case ddl_none:
         case ddl_types_max:
@@ -159,12 +164,18 @@ PrimData *OpenDDLParser::parsePrimitiveDataType( const char *in, size_t len, siz
 
     PrimitiveDataType type( ddl_none );
     for( unsigned int i = 0; i < ddl_types_max; i++ ) {
-        if( 0 == strncmp( in, PrimitiveTypes[ i ], strlen( PrimitiveTypes[ i ] ) ) ) {
-            type = ( PrimitiveDataType ) i;
-            break;
+        char buffer[256];
+        sprintf( buffer, "%d\n", i );
+        ::OutputDebugString( buffer );
+        const size_t prim_len( strlen( PrimitiveTypes[ i ] ) );
+        if( prim_len == len ) {
+            if( 0 == strncmp( in, PrimitiveTypes[ i ], prim_len ) ) {
+                type = ( PrimitiveDataType ) i;
+                break;
+            }
         }
     }
-    offset += strlen( PrimitiveTypes[ type ] );
+    offset += len;
 
     if( ddl_none == type ) {
         return nullptr;
