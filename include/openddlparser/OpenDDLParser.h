@@ -143,6 +143,10 @@ public:
     bool parseIdentifier();
     bool parseReference();
     bool parseProperty();
+    bool parseBoolean();
+    bool parseInteger();
+    bool parseFloatingNo();
+    bool parseString();
     DDLNode *getRoot() const;
 
 private:

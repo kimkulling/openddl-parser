@@ -22,7 +22,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/OpenDDLParser.h>
 
-#include <windows.h>
+#ifdef _WIN32
+#  include <windows.h>
+#endif // _WIN32
 
 BEGIN_ODDLPARSER_NS
 
@@ -42,6 +44,25 @@ static const char* PrimitiveTypes[ ddl_types_max ] = {
     "string",
     "ref"
 };
+
+
+template<typename T, typename... Args>
+void debugLog( const char *s, T value, Args... args ) {
+    while( *s ) {
+        if( *s == '%' ) {
+            if( *( s + 1 ) == '%' ) {
+                ++s;
+            } else {
+                std::cout << value;
+                s += 2;
+                printf( s, args... ); // call even when *s == 0 to detect extra arguments
+//                ::OutputDebugString( buffer );
+                return;
+            }
+        }
+        std::cout << *s++;
+    }
+}
 
 static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 ) {
     if( type == ddl_none || ddl_types_max == type ) {
@@ -85,10 +106,10 @@ static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 ) {
             data->m_size = sizeof( double );
             break;
         case ddl_string:
-            data->m_size = sizeof( char ) * len;
+            data->m_size = sizeof( char );
             break;
         case ddl_ref:
-            data->m_size = sizeof( char ) * len;
+            data->m_size = sizeof( char );
             break;
         case ddl_none:
         case ddl_types_max:
@@ -97,6 +118,7 @@ static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 ) {
     }
 
     if( data->m_size ) {
+        data->m_size *= len;
         data->m_data = new unsigned char[ data->m_size ];
     }
 
@@ -164,24 +186,42 @@ PrimData *OpenDDLParser::parsePrimitiveDataType( const char *in, size_t len, siz
 
     PrimitiveDataType type( ddl_none );
     for( unsigned int i = 0; i < ddl_types_max; i++ ) {
-        char buffer[256];
-        sprintf( buffer, "%d\n", i );
-        ::OutputDebugString( buffer );
         const size_t prim_len( strlen( PrimitiveTypes[ i ] ) );
-        if( prim_len == len ) {
-            if( 0 == strncmp( in, PrimitiveTypes[ i ], prim_len ) ) {
-                type = ( PrimitiveDataType ) i;
+        if( 0 == strncmp( in, PrimitiveTypes[ i ], prim_len ) ) {
+            type = ( PrimitiveDataType ) i;
+            break;
+        }
+    }
+
+    if( ddl_none == type ) {
+        offset += len;
+        return nullptr;
+    }
+    else {
+        offset += strlen( PrimitiveTypes[ type ] );
+    }
+
+    size_t size = 1;
+    if( in[ offset ] == '[' ) {
+        size = 0;
+        size_t start( offset+1 );
+        while( ( offset ) < len ) {
+            offset++;
+            if( in[ offset ] == ']' ) {
+                size = atoi( &in[ start ] );
                 break;
             }
         }
+        if( size ) {
+            len = size;
+        }
     }
-    offset += len;
 
-    if( ddl_none == type ) {
+    if( !size ) {
         return nullptr;
     }
-
-    PrimData *data = allocPrimData( type );
+     
+    PrimData *data = allocPrimData( type, len );
     if( !data ) {
         return nullptr;
     }
@@ -189,27 +229,43 @@ PrimData *OpenDDLParser::parsePrimitiveDataType( const char *in, size_t len, siz
 }
 
 bool OpenDDLParser::parseDataList( const std::vector<char> &buffer, size_t index ) {
-    return true;
+    return false;
 }
 
 bool OpenDDLParser::parseName() {
-    return true;
+    return false;
 }
 
 bool OpenDDLParser::parseDataArrayList( const std::vector<char> &buffer, size_t index ) {
-    return true;
+    return false;
 }
 
 bool OpenDDLParser::parseIdentifier() {
-    return true;
+    return false;
 }
 
 bool OpenDDLParser::parseReference() {
-    return true;
+    return false;
 }
 
 bool OpenDDLParser::parseProperty() {
-    return true;
+    return false;
+}
+
+bool OpenDDLParser::parseBoolean() {
+    return false;
+}
+
+bool OpenDDLParser::parseInteger() {
+    return false;
+}
+
+bool OpenDDLParser::parseFloatingNo() {
+    return false;
+}
+
+bool OpenDDLParser::parseString() {
+    return false;
 }
 
 DDLNode *OpenDDLParser::getRoot() const {
