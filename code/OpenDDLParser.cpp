@@ -179,6 +179,58 @@ bool OpenDDLParser::parse() {
     return true;
 }
 
+Name *OpenDDLParser::parseName( const char *in, size_t len, size_t &offset ) {
+    if( !in ) {
+        return false;
+    }
+
+    if( *in != '$' && *in != '%' ) {
+        return false;
+    }
+
+    NameType ntype( GlobalName );
+    if( *in == '%' ) {
+        ntype = LocalName;
+    }
+
+    Name *currentName( nullptr );
+    Identifier *id( parseIdentifier( in, len, offset ) );
+    if( id ) {
+        currentName = new Name;
+        if( currentName ) {
+            currentName->m_type = ntype;
+            currentName->m_id = id;
+        }
+    }
+    
+    return currentName;
+}
+
+Identifier *OpenDDLParser::parseIdentifier( const char *in, size_t len, size_t &offset ) {
+    if( !in ) {
+        return nullptr;
+    }
+    
+    // staring with a number is forbidden
+    if( isNumeric<const char>( *in ) ) {
+        return nullptr;
+    }
+
+    size_t begin( offset );
+    while( !isSeparator( *in ) && ( offset - begin ) < len ) {
+        offset++;
+    }
+    
+    const size_t idLen( offset-begin + 1 );
+    Identifier *id = new Identifier;
+    id->m_len = idLen;
+    id->m_buffer = new char[ idLen ];
+    ::memset( id->m_buffer, '\0', idLen );
+    ::memcpy( id->m_buffer, &in[ begin ], idLen );
+    
+    return id;
+}
+
 PrimData *OpenDDLParser::parsePrimitiveDataType( const char *in, size_t len, size_t &offset ) {
     if( !in ) {
         return nullptr;
@@ -196,8 +248,7 @@ PrimData *OpenDDLParser::parsePrimitiveDataType( const char *in, size_t len, siz
     if( ddl_none == type ) {
         offset += len;
         return nullptr;
-    }
-    else {
+    } else {
         offset += strlen( PrimitiveTypes[ type ] );
     }
 
@@ -232,15 +283,7 @@ bool OpenDDLParser::parseDataList( const std::vector<char> &buffer, size_t index
     return false;
 }
 
-bool OpenDDLParser::parseName() {
-    return false;
-}
-
 bool OpenDDLParser::parseDataArrayList( const std::vector<char> &buffer, size_t index ) {
-    return false;
-}
-
-bool OpenDDLParser::parseIdentifier() {
     return false;
 }
 

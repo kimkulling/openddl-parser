@@ -67,16 +67,45 @@ TEST_F(OpenDDLParserTest, isNumericTest) {
     EXPECT_FALSE(isNumeric<char>(not));
 }
 
+TEST_F( OpenDDLParserTest, isSeparatorTest ) {
+    char val;
+    val = ' ';
+    EXPECT_TRUE( isSeparator( val ) );
+    val = '\n';
+    EXPECT_TRUE( isSeparator( val ) );
+    val = '\t';
+    EXPECT_TRUE( isSeparator( val ) );
+    val = '1';
+    EXPECT_FALSE( isSeparator( val ) );
+    val = 'a';
+    EXPECT_FALSE( isSeparator( val ) );
+    val = 'Z';
+    EXPECT_FALSE( isSeparator( val ) );
+}
+
 TEST_F( OpenDDLParserTest, createTest ) {
     bool success( true );
     try {
         OpenDDLParser myParser;
         EXPECT_EQ( nullptr, myParser.getRoot() );
-    }
-    catch( ... ) {
+    } catch( ... ) {
         success = false;
     }
     EXPECT_TRUE( success );
+}
+
+TEST_F( OpenDDLParserTest, parseIdTest ) {
+    size_t offset( 0 );
+    const char name1[] = "testname";
+    Identifier *id = OpenDDLParser::parseIdentifier( name1, strlen( name1 ), offset );
+    EXPECT_TRUE( id != nullptr );
+}
+
+TEST_F( OpenDDLParserTest, parseNameTest ) {
+    size_t offset( 0 );
+    const char name1[] = "$testname";
+    Name *name = OpenDDLParser::parseName( name1, strlen( name1 ), offset );
+    EXPECT_TRUE( name != nullptr );
 }
 
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
