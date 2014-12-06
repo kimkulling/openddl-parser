@@ -44,6 +44,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BEGIN_ODDLPARSER_NS
     
 struct Identifier;
+struct Reference;
 
 enum PrimitiveDataType {
     ddl_none = -1,
@@ -66,19 +67,19 @@ enum PrimitiveDataType {
 
 template<class T>
 inline
-bool isUpperCase( const T in ) {
+bool isUpperCase( T in ) {
     return ( in >= 'A' && in <= 'Z' );
 }
 
 template<class T>
 inline
-bool isLowerCase( const T in ) {
+bool isLowerCase( T in ) {
     return ( in >= 'a' && in <= 'z' );
 }
 
 template<class T>
 inline
-bool isSeparator( const T in ) {
+bool isSeparator( T in ) {
     if ( ' ' == in || '\n' == in || '\t' == in ) {
         return true;
     }
@@ -141,6 +142,10 @@ struct Name {
     Identifier *m_id;
 };
 
+struct Reference {
+    Name *m_referencedName;
+};
+
 struct Identifier {
     size_t m_len;
     char *m_buffer;
@@ -162,12 +167,13 @@ public:
     OpenDDLParser( const std::vector<char> &buffer );
     ~OpenDDLParser();
     bool parse();
-    static Name *parseName( const char *in, size_t len, size_t &offset );
-    static Identifier *parseIdentifier( const char *in, size_t len, size_t &offset );
-    static PrimData *parsePrimitiveDataType( const char *in, size_t len, size_t &offset );
+    static char *parseName( char *in, char *end, Name **name );
+    static char *parseIdentifier( char *in, char *end, Identifier **id );
+    static char *parsePrimitiveDataType( char *in, char *end, PrimData **primData );
+    static char *parseReference( char *in, char *end, std::vector<Name*> &names );
+    
     bool parseDataList( const std::vector<char> &buffer, size_t index );
     bool parseDataArrayList( const std::vector<char> &buffer, size_t index );
-    bool parseReference();
     bool parseProperty();
     bool parseBoolean();
     bool parseInteger();

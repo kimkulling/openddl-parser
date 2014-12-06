@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-static const char* PrimitiveTypes[ ddl_types_max ] = {
+static const char* PrimitiveTypeToken[ ddl_types_max ] = {
     "bool",
     "int8",
     "int16",
@@ -45,6 +45,7 @@ static const char* PrimitiveTypes[ ddl_types_max ] = {
     "ref"
 };
 
+static const char *RefToken = "ref";
 
 template<typename T, typename... Args>
 void debugLog( const char *s, T value, Args... args ) {
@@ -135,14 +136,14 @@ static void releasePrimData( PrimData * data ) {
 
 template<class T>
 inline
-bool isValidToken( std::string &token, size_t index ) {
+T *getNextToken( T *in, T *end ) {
+    while( isSeparator( *in ) && ( in != end ) ) {
+        in++;
+    }
 
-    return true;
+    return in;
 }
 
-int getNextToken( const std::vector<char> &buffer, size_t index ) {
-    return true;
-}
 
 OpenDDLParser::OpenDDLParser()
 : m_buffer( nullptr )
@@ -169,23 +170,20 @@ bool OpenDDLParser::parse() {
     size_t index( 0 );
     const size_t buffersize( m_buffer->size() );
     while( index < buffersize ) {
-        int next = getNextToken( *m_buffer, index );
-        if( -1 == next ) {
-            break;
-        }
-
-        index = ( int ) next;
+        break;
     }
     return true;
 }
 
-Name *OpenDDLParser::parseName( const char *in, size_t len, size_t &offset ) {
-    if( !in ) {
-        return false;
+char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
+    if( nullptr == in ) {
+        return in;
     }
 
+    // ignore blanks
+    in = getNextToken( in, end );
     if( *in != '$' && *in != '%' ) {
-        return false;
+        return in;
     }
 
     NameType ntype( GlobalName );
@@ -194,89 +192,132 @@ Name *OpenDDLParser::parseName( const char *in, size_t len, size_t &offset ) {
     }
 
     Name *currentName( nullptr );
-    Identifier *id( parseIdentifier( in, len, offset ) );
+    Identifier *id( nullptr );
+    in = parseIdentifier( in, end, &id );
     if( id ) {
         currentName = new Name;
         if( currentName ) {
             currentName->m_type = ntype;
             currentName->m_id = id;
+            *name = currentName;
         }
     }
     
-    return currentName;
+    return in;
 }
 
-Identifier *OpenDDLParser::parseIdentifier( const char *in, size_t len, size_t &offset ) {
-    if( !in ) {
-        return nullptr;
+char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
+    if( nullptr == in ) {
+        return in;
     }
+    
+    // ignore blanks
+    in = getNextToken( in, end );
     
     // staring with a number is forbidden
     if( isNumeric<const char>( *in ) ) {
-        return nullptr;
+        return in;
     }
 
-    size_t begin( offset );
-    while( !isSeparator( *in ) && ( offset - begin ) < len ) {
-        offset++;
+    // get size of id
+    size_t idLen( 0 );
+    char *start( in );
+    while( !isSeparator( *in ) && ( in != end ) ) {
+        in++;
+        idLen++;
     }
     
-    const size_t idLen( offset-begin + 1 );
-    Identifier *id = new Identifier;
-    id->m_len = idLen;
-    id->m_buffer = new char[ idLen ];
-    ::memset( id->m_buffer, '\0', idLen );
-    ::memcpy( id->m_buffer, &in[ begin ], idLen );
-    
-    return id;
+    Identifier *newId = new Identifier;
+    newId->m_len = idLen+1;
+    newId->m_buffer = new char[ newId->m_len ];
+    ::strncpy( newId->m_buffer, start, newId->m_len-1 );
+    newId->m_buffer[ newId->m_len - 1 ] = '\0';
+    *id = newId;
+
+    return in;
 }
 
-PrimData *OpenDDLParser::parsePrimitiveDataType( const char *in, size_t len, size_t &offset ) {
-    if( !in ) {
-        return nullptr;
+char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **primData ) {
+    if( nullptr == in ) {
+        return in;
     }
 
     PrimitiveDataType type( ddl_none );
     for( unsigned int i = 0; i < ddl_types_max; i++ ) {
-        const size_t prim_len( strlen( PrimitiveTypes[ i ] ) );
-        if( 0 == strncmp( in, PrimitiveTypes[ i ], prim_len ) ) {
+        const size_t prim_len( strlen( PrimitiveTypeToken[ i ] ) );
+        if( 0 == strncmp( in, PrimitiveTypeToken[ i ], prim_len ) ) {
             type = ( PrimitiveDataType ) i;
             break;
         }
     }
 
     if( ddl_none == type ) {
-        offset += len;
-        return nullptr;
+        in = getNextToken( in, end );
+        return in;
     } else {
-        offset += strlen( PrimitiveTypes[ type ] );
+        in += strlen( PrimitiveTypeToken[ type ] );
     }
 
     size_t size = 1;
-    if( in[ offset ] == '[' ) {
-        size = 0;
-        size_t start( offset+1 );
-        while( ( offset ) < len ) {
-            offset++;
-            if( in[ offset ] == ']' ) {
-                size = atoi( &in[ start ] );
+    bool ok( true );
+    if( *in == '[' ) {
+        ok = false;
+        in++;
+        char *start( in );
+        bool brackedClosed( false );
+        while ( in != end ) {
+            in++;
+            if( *in == ']' ) {
+                size = atoi( start );
+                ok = true;
                 break;
             }
         }
-        if( size ) {
-            len = size;
+    }
+    if( ok ) {
+        *primData = allocPrimData( type, size );
+    }
+
+    return in;
+}
+
+char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &names ) {
+    if( nullptr == in ) {
+        return in;
+    }
+
+    char *start( in );
+    if( 0 != strncmp( in, RefToken, strlen( RefToken ) ) ) {
+        return false;
+    } else {
+        const size_t refTokenLen( strlen( RefToken ) );
+        in += refTokenLen;
+    }
+
+    char *out( getNextToken( in, end ) );
+    if( '{' != *out ) {
+        return in;
+    }
+
+    out = getNextToken( in, end );
+    Name *nextName( nullptr );
+    in = parseName( in, out, &nextName );
+    if( nextName ) {
+        names.push_back( nextName );
+    }
+    while( '}' != *out ) {
+        out = getNextToken( in, end );
+        if( ',' == *out ) {
+            in = parseName( in, out, &nextName );
+            if( nextName ) {
+                names.push_back( nextName );
+            }
+        } else {
+            break;
         }
     }
 
-    if( !size ) {
-        return nullptr;
-    }
-     
-    PrimData *data = allocPrimData( type, len );
-    if( !data ) {
-        return nullptr;
-    }
-    return data;
+    return in;
 }
 
 bool OpenDDLParser::parseDataList( const std::vector<char> &buffer, size_t index ) {
@@ -284,10 +325,6 @@ bool OpenDDLParser::parseDataList( const std::vector<char> &buffer, size_t index
 }
 
 bool OpenDDLParser::parseDataArrayList( const std::vector<char> &buffer, size_t index ) {
-    return false;
-}
-
-bool OpenDDLParser::parseReference() {
     return false;
 }
 

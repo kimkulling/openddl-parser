@@ -26,6 +26,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+static char *findEnd( char *in, size_t &len ) {
+    len = strlen( in );
+    char *end( &in[ len ] + 1 );
+
+    return end;
+}
+
 class OpenDDLParserTest : public testing::Test {
 protected:
 };
@@ -94,45 +101,61 @@ TEST_F( OpenDDLParserTest, createTest ) {
     EXPECT_TRUE( success );
 }
 
-TEST_F( OpenDDLParserTest, parseIdTest ) {
-    size_t offset( 0 );
-    const char name1[] = "testname";
-    Identifier *id = OpenDDLParser::parseIdentifier( name1, strlen( name1 ), offset );
+TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
+    int res( 0 );
+    size_t len1( 0 );
+    char name1[] = "testname", *end1( findEnd( name1, len1 ) );
+
+    Identifier *id( nullptr );
+    char *in = OpenDDLParser::parseIdentifier( name1, end1, &id );
     EXPECT_TRUE( id != nullptr );
+    res = strncmp( id->m_buffer, name1, len1 );
+    EXPECT_EQ( 0, res );
+    
+    size_t len2( 0 );
+    char name2[] = " testname ", *end2( findEnd( name2, len2 ) );
+    in = OpenDDLParser::parseIdentifier( name2, end2, &id );
+    EXPECT_TRUE( id != nullptr );
+    const size_t tokenLen( strlen( id->m_buffer ) );
+    res = strncmp( id->m_buffer, name1, tokenLen );
+    EXPECT_EQ( 0, res );
 }
 
 TEST_F( OpenDDLParserTest, parseNameTest ) {
-    size_t offset( 0 );
-    const char name1[] = "$testname";
-    Name *name = OpenDDLParser::parseName( name1, strlen( name1 ), offset );
+    int res( 0 );
+    size_t len1( 0 );
+    char name1[] = "$testname", *end1( findEnd( name1, len1 ) );
+
+    Name *name(  nullptr );
+    char *in = OpenDDLParser::parseName( name1, end1, &name );
     EXPECT_TRUE( name != nullptr );
 }
 
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
-    PrimData *data( nullptr );
+    PrimData *data1( nullptr );
+    char *in = OpenDDLParser::parsePrimitiveDataType( nullptr, nullptr, &data1 );
+    EXPECT_EQ( nullptr, data1 );
+    EXPECT_EQ( nullptr, in );
 
-    size_t offset( 0 );
-    data = OpenDDLParser::parsePrimitiveDataType( nullptr, 1, offset );
-    EXPECT_EQ( nullptr, data );
+    size_t len1( 0 );
+    char token1[] = "float", *end1( findEnd( token1, len1 ) );
+    in = OpenDDLParser::parsePrimitiveDataType( token1, end1, &data1 );
+    EXPECT_NE( nullptr, data1 );
 
-    const char token1[] = "float";
-    const size_t len( strlen( token1 ) );
-    data = OpenDDLParser::parsePrimitiveDataType( token1, len, offset );
-    EXPECT_NE( nullptr, data );
-
-    const char invalidToken[] = "foat";
-    const size_t len1( strlen( invalidToken ) );
-
-    data = OpenDDLParser::parsePrimitiveDataType( invalidToken, len1, offset );
-    EXPECT_EQ( nullptr, data );
+    size_t len2( 0 );
+    PrimData *data2( nullptr );
+    char invalidToken[] = "foat", *end2( findEnd( token1, len2 ) );
+    in = OpenDDLParser::parsePrimitiveDataType( invalidToken, end2, &data2 );
+    EXPECT_EQ( nullptr, data2 );
 }
  
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithArrayTest ) {
-    size_t offset( 0 );
     PrimData *data( nullptr );
-    const char token[] = "float[3]";
+    size_t len1( 0 );
+    char token[] = "float[3]", *end( findEnd( token, len1 ) );
+
     const size_t len( strlen( token ) );
-    data = OpenDDLParser::parsePrimitiveDataType( token, len, offset );
+    char *in = OpenDDLParser::parsePrimitiveDataType( token, end, &data );
     ASSERT_NE( nullptr, data );
     EXPECT_EQ( ddl_float, data->m_type );
     EXPECT_EQ( 12, data->m_size );
@@ -140,12 +163,22 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithArrayTest ) {
 }
 
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
-    size_t offset( 0 );
     PrimData *data( nullptr );
-    const char token1[] = "float[3";
-    const size_t len1( strlen( token1 ) );
-    data = OpenDDLParser::parsePrimitiveDataType( token1, len1, offset );
+    size_t len1( 0 );
+    char token1[] = "float[3", *end( findEnd( token1, len1 ) );
+
+    char *in = OpenDDLParser::parsePrimitiveDataType( token1, end, &data );
     EXPECT_EQ( nullptr, data );
+}
+
+TEST_F( OpenDDLParserTest, parseReferenceTest ) {
+    bool success( true );
+    size_t len1( 0 );
+    char token1[] = "ref { $name1, %name2 }", *end( findEnd( token1, len1 ) );
+
+    std::vector<Name*> names;
+    success = OpenDDLParser::parseReference( token1, end, names );
+    EXPECT_TRUE( success );
 }
 
 END_ODDLPARSER_NS
