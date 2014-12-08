@@ -90,6 +90,22 @@ TEST_F( OpenDDLParserTest, isSeparatorTest ) {
     EXPECT_FALSE( isSeparator( val ) );
 }
 
+TEST_F( OpenDDLParserTest, getNextSeparatorTest ) {
+    char tokenlist[] = "abc, \na";
+    char *in( &tokenlist[ 0 ] );
+    char *end( &tokenlist[ strlen( "abc, \na" ) ] );
+
+    bool res( true );
+    res = isSeparator( *in );
+    EXPECT_FALSE( res );
+    in = getNextSeparator( in, end );
+    res = isSeparator( *in );
+    EXPECT_TRUE( res );
+    in = getNextSeparator( in, end );
+    res = isSeparator( *in );
+    EXPECT_TRUE( res );
+}
+
 TEST_F( OpenDDLParserTest, createTest ) {
     bool success( true );
     try {
@@ -179,6 +195,21 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     std::vector<Name*> names;
     success = OpenDDLParser::parseReference( token1, end, names );
     EXPECT_TRUE( success );
+    EXPECT_EQ( 2, names.size() );
+
+    int res( 0 );
+    Name *name( nullptr );
+    name = names[ 0 ];
+    EXPECT_NE( nullptr, name );
+    EXPECT_EQ( GlobalName, name->m_type );
+    res = strncmp( name->m_id->m_buffer, "$name1", strlen( "$name1" ) );
+    EXPECT_EQ( 0, res );
+
+    name = names[ 1 ];
+    EXPECT_NE( nullptr, name );
+    EXPECT_EQ( LocalName, name->m_type );
+    res = strncmp( name->m_id->m_buffer, "%name2", strlen( "%name2" ) );
+    EXPECT_EQ( 0, res );
 }
 
 END_ODDLPARSER_NS

@@ -41,6 +41,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define BEGIN_ODDLPARSER_NS namespace ODDLParser {
 #define END_ODDLPARSER_NS   }
 
+#define ODDL_NO_COPYING( classname ) \
+
 BEGIN_ODDLPARSER_NS
     
 struct Identifier;
@@ -80,7 +82,7 @@ bool isLowerCase( T in ) {
 template<class T>
 inline
 bool isSeparator( T in ) {
-    if ( ' ' == in || '\n' == in || '\t' == in ) {
+    if ( ' ' == in || '\n' == in || '\t' == in || ',' == in ) {
         return true;
     }
     return false;
@@ -119,6 +121,15 @@ inline
     return false;*/
 }
 
+template<class T>
+inline
+static T *getNextSeparator( T *in, T *end ) {
+    while( !isSeparator( *in ) || in == end ) {
+        in++;
+    }
+    return in;
+}
+
 struct PrimData {
     PrimitiveDataType m_type;
     size_t m_size;
@@ -140,20 +151,39 @@ enum NameType {
 struct Name {
     NameType m_type;
     Identifier *m_id;
+
+    Name( NameType type, Identifier *id )
+    : m_type( type ), m_id( id ) {
+        // empty
+    }
 };
 
 struct Reference {
+    size_t  m_numRefs;
     Name *m_referencedName;
+
+    Reference( size_t numrefs, Name *names )
+    : m_numRefs( numrefs )
+    , m_referencedName( names ) {
+        // empty
+    }
 };
 
 struct Identifier {
     size_t m_len;
     char *m_buffer;
+
+    Identifier( size_t len, char *buffer )
+    : m_len( len )
+    , m_buffer( buffer ) {
+        // empty
+    }
 };
 
 struct DDLNode {
     DDLNode *m_parent;
     std::vector<DDLNode*> m_children;
+
     DDLNode() 
     : m_parent( nullptr )
     , m_children() {
@@ -171,14 +201,14 @@ public:
     static char *parseIdentifier( char *in, char *end, Identifier **id );
     static char *parsePrimitiveDataType( char *in, char *end, PrimData **primData );
     static char *parseReference( char *in, char *end, std::vector<Name*> &names );
-    
+    static char *parseBoolean( char *in, char *end );
+    static char *parseInteger( char *in, char *end );
+    static char *parseFloatingNo( char *in, char *end );
+    static char *parseString( char *in, char *end );
+
     bool parseDataList( const std::vector<char> &buffer, size_t index );
     bool parseDataArrayList( const std::vector<char> &buffer, size_t index );
     bool parseProperty();
-    bool parseBoolean();
-    bool parseInteger();
-    bool parseFloatingNo();
-    bool parseString();
     DDLNode *getRoot() const;
 
 private:

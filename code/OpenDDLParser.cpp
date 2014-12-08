@@ -137,6 +137,12 @@ static void releasePrimData( PrimData * data ) {
 template<class T>
 inline
 T *getNextToken( T *in, T *end ) {
+    /*if( !isSeparator( *in ) ) {
+        while( !isSeparator( *in ) ) {
+            in++;
+        }
+    }*/
+
     while( isSeparator( *in ) && ( in != end ) ) {
         in++;
     }
@@ -195,10 +201,8 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
     Identifier *id( nullptr );
     in = parseIdentifier( in, end, &id );
     if( id ) {
-        currentName = new Name;
+        currentName = new Name( ntype, id );
         if( currentName ) {
-            currentName->m_type = ntype;
-            currentName->m_id = id;
             *name = currentName;
         }
     }
@@ -227,9 +231,8 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
         idLen++;
     }
     
-    Identifier *newId = new Identifier;
-    newId->m_len = idLen+1;
-    newId->m_buffer = new char[ newId->m_len ];
+    const size_t len( idLen + 1 );
+    Identifier *newId = new Identifier( len, new char[ len ] );
     ::strncpy( newId->m_buffer, start, newId->m_len-1 );
     newId->m_buffer[ newId->m_len - 1 ] = '\0';
     *id = newId;
@@ -294,21 +297,23 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
         in += refTokenLen;
     }
 
-    char *out( getNextToken( in, end ) );
-    if( '{' != *out ) {
+    in = getNextToken( in, end );
+    if( '{' != *in ) {
         return in;
+    } else {
+        in++;
     }
 
-    out = getNextToken( in, end );
+    in = getNextToken( in, end );
     Name *nextName( nullptr );
-    in = parseName( in, out, &nextName );
+    in = parseName( in, end, &nextName );
     if( nextName ) {
         names.push_back( nextName );
     }
-    while( '}' != *out ) {
-        out = getNextToken( in, end );
-        if( ',' == *out ) {
-            in = parseName( in, out, &nextName );
+    while( '}' != *in ) {
+        in = getNextSeparator( in, end );
+        if( ',' == *in ) {
+            in = parseName( in, end, &nextName );
             if( nextName ) {
                 names.push_back( nextName );
             }
@@ -317,6 +322,22 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
         }
     }
 
+    return in;
+}
+
+char *OpenDDLParser::parseBoolean( char *in, char *end ) {
+    return in;
+}
+
+char *OpenDDLParser::parseInteger( char *in, char *end ) {
+    return in;
+}
+
+char *OpenDDLParser::parseFloatingNo( char *in, char *end ) {
+    return in;
+}
+
+char *OpenDDLParser::parseString( char *in, char *end ) {
     return in;
 }
 
@@ -332,21 +353,6 @@ bool OpenDDLParser::parseProperty() {
     return false;
 }
 
-bool OpenDDLParser::parseBoolean() {
-    return false;
-}
-
-bool OpenDDLParser::parseInteger() {
-    return false;
-}
-
-bool OpenDDLParser::parseFloatingNo() {
-    return false;
-}
-
-bool OpenDDLParser::parseString() {
-    return false;
-}
 
 DDLNode *OpenDDLParser::getRoot() const {
     return m_root;
