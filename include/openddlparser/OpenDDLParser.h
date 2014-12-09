@@ -47,6 +47,12 @@ BEGIN_ODDLPARSER_NS
     
 struct Identifier;
 struct Reference;
+struct PrimData;
+
+typedef char  int8_t;
+typedef short int16_t;
+typedef int   int32_t;
+typedef long  int64_t;
 
 enum PrimitiveDataType {
     ddl_none = -1,
@@ -130,7 +136,12 @@ static T *getNextSeparator( T *in, T *end ) {
     return in;
 }
 
-struct PrimData {
+struct DLL_ODDLPARSER_EXPORT PrimDataAllocator {
+    static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 );
+    static void releasePrimData( PrimData **data );
+};
+
+struct DLL_ODDLPARSER_EXPORT PrimData {
     PrimitiveDataType m_type;
     size_t m_size;
     unsigned char *m_data;
@@ -141,6 +152,17 @@ struct PrimData {
         , m_data( nullptr ) {
         // empty
     }
+
+    void setBool( bool value );
+    bool getBool();
+    void setInt8( int8_t value );
+    int8_t getInt8();
+    void setInt16( int16_t value );
+    int16_t  getInt16();
+    void setInt32( int32_t value );
+    int32_t  getInt32();
+    void setInt64( int64_t value );
+    int64_t  getInt64();
 };
 
 enum NameType {
@@ -201,10 +223,10 @@ public:
     static char *parseIdentifier( char *in, char *end, Identifier **id );
     static char *parsePrimitiveDataType( char *in, char *end, PrimData **primData );
     static char *parseReference( char *in, char *end, std::vector<Name*> &names );
-    static char *parseBoolean( char *in, char *end );
-    static char *parseInteger( char *in, char *end );
-    static char *parseFloatingNo( char *in, char *end );
-    static char *parseString( char *in, char *end );
+    static char *parseBooleanLiteral( char *in, char *end, PrimData **boolean );
+    static char *parseIntegerLiteral( char *in, char *end );
+    static char *parseFloatingLiteral( char *in, char *end );
+    static char *parseStringLiteral( char *in, char *end );
 
     bool parseDataList( const std::vector<char> &buffer, size_t index );
     bool parseDataArrayList( const std::vector<char> &buffer, size_t index );

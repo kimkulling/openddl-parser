@@ -106,6 +106,24 @@ TEST_F( OpenDDLParserTest, getNextSeparatorTest ) {
     EXPECT_TRUE( res );
 }
 
+TEST_F( OpenDDLParserTest, PrimDataAllocTest ) {
+    PrimData *data = PrimDataAllocator::allocPrimData( ddl_bool );
+    EXPECT_NE( nullptr, data );
+    PrimDataAllocator::releasePrimData( &data );
+    EXPECT_EQ( nullptr, data );
+}
+
+TEST_F( OpenDDLParserTest, PrimDataAccessBoolTest ) {
+    PrimData *data = PrimDataAllocator::allocPrimData( ddl_bool );
+    EXPECT_NE( nullptr, data );
+    data->setBool( true );
+    EXPECT_EQ( true, data->getBool() );
+    data->setBool( false );
+    EXPECT_EQ( false, data->getBool() );
+    PrimDataAllocator::releasePrimData( &data );
+    EXPECT_EQ( nullptr, data );
+}
+
 TEST_F( OpenDDLParserTest, createTest ) {
     bool success( true );
     try {
@@ -210,6 +228,28 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     EXPECT_EQ( LocalName, name->m_type );
     res = strncmp( name->m_id->m_buffer, "%name2", strlen( "%name2" ) );
     EXPECT_EQ( 0, res );
+}
+
+TEST_F( OpenDDLParserTest, parseBooleanTest ) {
+    char *in( nullptr );
+    PrimData *data( nullptr );
+    bool success( true );
+    size_t len1( 0 );
+    char token1[] = "true", *end1( findEnd( token1, len1 ) );
+    in = OpenDDLParser::parseBooleanLiteral( token1, end1, &data );
+    EXPECT_EQ( ddl_bool, data->m_type );
+    EXPECT_EQ( true, data->getBool() );
+
+    size_t len2( 0 );
+    char token2[] = "false", *end2( findEnd( token2, len2 ) );
+    in = OpenDDLParser::parseBooleanLiteral( token2, end2, &data );
+    EXPECT_EQ( ddl_bool, data->m_type );
+    EXPECT_EQ( false, data->getBool() );
+
+    size_t len3( 0 );
+    char token3[] = "fallse", *end3( findEnd( token3, len3 ) );
+    in = OpenDDLParser::parseBooleanLiteral( token3, end3, &data );
+    EXPECT_EQ( nullptr, data );
 }
 
 END_ODDLPARSER_NS

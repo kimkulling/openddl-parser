@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/OpenDDLParser.h>
 
+#include <cassert>
+
 #ifdef _WIN32
 #  include <windows.h>
 #endif // _WIN32
@@ -65,7 +67,7 @@ void debugLog( const char *s, T value, Args... args ) {
     }
 }
 
-static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 ) {
+PrimData *PrimDataAllocator::allocPrimData( PrimitiveDataType type, size_t len ) {
     if( type == ddl_none || ddl_types_max == type ) {
         return nullptr;
     }
@@ -126,30 +128,72 @@ static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 ) {
     return data;
 }
 
-static void releasePrimData( PrimData * data ) {
+void PrimDataAllocator::releasePrimData( PrimData **data ) {
     if( !data ) {
         return;
     }
 
-    delete data;
+    delete *data;
+    *data = nullptr;
 }
 
 template<class T>
 inline
 T *getNextToken( T *in, T *end ) {
-    /*if( !isSeparator( *in ) ) {
-        while( !isSeparator( *in ) ) {
-            in++;
-        }
-    }*/
-
     while( isSeparator( *in ) && ( in != end ) ) {
         in++;
     }
-
     return in;
 }
 
+void PrimData::setBool( bool value ) {
+    assert( ddl_bool == m_type );
+    ::memcpy( m_data, &value, m_size );
+}
+
+bool PrimData::getBool() {
+    assert( ddl_bool == m_type );
+    return ( bool ) ( *m_data );
+}
+
+void PrimData::setInt8( int8_t value ) {
+    assert( ddl_int8 == m_type );
+    ::memcpy( m_data, &value, m_size );
+}
+
+int8_t PrimData::getInt8() {
+    assert( ddl_int8 == m_type );
+    return ( int8_t ) ( *m_data );
+}
+
+void PrimData::setInt16( int16_t value ) {
+    assert( ddl_int16 == m_type );
+    ::memcpy( m_data, &value, m_size );
+}
+
+int16_t PrimData::getInt16() {
+    assert( ddl_int16 == m_type );
+    return ( int16_t ) ( *m_data );
+}
+
+void PrimData::setInt32( int32_t value ) {
+    assert( ddl_int32 == m_type );
+    ::memcpy( m_data, &value, m_size );
+}
+
+int32_t PrimData::getInt32() {
+    assert( ddl_int64 == m_type );
+    return ( int32_t ) ( *m_data );
+}
+
+void PrimData::setInt64( int64_t value ) {
+    assert( ddl_int64 == m_type );
+    ::memcpy( m_data, &value, m_size );
+}
+
+int64_t PrimData::getInt64() {
+    return ( int64_t ) ( *m_data );
+}
 
 OpenDDLParser::OpenDDLParser()
 : m_buffer( nullptr )
@@ -278,7 +322,7 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **pri
         }
     }
     if( ok ) {
-        *primData = allocPrimData( type, size );
+        *primData = PrimDataAllocator::allocPrimData( type, size );
     }
 
     return in;
@@ -325,19 +369,45 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
     return in;
 }
 
-char *OpenDDLParser::parseBoolean( char *in, char *end ) {
+char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolean ) {
+    if( nullptr == in ) {
+        return in;
+    }
+    
+    in = getNextToken( in, end );
+    char *start( in );
+    size_t len( 0 );
+    while( !isSeparator( *in ) && in != end ) {
+        in++;
+        len++;
+    }
+    len++;
+    int res = ::strncmp( "true", start, len );
+    if( 0 != res ) {
+        res = ::strncmp( "false", start, len );
+        if( 0 != res ) {
+            *boolean = nullptr;
+            return in;
+        }
+        *boolean = PrimDataAllocator::allocPrimData( ddl_bool );
+        (*boolean)->setBool( false );
+    } else {
+        *boolean = PrimDataAllocator::allocPrimData( ddl_bool );
+        (*boolean)->setBool( true );
+    }
+
     return in;
 }
 
-char *OpenDDLParser::parseInteger( char *in, char *end ) {
+char *OpenDDLParser::parseIntegerLiteral( char *in, char *end ) {
     return in;
 }
 
-char *OpenDDLParser::parseFloatingNo( char *in, char *end ) {
+char *OpenDDLParser::parseFloatingLiteral( char *in, char *end ) {
     return in;
 }
 
-char *OpenDDLParser::parseString( char *in, char *end ) {
+char *OpenDDLParser::parseStringLiteral( char *in, char *end ) {
     return in;
 }
 
