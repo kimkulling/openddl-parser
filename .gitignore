@@ -14,3 +14,16 @@ CMakeFiles/cmake.check_cache
 CMakeFiles/1965a11616015a994507837bb167b874/generate.stamp.rule
 openddl_parser.dir/Debug/vc120.pdb
 *.filters
+*.obj
+*.lib
+*.exp
+*.depend
+CMakeFiles/2.8.12.2/CompilerIdC/CMakeCCompilerId.c
+CMakeCache.txt
+*.pdb
+*.sln
+*.dll
+CMakeFiles/TargetDirectories.txt
+*.ilk
+CMakeFiles/1965a11616015a994507837bb167b874/ALL_BUILD.rule
+CMakeFiles/1965a11616015a994507837bb167b874/ZERO_CHECK.rule
