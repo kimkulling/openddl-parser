@@ -62,7 +62,7 @@ enum PrimitiveDataType {
     ddl_int32,
     ddl_int64,
     ddl_unsigned_int8,
-    unsigned_int16,
+    ddl_unsigned_int16,
     ddl_unsigned_int32,
     ddl_unsigned_int64,
     ddl_half,
@@ -224,7 +224,7 @@ public:
     static char *parsePrimitiveDataType( char *in, char *end, PrimData **primData );
     static char *parseReference( char *in, char *end, std::vector<Name*> &names );
     static char *parseBooleanLiteral( char *in, char *end, PrimData **boolean );
-    static char *parseIntegerLiteral( char *in, char *end );
+    static char *parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType = ddl_int32 );
     static char *parseFloatingLiteral( char *in, char *end );
     static char *parseStringLiteral( char *in, char *end );
 

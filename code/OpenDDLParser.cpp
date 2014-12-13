@@ -182,12 +182,12 @@ void PrimData::setInt32( int32_t value ) {
 }
 
 int32_t PrimData::getInt32() {
-    assert( ddl_int64 == m_type );
+    assert( ddl_int32 == m_type );
     return ( int32_t ) ( *m_data );
 }
 
 void PrimData::setInt64( int64_t value ) {
-    assert( ddl_int64 == m_type );
+    assert( ddl_int32 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
@@ -399,7 +399,51 @@ char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolea
     return in;
 }
 
-char *OpenDDLParser::parseIntegerLiteral( char *in, char *end ) {
+char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType ) {
+    if( nullptr == in ) {
+        return in;
+    }
+    
+    if( integerType != ddl_int8 && integerType != ddl_int16 && integerType != ddl_int32 && integerType != ddl_int64 ) {
+        return in;
+    }
+
+    size_t len( 0 );
+    in = getNextToken( in, end );
+    char *start( in );
+    while( !isSeparator( *in ) && in != end ) {
+        in++;
+        len++;
+    }
+
+    if( isNumeric( *start ) ) {
+        const int value( atoi( start ) );
+        *integer = PrimDataAllocator::allocPrimData( integerType );
+        switch( integerType ) {
+            case ddl_int8:
+                ( *integer )->setInt8( value );
+                break;
+
+            case ddl_int16:
+                ( *integer )->setInt16( value );
+                break;
+
+            case ddl_int32:
+                ( *integer )->setInt32( value );
+                break;
+
+            case ddl_int64:
+                ( *integer )->setInt64( value );
+                break;
+
+            default:
+                break;
+        }
+    }
+    else {
+        *integer = nullptr;
+    }
+    
     return in;
 }
 

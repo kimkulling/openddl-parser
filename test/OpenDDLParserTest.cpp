@@ -230,7 +230,7 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     EXPECT_EQ( 0, res );
 }
 
-TEST_F( OpenDDLParserTest, parseBooleanTest ) {
+TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     char *in( nullptr );
     PrimData *data( nullptr );
     bool success( true );
@@ -250,6 +250,31 @@ TEST_F( OpenDDLParserTest, parseBooleanTest ) {
     char token3[] = "fallse", *end3( findEnd( token3, len3 ) );
     in = OpenDDLParser::parseBooleanLiteral( token3, end3, &data );
     EXPECT_EQ( nullptr, data );
+}
+
+TEST_F( OpenDDLParserTest, parseIntegerLiteralTest ) {
+    char *in( nullptr );
+    size_t len1( 0 );
+    PrimData *data( nullptr );
+
+    char token1[] = "1", *end1( findEnd( token1, len1 ) );
+    in = OpenDDLParser::parseIntegerLiteral( token1, end1, &data );
+    EXPECT_EQ( ddl_int32, data->m_type );
+    EXPECT_EQ( 1, data->getInt32() );
+
+    size_t len2( 0 );
+    char token2[] = "aaa", *end2( findEnd( token2, len2 ) );
+    in = OpenDDLParser::parseIntegerLiteral( token2, end2, &data );
+    EXPECT_EQ( nullptr, data );
+}
+
+TEST_F( OpenDDLParserTest, parseInvalidIntegerLiteralTest ) {
+    size_t len1( 0 );
+    PrimData *data( nullptr );
+    char token1[] = "1", *end1( findEnd( token1, len1 ) );
+    char *in( token1 );
+    char *out = OpenDDLParser::parseIntegerLiteral( token1, end1, &data, ddl_float );
+    EXPECT_EQ( out, in );
 }
 
 END_ODDLPARSER_NS
