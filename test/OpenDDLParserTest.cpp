@@ -124,6 +124,42 @@ TEST_F( OpenDDLParserTest, PrimDataAccessBoolTest ) {
     EXPECT_EQ( nullptr, data );
 }
 
+TEST_F( OpenDDLParserTest, createDDLNodeTest ) {
+    bool success( true );
+    try {
+        DDLNode myNode( "test" );
+    } catch ( ... ) {
+        success = false;
+    }
+    EXPECT_TRUE( success );
+}
+
+TEST_F( OpenDDLParserTest, accessNameDDLNodeTest ) {
+    static const std::string name1 = "test";
+    DDLNode myNode( name1 );
+    EXPECT_EQ( name1, myNode.getName() );
+
+    static const std::string name2 = "test";
+    myNode.setName( name2 );
+    EXPECT_EQ( name2, myNode.getName() );
+}
+
+TEST_F( OpenDDLParserTest, accessParentDDLNodeTest ) {
+    static const std::string parent = "test";
+    DDLNode parentNode( parent );
+    static const std::string name1 = "test";
+    DDLNode myNode( name1, &parentNode );
+    EXPECT_EQ( &parentNode, myNode.getParent() );
+    EXPECT_EQ(1, parentNode.getChildNodeList().size() );
+
+    DDLNode myNodeWithoutParent( name1 );
+    EXPECT_EQ( nullptr, myNodeWithoutParent.getParent() );
+    
+    myNodeWithoutParent.attachParent( &parentNode );
+    EXPECT_EQ( &parentNode, myNodeWithoutParent.getParent() );
+    EXPECT_EQ( 2, parentNode.getChildNodeList().size() );
+}
+
 TEST_F( OpenDDLParserTest, createTest ) {
     bool success( true );
     try {
@@ -259,6 +295,7 @@ TEST_F( OpenDDLParserTest, parseIntegerLiteralTest ) {
 
     char token1[] = "1", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parseIntegerLiteral( token1, end1, &data );
+    EXPECT_NE( nullptr, data );
     EXPECT_EQ( ddl_int32, data->m_type );
     EXPECT_EQ( 1, data->getInt32() );
 
@@ -275,6 +312,32 @@ TEST_F( OpenDDLParserTest, parseInvalidIntegerLiteralTest ) {
     char *in( token1 );
     char *out = OpenDDLParser::parseIntegerLiteral( token1, end1, &data, ddl_float );
     EXPECT_EQ( out, in );
+}
+
+TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
+    size_t len1( 0 );
+    PrimData *data( nullptr );
+    char token1[] = "1.0f", *end1( findEnd( token1, len1 ) );
+    char *in( token1 );
+    char *out = OpenDDLParser::parseFloatingLiteral( token1, end1, &data );
+    EXPECT_NE( nullptr, data );
+    EXPECT_EQ( ddl_float, data->m_type );
+    float v( data->getFloat() );
+    EXPECT_EQ(1.0f, data->getFloat() );
+}
+
+TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
+    size_t len1( 0 );
+    PrimData *data( nullptr );
+    char token1[] = "teststring", *end1( findEnd( token1, len1 ) );
+    char *in( token1 );
+
+    char *out = OpenDDLParser::parseStringLiteral( token1, end1, &data );
+    EXPECT_NE( nullptr, data );
+    EXPECT_EQ( ddl_string, data->m_type );
+    std::string str( (char*) data->m_data );
+    int res(strncmp(token1, str.c_str(), str.size() ) );
+    EXPECT_EQ( 0, res );
 }
 
 END_ODDLPARSER_NS

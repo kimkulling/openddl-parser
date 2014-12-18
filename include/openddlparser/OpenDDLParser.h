@@ -163,6 +163,8 @@ struct DLL_ODDLPARSER_EXPORT PrimData {
     int32_t  getInt32();
     void setInt64( int64_t value );
     int64_t  getInt64();
+    void setFloat( float value );
+    float getFloat() const;
 };
 
 enum NameType {
@@ -202,15 +204,29 @@ struct Identifier {
     }
 };
 
-struct DDLNode {
+class DLL_ODDLPARSER_EXPORT DDLNode {
+public:
+    typedef std::vector<DDLNode*> DllNodeList;
+
+public:
+    DDLNode( const std::string &name, DDLNode *parent = nullptr );
+    ~DDLNode();
+    void attachParent( DDLNode *parent );
+    void detachParent();
+    DDLNode *getParent() const;
+    const DllNodeList &getChildNodeList() const;
+    void setName( const std::string &name );
+    const std::string &getName() const;
+
+private:
+    DDLNode();
+    DDLNode( const DDLNode & );
+    DDLNode &operator = ( const DDLNode & );
+
+private:
+    std::string m_name;
     DDLNode *m_parent;
     std::vector<DDLNode*> m_children;
-
-    DDLNode() 
-    : m_parent( nullptr )
-    , m_children() {
-        // empty
-    }
 };
 
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {
@@ -225,8 +241,8 @@ public:
     static char *parseReference( char *in, char *end, std::vector<Name*> &names );
     static char *parseBooleanLiteral( char *in, char *end, PrimData **boolean );
     static char *parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType = ddl_int32 );
-    static char *parseFloatingLiteral( char *in, char *end );
-    static char *parseStringLiteral( char *in, char *end );
+    static char *parseFloatingLiteral( char *in, char *end, PrimData **floating );
+    static char *parseStringLiteral( char *in, char *end, PrimData **stringData );
 
     bool parseDataList( const std::vector<char> &buffer, size_t index );
     bool parseDataArrayList( const std::vector<char> &buffer, size_t index );

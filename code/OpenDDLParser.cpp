@@ -67,6 +67,14 @@ void debugLog( const char *s, T value, Args... args ) {
     }
 }
 
+static bool isIntegerType( PrimitiveDataType integerType ) {
+    if( integerType != ddl_int8 && integerType != ddl_int16 && integerType != ddl_int32 && integerType != ddl_int64 ) {
+        return false;
+    }
+
+    return true;
+}
+
 PrimData *PrimDataAllocator::allocPrimData( PrimitiveDataType type, size_t len ) {
     if( type == ddl_none || ddl_types_max == type ) {
         return nullptr;
@@ -193,6 +201,67 @@ void PrimData::setInt64( int64_t value ) {
 
 int64_t PrimData::getInt64() {
     return ( int64_t ) ( *m_data );
+}
+
+void PrimData::setFloat( float value ) {
+    assert( ddl_float == m_type );
+    ::memcpy( m_data, &value, m_size );
+}
+
+float PrimData::getFloat() const {
+    float v;
+    ::memcpy( &v, m_data, m_size );
+    return v;
+}
+
+DDLNode::DDLNode( const std::string &name, DDLNode *parent )
+: m_name( name )
+, m_parent( parent )
+, m_children() {
+    if( m_parent ) {
+        m_parent->m_children.push_back( parent );
+    }
+}
+
+DDLNode::~DDLNode() {
+    detachParent();
+}
+
+void DDLNode::attachParent( DDLNode *parent ) {
+    if( m_parent == parent ) {
+        return;
+    }
+
+    m_parent = parent;
+    m_parent->m_children.push_back( parent );
+}
+
+void DDLNode::detachParent() {
+    if( m_parent ) {
+        std::vector<DDLNode*>::iterator it;
+        it = std::find( m_parent->m_children.begin(), m_parent->m_children.end(), this );
+        if( m_parent->m_children.end() != it ) {
+            m_parent->m_children.erase( it );
+        }
+        m_parent = nullptr;
+    }
+}
+
+DDLNode *DDLNode::getParent() const {
+    return m_parent;
+}
+
+const DDLNode::DllNodeList &DDLNode::getChildNodeList() const {
+    return m_children;
+}
+
+
+void DDLNode::setName( const std::string &name ) {
+    m_name = name;
+}
+
+const std::string &DDLNode::getName() const {
+    return m_name;
 }
 
 OpenDDLParser::OpenDDLParser()
@@ -370,6 +439,7 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
 }
 
 char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolean ) {
+    *boolean = nullptr;
     if( nullptr == in ) {
         return in;
     }
@@ -400,20 +470,19 @@ char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolea
 }
 
 char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType ) {
+    *integer = nullptr;
     if( nullptr == in ) {
         return in;
     }
     
-    if( integerType != ddl_int8 && integerType != ddl_int16 && integerType != ddl_int32 && integerType != ddl_int64 ) {
+    if( !isIntegerType( integerType ) ) {
         return in;
     }
 
-    size_t len( 0 );
     in = getNextToken( in, end );
     char *start( in );
     while( !isSeparator( *in ) && in != end ) {
         in++;
-        len++;
     }
 
     if( isNumeric( *start ) ) {
@@ -423,35 +492,60 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, PrimData **intege
             case ddl_int8:
                 ( *integer )->setInt8( value );
                 break;
-
             case ddl_int16:
                 ( *integer )->setInt16( value );
                 break;
-
             case ddl_int32:
                 ( *integer )->setInt32( value );
                 break;
-
             case ddl_int64:
                 ( *integer )->setInt64( value );
                 break;
-
             default:
                 break;
         }
-    }
-    else {
-        *integer = nullptr;
+    } 
+
+    return in;
+}
+
+char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, PrimData **floating ) {
+    *floating = nullptr;
+    if( nullptr == in ) {
+        return in;
     }
     
+    in = getNextToken( in, end );
+    char *start( in );
+    while( !isSeparator( *in ) && in != end ) {
+        in++;
+    }
+    if( isNumeric( *start ) ) {
+        const float value( atof( start ) );
+        *floating = PrimDataAllocator::allocPrimData( ddl_float );
+        ( *floating )->setFloat( value );
+    }
+
     return in;
 }
 
-char *OpenDDLParser::parseFloatingLiteral( char *in, char *end ) {
-    return in;
-}
+char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringData ) {
+    *stringData = nullptr;
+    if( nullptr == in ) {
+        return in;
+    }
 
-char *OpenDDLParser::parseStringLiteral( char *in, char *end ) {
+    in = getNextToken( in, end );
+    size_t len( 0 );
+    char *start( in );
+    while( !isSeparator( *in ) && in != end ) {
+        in++;
+        len++;
+    }
+
+    *stringData = PrimDataAllocator::allocPrimData( ddl_string, len );
+    ::strncpy( (char*) (*stringData)->m_data, start, len );
+
     return in;
 }
 
