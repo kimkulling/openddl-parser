@@ -267,7 +267,7 @@ const std::string &DDLNode::getName() const {
 OpenDDLParser::OpenDDLParser()
 : m_buffer( nullptr )
 , m_root( nullptr ) {
-    // empty;
+    // empty
 }
 
 OpenDDLParser::OpenDDLParser( const std::vector<char> &buffer ) 
@@ -295,6 +295,7 @@ bool OpenDDLParser::parse() {
 }
 
 char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
+    *name = nullptr;
     if( nullptr == in ) {
         return in;
     }
@@ -324,6 +325,7 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
 }
 
 char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
+    *id = nullptr;
     if( nullptr == in ) {
         return in;
     }
@@ -354,6 +356,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
 }
 
 char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **primData ) {
+    *primData = nullptr;
     if( nullptr == in ) {
         return in;
     }
