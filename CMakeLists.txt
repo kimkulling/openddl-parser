@@ -14,14 +14,14 @@ add_definitions( -DOPENDDLPARSER_BUILD )
 add_definitions( -D_VARIADIC_MAX=10 )
 
 INCLUDE_DIRECTORIES(
-	./
-	include/
+    ./
+    include/
     contrib/gtest-1.7.0/include
     contrib/gtest-1.7.0/
 )
 
 link_directories(
-	./
+    ./
 )
 
 SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/lib )
@@ -43,7 +43,7 @@ elseif ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
 endif()
 
 SET ( openddl_parser_src
-	code/OpenDDLParser.cpp
+    code/OpenDDLParser.cpp
     include/openddlparser/OpenDDLParser.h
 )
  
@@ -72,9 +72,9 @@ SET( openddl_parser_test_src
 )
 SOURCE_GROUP( code            FILES ${openddl_parser_test_src} )
 
-ADD_EXECUTABLE( openddl_parser_test
+ADD_EXECUTABLE( openddl_parser_unittest 
     ${gtest_src}
     ${openddl_parser_test_src}
 )
 
-target_link_libraries( openddl_parser_test openddl_parser ${CMAKE_THREAD_LIBS_INIT} )
+target_link_libraries( openddl_parser_unittest openddl_parser ${CMAKE_THREAD_LIBS_INIT} )
