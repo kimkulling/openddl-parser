@@ -265,33 +265,71 @@ const std::string &DDLNode::getName() const {
 }
 
 OpenDDLParser::OpenDDLParser()
-: m_buffer( nullptr )
+: m_buffer()
 , m_root( nullptr ) {
     // empty
 }
 
 OpenDDLParser::OpenDDLParser( const std::vector<char> &buffer ) 
-: m_buffer( &buffer )
+: m_buffer()
 , m_root( nullptr ) {
-    // empty
+    if( !buffer.empty() ) {
+        setBuffer( buffer );
+    }
 }
 
 OpenDDLParser::~OpenDDLParser() {
+    clear();
+}
+
+void OpenDDLParser::setBuffer( const std::vector<char> &buffer ) {
+    m_buffer.resize( buffer.size() );
+    std::copy( buffer.begin(), buffer.end(), m_buffer.begin() );    
+}
+
+void OpenDDLParser::clear() {
+    m_buffer.resize( 0 );
+    
     delete m_root;
     m_root = nullptr;
 }
 
 bool OpenDDLParser::parse() {
-    if( !m_buffer ) {
+    if( m_buffer.empty() ) {
         return false;
     }
+    
+    // remove comments
+    normalizeBuffer( m_buffer );
 
-    size_t index( 0 );
-    const size_t buffersize( m_buffer->size() );
-    while( index < buffersize ) {
-        break;
+    // do the main parsing
+    const size_t buffersize( m_buffer.size() );
+    char *current( &m_buffer[ 0 ] );
+    char *end( &m_buffer[ m_buffer.size() - 1 ] + 1 ); 
+    while( current != end ) {
+        if( isDDLDataType( current, end ) ) {
+            current = parseDataType( current, end );
+        } else {
+            current = parseIdentifier( current, end );
+        }
     }
     return true;
+}
+
+char *OpenDDLParser::parseDataType( char *in, char *end ) {
+    return in;
+}
+
+char *OpenDDLParser::parseIdentifier( char *in, char *end ) {
+    return in;
+}
+
+bool OpenDDLParser::isDDLDataType( char *in, char *end ) {
+    return true;
+}
+
+void OpenDDLParser::normalizeBuffer( std::vector<char> &buffer ) {
+
 }
 
 char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
@@ -552,15 +590,19 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringD
     return in;
 }
 
-bool OpenDDLParser::parseDataList( const std::vector<char> &buffer, size_t index ) {
+char *OpenDDLParser::parseDataList( char *in, char *end ) {
+    if( nullptr == in ) {
+        return in;
+    }
+
     return false;
 }
 
-bool OpenDDLParser::parseDataArrayList( const std::vector<char> &buffer, size_t index ) {
+char *OpenDDLParser::parseDataArrayList( char *in, char *end ) {
     return false;
 }
 
-bool OpenDDLParser::parseProperty() {
+char *OpenDDLParser::parseProperty( char *in, char *end ) {
     return false;
 }
 

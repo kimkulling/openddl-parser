@@ -75,6 +75,19 @@ enum PrimitiveDataType {
 
 template<class T>
 inline
+bool isComment( T *in, T *end ) {
+    if( *in == '/' ) {
+        if( in + 1 != end ) {
+            if( *( in + 1 ) == '/' ) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+template<class T>
+inline
 bool isUpperCase( T in ) {
     return ( in >= 'A' && in <= 'Z' );
 }
@@ -118,7 +131,7 @@ static const unsigned char chartype_table[ 256 ] = {
 
 template<class T>
 inline
-    bool isNumeric( const T in ) {
+bool isNumeric( const T in ) {
     return ( in >= '0' && in <= '9' );
     //return ( chartype_table[in] );
     /*if (in >= '0' &&  in <= '9' )
@@ -234,7 +247,13 @@ public:
     OpenDDLParser();
     OpenDDLParser( const std::vector<char> &buffer );
     ~OpenDDLParser();
+    void setBuffer( const std::vector<char> &buffer );
+    void clear();
     bool parse();
+    char *parseDataType( char *in, char *end );
+    char *parseIdentifier( char *in, char *end );
+    static bool isDDLDataType( char *in, char *end );
+    static void normalizeBuffer( std::vector<char> &buffer );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
     static char *parsePrimitiveDataType( char *in, char *end, PrimData **primData );
@@ -243,10 +262,9 @@ public:
     static char *parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType = ddl_int32 );
     static char *parseFloatingLiteral( char *in, char *end, PrimData **floating );
     static char *parseStringLiteral( char *in, char *end, PrimData **stringData );
-
-    bool parseDataList( const std::vector<char> &buffer, size_t index );
-    bool parseDataArrayList( const std::vector<char> &buffer, size_t index );
-    bool parseProperty();
+    char *parseDataList( char *in, char *end );
+    char *parseDataArrayList( char *in, char *end );
+    char *parseProperty( char *in, char *end );
     DDLNode *getRoot() const;
 
 private:
@@ -254,7 +272,7 @@ private:
     OpenDDLParser &operator = ( const OpenDDLParser & );
 
 private:
-    const std::vector<char> *m_buffer;
+    std::vector<char> m_buffer;
     DDLNode *m_root;
 };
 

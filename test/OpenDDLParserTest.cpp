@@ -37,7 +37,27 @@ class OpenDDLParserTest : public testing::Test {
 protected:
 };
 
-TEST_F(OpenDDLParserTest, isUpperCaseTest) {
+TEST_F( OpenDDLParserTest, isCommentTest ) {
+    size_t len( 0 );
+    bool result( false );
+    char *end( nullptr );
+    char token1[] = "//";
+    end = findEnd( token1, len );
+    result = isComment( token1, end );
+    EXPECT_TRUE( result );
+
+    char token2[] = "/*";
+    end = findEnd( token2, len );
+    result = isComment( token2, end );
+    EXPECT_FALSE( result );
+
+    char token3[] = "/";
+    end = findEnd( token3, len );
+    result = isComment( token3, end );
+    EXPECT_FALSE( result );
+
+}
+TEST_F( OpenDDLParserTest, isUpperCaseTest) {
     char val = 'a';
     EXPECT_TRUE(isLowerCase<char>(val));
     val = 'c';
@@ -169,6 +189,14 @@ TEST_F( OpenDDLParserTest, createTest ) {
         success = false;
     }
     EXPECT_TRUE( success );
+}
+
+TEST_F( OpenDDLParserTest, isDDLDataTypeTest ) {
+
+}
+
+TEST_F( OpenDDLParserTest, normalizeBufferTest ) {
+
 }
 
 TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
