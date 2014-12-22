@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <openddlparser\OpenDDLParser.h>
 
+#include <iostream>
+
 BEGIN_ODDLPARSER_NS
 
 static char *findEnd( char *in, size_t &len ) {
@@ -191,12 +193,39 @@ TEST_F( OpenDDLParserTest, createTest ) {
     EXPECT_TRUE( success );
 }
 
+TEST_F( OpenDDLParserTest, accessBufferTest ) {
+    bool success( true );
+    static const size_t len = 100;
+    char *buffer = new char[ len ];
+    OpenDDLParser myParser;
+    myParser.setBuffer( buffer, len );
+    try {
+        myParser.clear();
+        buffer[ 1 ] = 'c';
+    } catch( ... ) {
+        success = false;
+    }
+    EXPECT_TRUE( success );
+
+    myParser.setBuffer( buffer, len, true );
+    myParser.clear();
+    EXPECT_EQ( 0, myParser.getBufferSize() );
+    EXPECT_EQ( nullptr, myParser.getBuffer() );
+}
+
 TEST_F( OpenDDLParserTest, isDDLDataTypeTest ) {
 
 }
 
 TEST_F( OpenDDLParserTest, normalizeBufferTest ) {
+    char buffer[] = {
+        "line 1 // comment\n"
+        "line 2\n"
+        "//comment\n"
+        "line 4"
+    };
 
+    OpenDDLParser::normalizeBuffer( buffer, strlen( buffer ) );
 }
 
 TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
@@ -366,6 +395,11 @@ TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     std::string str( (char*) data->m_data );
     int res(strncmp(token1, str.c_str(), str.size() ) );
     EXPECT_EQ( 0, res );
+}
+
+TEST_F( OpenDDLParserTest, getversionTest ) {
+    const char *version( OpenDDLParser::getVersion() );
+    EXPECT_NE( nullptr, version );
 }
 
 END_ODDLPARSER_NS

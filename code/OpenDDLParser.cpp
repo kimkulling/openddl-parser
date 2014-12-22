@@ -30,6 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+static const char *Version = "0.1.0";
+
 static const char* PrimitiveTypeToken[ ddl_types_max ] = {
     "bool",
     "int8",
@@ -265,16 +267,20 @@ const std::string &DDLNode::getName() const {
 }
 
 OpenDDLParser::OpenDDLParser()
-: m_buffer()
+: m_ownsBuffer( false )
+,m_buffer( nullptr )
+, m_len( 0 )
 , m_root( nullptr ) {
     // empty
 }
 
-OpenDDLParser::OpenDDLParser( const std::vector<char> &buffer ) 
-: m_buffer()
+OpenDDLParser::OpenDDLParser( char *buffer, size_t len, bool ownsIt )
+: m_ownsBuffer( false )
+, m_buffer( nullptr )
+, m_len( 0 )
 , m_root( nullptr ) {
-    if( !buffer.empty() ) {
-        setBuffer( buffer );
+    if( 0 != m_len ) {
+        setBuffer( buffer, len, ownsIt );
     }
 }
 
@@ -282,31 +288,52 @@ OpenDDLParser::~OpenDDLParser() {
     clear();
 }
 
-void OpenDDLParser::setBuffer( const std::vector<char> &buffer ) {
-    m_buffer.resize( buffer.size() );
-    std::copy( buffer.begin(), buffer.end(), m_buffer.begin() );    
+void OpenDDLParser::setBuffer( char *buffer, size_t len, bool ownsIt ) {
+    if( m_buffer && m_ownsBuffer ) {
+        delete[] m_buffer;
+        m_buffer = nullptr;
+        m_len = 0;
+    }
+    m_ownsBuffer = ownsIt;
+    m_buffer = new char[ len ];
+    m_len = len;
+    ::memcpy( m_buffer, buffer, len );
+}
+
+char *OpenDDLParser::getBuffer() const {
+    return m_buffer;
+}
+
+size_t OpenDDLParser::getBufferSize() const {
+    return m_len;
 }
 
 void OpenDDLParser::clear() {
-    m_buffer.resize( 0 );
+    if( m_ownsBuffer ) {
+        delete[] m_buffer;
+    }
+    m_buffer = nullptr;
+    m_len = 0;
     
     delete m_root;
     m_root = nullptr;
 }
 
 bool OpenDDLParser::parse() {
-    if( m_buffer.empty() ) {
+    if( 0 == m_len ) {
         return false;
     }
     
     // remove comments
-    normalizeBuffer( m_buffer );
+    normalizeBuffer( m_buffer, m_len );
 
     // do the main parsing
-    const size_t buffersize( m_buffer.size() );
+    const size_t buffersize( m_len );
     char *current( &m_buffer[ 0 ] );
-    char *end( &m_buffer[ m_buffer.size() - 1 ] + 1 ); 
+    char *end( &m_buffer[ m_len - 1 ] + 1 );
     while( current != end ) {
+        // todo remove next line!
+        current++;
         if( isDDLDataType( current, end ) ) {
             current = parseDataType( current, end );
         } else {
@@ -328,8 +355,33 @@ bool OpenDDLParser::isDDLDataType( char *in, char *end ) {
     return true;
 }
 
-void OpenDDLParser::normalizeBuffer( std::vector<char> &buffer ) {
+void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {
+    if( nullptr == buffer || 0 == len) {
+        return;
+    }
 
+    size_t writeIdx( 0 );
+    char *end( &buffer[ len ] + 1 );
+    for( size_t readIdx = 0; readIdx<len; ++readIdx ) {
+        char *c( &buffer[readIdx] );
+        // check for a comment
+        if( !isComment<char>( c, end ) ) {
+            buffer[ writeIdx ] = buffer[ readIdx ];
+            writeIdx++;
+        } else {
+            readIdx++;
+            // skip the comment and the rest of the line
+            while( !isEndofLine( buffer[ readIdx ] ) ) {
+                readIdx++;
+            }
+            buffer[writeIdx] = '\n';
+            writeIdx++;
+        }
+    }
+
+    if( writeIdx < len ) {
+        buffer[writeIdx] = '\0';
+    }
 }
 
 char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
@@ -590,6 +642,10 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringD
     return in;
 }
 
+const char *OpenDDLParser::getVersion() {
+    return Version;
+}
+
 char *OpenDDLParser::parseDataList( char *in, char *end ) {
     if( nullptr == in ) {
         return in;
@@ -605,7 +661,6 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end ) {
 char *OpenDDLParser::parseProperty( char *in, char *end ) {
     return false;
 }
-
 
 DDLNode *OpenDDLParser::getRoot() const {
     return m_root;

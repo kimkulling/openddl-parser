@@ -40,6 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 #define BEGIN_ODDLPARSER_NS namespace ODDLParser {
 #define END_ODDLPARSER_NS   }
+#define USE_ODDLPARSER_NS   using namespace ODDLParser;
 
 #define ODDL_NO_COPYING( classname ) \
 
@@ -138,6 +139,12 @@ bool isNumeric( const T in ) {
     return true;
 
     return false;*/
+}
+
+template<class T>
+inline
+bool isEndofLine( const T in ) {
+    return ( '\n' == in );
 }
 
 template<class T>
@@ -245,15 +252,17 @@ private:
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {
 public:
     OpenDDLParser();
-    OpenDDLParser( const std::vector<char> &buffer );
+    OpenDDLParser( char *buffer, size_t len, bool ownsIt = false );
     ~OpenDDLParser();
-    void setBuffer( const std::vector<char> &buffer );
+    void setBuffer( char *buffer, size_t len, bool ownsIt = false );
+    char *getBuffer() const;
+    size_t getBufferSize() const;
     void clear();
     bool parse();
     char *parseDataType( char *in, char *end );
     char *parseIdentifier( char *in, char *end );
     static bool isDDLDataType( char *in, char *end );
-    static void normalizeBuffer( std::vector<char> &buffer );
+    static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
     static char *parsePrimitiveDataType( char *in, char *end, PrimData **primData );
@@ -262,6 +271,7 @@ public:
     static char *parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType = ddl_int32 );
     static char *parseFloatingLiteral( char *in, char *end, PrimData **floating );
     static char *parseStringLiteral( char *in, char *end, PrimData **stringData );
+    static const char *getVersion();
     char *parseDataList( char *in, char *end );
     char *parseDataArrayList( char *in, char *end );
     char *parseProperty( char *in, char *end );
@@ -272,7 +282,9 @@ private:
     OpenDDLParser &operator = ( const OpenDDLParser & );
 
 private:
-    std::vector<char> m_buffer;
+    bool m_ownsBuffer;
+    char *m_buffer;
+    size_t m_len;
     DDLNode *m_root;
 };
 
