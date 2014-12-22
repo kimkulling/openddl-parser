@@ -67,14 +67,24 @@ SET ( gtest_src
     ${GTEST_PATH}/src/gtest_main.cc
 )
 
-SET( openddl_parser_test_src  
+SET( openddl_parser_unittest_src  
     test/OpenDDLParserTest.cpp 
 )
-SOURCE_GROUP( code            FILES ${openddl_parser_test_src} )
+SOURCE_GROUP( code            FILES ${openddl_parser_unittest_src} )
 
 ADD_EXECUTABLE( openddl_parser_unittest 
     ${gtest_src}
-    ${openddl_parser_test_src}
+    ${openddl_parser_unittest_src}
 )
 
 target_link_libraries( openddl_parser_unittest openddl_parser ${CMAKE_THREAD_LIBS_INIT} )
+
+SET( openddl_parser_demo_src  
+    demo/main.cpp 
+)
+
+ADD_EXECUTABLE( openddl_parser_demo
+    ${openddl_parser_demo_src}
+) 
+
+target_link_libraries( openddl_parser_demo openddl_parser )
