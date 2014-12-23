@@ -635,13 +635,18 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringD
     in = getNextToken( in, end );
     size_t len( 0 );
     char *start( in );
-    while( !isSeparator( *in ) && in != end ) {
+    if( *start == '\"' ) {
+        start++;
         in++;
-        len++;
-    }
+        while( *in != '\"' && in != end ) {
+            in++;
+            len++;
+        }
 
-    *stringData = PrimDataAllocator::allocPrimData( ddl_string, len );
-    ::strncpy( (char*) (*stringData)->m_data, start, len );
+        *stringData = PrimDataAllocator::allocPrimData( ddl_string, len+1 );
+        ::strncpy( ( char* ) ( *stringData )->m_data, start, len );
+        ( *stringData )->m_data[len] = '\0';
+    }
 
     return in;
 }
@@ -667,7 +672,7 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
                     ( *prop ) = new Property( id );
                     ( *prop )->m_primData = primData;
                 }
-            } else if( isCharacter( *in ) ) { // string data
+            } else if( isStringLiteral( *in ) ) { // string data
                 in = parseStringLiteral( in, end, &primData );
                 if( nullptr != primData ) {
                     ( *prop ) = new Property( id );

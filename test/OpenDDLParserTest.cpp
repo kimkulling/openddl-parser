@@ -406,14 +406,14 @@ TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
 TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     size_t len1( 0 );
     PrimData *data( nullptr );
-    char token1[] = "teststring", *end1( findEnd( token1, len1 ) );
+    char token1[] = "\"teststring\"", *end1( findEnd( token1, len1 ) );
     char *in( token1 );
 
     char *out = OpenDDLParser::parseStringLiteral( token1, end1, &data );
     EXPECT_NE( nullptr, data );
     EXPECT_EQ( ddl_string, data->m_type );
     std::string str( (char*) data->m_data );
-    int res(strncmp(token1, str.c_str(), str.size() ) );
+    int res(strncmp( "teststring", str.c_str(), str.size() ) );
     EXPECT_EQ( 0, res );
 }
 
