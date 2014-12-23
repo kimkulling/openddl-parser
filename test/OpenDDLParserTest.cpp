@@ -434,6 +434,11 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
     ASSERT_NE( nullptr, prop->m_id );
     res = strncmp( "key", prop->m_id->m_buffer, prop->m_id->m_len );
     EXPECT_EQ( 0, res );
+
+    EXPECT_EQ( ddl_string, prop->m_primData->m_type );
+    EXPECT_NE( nullptr, prop->m_primData->m_data );
+    res = strncmp( "angle", (char*) prop->m_primData->m_data, prop->m_primData->m_size );
+    EXPECT_EQ( 0, res );
 }
 
 TEST_F( OpenDDLParserTest, getVersionTest ) {
