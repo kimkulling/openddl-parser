@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <openddlparser/OpenDDLParser.h>
 
 #include <cassert>
+#include <iostream>
 
 #ifdef _WIN32
 #  include <windows.h>
