@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cassert>
 #include <iostream>
+#include <algorithm>
 
 #ifdef _WIN32
 #  include <windows.h>

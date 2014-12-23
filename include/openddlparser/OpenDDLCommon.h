@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
 
 #include <cstddef>
+#include <string.h>
 
 #ifdef _WIN32
 #   define TAG_DLL_EXPORT __declspec(dllexport)
