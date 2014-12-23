@@ -430,6 +430,10 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
         
     char *prop2 = "key = \"angle\"", *end2( findEnd( prop2, len ) );
     in = OpenDDLParser::parseProperty( prop2, end2, &prop );
+    ASSERT_NE( nullptr, prop );
+    ASSERT_NE( nullptr, prop->m_id );
+    res = strncmp( "key", prop->m_id->m_buffer, prop->m_id->m_len );
+    EXPECT_EQ( 0, res );
 }
 
 TEST_F( OpenDDLParserTest, getVersionTest ) {
