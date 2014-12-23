@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include "gtest/gtest.h"
 
-#include <openddlparser\OpenDDLParser.h>
+#include <openddlparser/OpenDDLParser.h>
 
 #include <iostream>
 
@@ -92,8 +92,8 @@ TEST_F( OpenDDLParserTest, isNumericTest) {
     EXPECT_TRUE(isNumeric<char>(val2));
     char val3 = '4';
     EXPECT_TRUE(isNumeric<char>(val3));
-    char not = 'a';
-    EXPECT_FALSE(isNumeric<char>(not));
+    char notChar = 'a';
+    EXPECT_FALSE(isNumeric<char>(notChar));
 }
 
 TEST_F( OpenDDLParserTest, isCharacterTest ) {

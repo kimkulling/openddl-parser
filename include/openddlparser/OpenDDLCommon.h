@@ -24,6 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
 #define OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
 
+#include <cstddef>
+#include <string.h>
+
 #ifdef _WIN32
 #   define TAG_DLL_EXPORT __declspec(dllexport)
 #   define TAG_DLL_IMPORT __declspec(dllimport )
@@ -34,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #   endif
 #   pragma warning( disable : 4251 )
 #else
-#   define DLL_CPPCORE_EXPORT
+#   define DLL_ODDLPARSER_EXPORT
 #endif
 #define BEGIN_ODDLPARSER_NS namespace ODDLParser {
 #define END_ODDLPARSER_NS   }
