@@ -25,30 +25,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define OPENDDLPARSER_OPENDDLPARSER_H_INC
 
 #include <vector>
-
-#ifdef _WIN32
-#   define TAG_DLL_EXPORT __declspec(dllexport)
-#   define TAG_DLL_IMPORT __declspec(dllimport )
-#   ifdef OPENDDLPARSER_BUILD
-#       define DLL_ODDLPARSER_EXPORT TAG_DLL_EXPORT
-#   else
-#        define DLL_ODDLPARSER_EXPORT TAG_DLL_IMPORT
-#   endif
-#   pragma warning( disable : 4251 )
-#else
-#   define DLL_CPPCORE_EXPORT
-#endif
-#define BEGIN_ODDLPARSER_NS namespace ODDLParser {
-#define END_ODDLPARSER_NS   }
-#define USE_ODDLPARSER_NS   using namespace ODDLParser;
-
-#define ODDL_NO_COPYING( classname ) \
+#include <openddlparser/OpenDDLCommon.h>
+#include <openddlparser/OpenDDLParserUtils.h>
 
 BEGIN_ODDLPARSER_NS
-    
+
 struct Identifier;
 struct Reference;
 struct PrimData;
+struct Property;
 
 typedef char  int8_t;
 typedef short int16_t;
@@ -73,88 +58,6 @@ enum PrimitiveDataType {
     ddl_ref,
     ddl_types_max
 };
-
-template<class T>
-inline
-bool isComment( T *in, T *end ) {
-    if( *in == '/' ) {
-        if( in + 1 != end ) {
-            if( *( in + 1 ) == '/' ) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-template<class T>
-inline
-bool isUpperCase( T in ) {
-    return ( in >= 'A' && in <= 'Z' );
-}
-
-template<class T>
-inline
-bool isLowerCase( T in ) {
-    return ( in >= 'a' && in <= 'z' );
-}
-
-template<class T>
-inline
-bool isSeparator( T in ) {
-    if ( ' ' == in || '\n' == in || '\t' == in || ',' == in ) {
-        return true;
-    }
-    return false;
-}
-
-static const unsigned char chartype_table[ 256 ] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0-15
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16-31
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32-47
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, // 48-63
-
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 64-79
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80-95
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 96-111
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 112-127
-
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // > 127 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-};
-
-template<class T>
-inline
-bool isNumeric( const T in ) {
-    return ( in >= '0' && in <= '9' );
-    //return ( chartype_table[in] );
-    /*if (in >= '0' &&  in <= '9' )
-    return true;
-
-    return false;*/
-}
-
-template<class T>
-inline
-bool isEndofLine( const T in ) {
-    return ( '\n' == in );
-}
-
-template<class T>
-inline
-static T *getNextSeparator( T *in, T *end ) {
-    while( !isSeparator( *in ) || in == end ) {
-        in++;
-    }
-    return in;
-}
 
 struct DLL_ODDLPARSER_EXPORT PrimDataAllocator {
     static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 );
@@ -203,10 +106,10 @@ struct Name {
 };
 
 struct Reference {
-    size_t  m_numRefs;
-    Name *m_referencedName;
+    size_t m_numRefs;
+    Name **m_referencedName;
 
-    Reference( size_t numrefs, Name *names )
+    Reference( size_t numrefs, Name **names )
     : m_numRefs( numrefs )
     , m_referencedName( names ) {
         // empty
@@ -220,6 +123,19 @@ struct Identifier {
     Identifier( size_t len, char *buffer )
     : m_len( len )
     , m_buffer( buffer ) {
+        // empty
+    }
+};
+
+struct Property {
+    Identifier *m_id;
+    PrimData *m_primData;
+    Reference *m_ref;
+
+    Property( Identifier *id )
+    : m_id( id )
+    , m_primData( nullptr ) 
+    , m_ref( nullptr ) {
         // empty
     }
 };
@@ -260,8 +176,7 @@ public:
     void clear();
     bool parse();
     char *parseDataType( char *in, char *end );
-    char *parseIdentifier( char *in, char *end );
-    static bool isDDLDataType( char *in, char *end );
+    char *parseId( char *in, char *end );
     static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
@@ -271,10 +186,10 @@ public:
     static char *parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType = ddl_int32 );
     static char *parseFloatingLiteral( char *in, char *end, PrimData **floating );
     static char *parseStringLiteral( char *in, char *end, PrimData **stringData );
+    static char *parseProperty( char *in, char *end, Property **prop );
     static const char *getVersion();
     char *parseDataList( char *in, char *end );
     char *parseDataArrayList( char *in, char *end );
-    char *parseProperty( char *in, char *end );
     DDLNode *getRoot() const;
 
 private:

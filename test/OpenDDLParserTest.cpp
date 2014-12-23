@@ -85,7 +85,7 @@ TEST_F(OpenDDLParserTest, isLowerCaseTest) {
     EXPECT_FALSE(isUpperCase<char>(val));
 }
 
-TEST_F(OpenDDLParserTest, isNumericTest) {
+TEST_F( OpenDDLParserTest, isNumericTest) {
     char val1 = '0';
     EXPECT_TRUE( isNumeric<char>(val1) );
     char val2 = '9';
@@ -94,6 +94,26 @@ TEST_F(OpenDDLParserTest, isNumericTest) {
     EXPECT_TRUE(isNumeric<char>(val3));
     char not = 'a';
     EXPECT_FALSE(isNumeric<char>(not));
+}
+
+TEST_F( OpenDDLParserTest, isCharacterTest ) {
+    char val = 'a';
+    EXPECT_TRUE( isCharacter<char>( val ) );
+    val = 'z';
+    EXPECT_TRUE( isCharacter<char>( val ) );
+    val = 'A';
+    EXPECT_TRUE( isCharacter<char>( val ) );
+    val = 'Z';
+    EXPECT_TRUE( isCharacter<char>( val ) );
+    val = '1';
+    EXPECT_FALSE( isCharacter<char>( val ) );
+}
+
+TEST_F( OpenDDLParserTest, isStringLiteralTest ) {
+    char val = '\"';
+    EXPECT_TRUE( isStringLiteral<char>( val ) );
+    val = 'a';
+    EXPECT_FALSE( isStringLiteral<char>( val ) );
 }
 
 TEST_F( OpenDDLParserTest, isSeparatorTest ) {
@@ -397,7 +417,22 @@ TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     EXPECT_EQ( 0, res );
 }
 
-TEST_F( OpenDDLParserTest, getversionTest ) {
+TEST_F( OpenDDLParserTest, parsePropertyTest ) {
+    char *in( nullptr );
+    size_t len( 0 );
+    char *prop1 = "lod = 2", *end1( findEnd( prop1, len ) );
+    Property *prop( nullptr );
+    in = OpenDDLParser::parseProperty( prop1, end1, &prop );
+    ASSERT_NE( nullptr, prop );
+    ASSERT_NE( nullptr, prop->m_id );
+    int res = strncmp( "lod", prop->m_id->m_buffer, prop->m_id->m_len );
+    EXPECT_EQ( 0, res ); 
+        
+    char *prop2 = "key = \"angle\"", *end2( findEnd( prop2, len ) );
+    in = OpenDDLParser::parseProperty( prop2, end2, &prop );
+}
+
+TEST_F( OpenDDLParserTest, getVersionTest ) {
     const char *version( OpenDDLParser::getVersion() );
     EXPECT_NE( nullptr, version );
 }

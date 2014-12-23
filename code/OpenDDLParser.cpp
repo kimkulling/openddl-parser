@@ -332,13 +332,7 @@ bool OpenDDLParser::parse() {
     char *current( &m_buffer[ 0 ] );
     char *end( &m_buffer[ m_len - 1 ] + 1 );
     while( current != end ) {
-        // todo remove next line!
-        current++;
-        if( isDDLDataType( current, end ) ) {
-            current = parseDataType( current, end );
-        } else {
-            current = parseIdentifier( current, end );
-        }
+        current = parseId( current, end );
     }
     return true;
 }
@@ -347,12 +341,22 @@ char *OpenDDLParser::parseDataType( char *in, char *end ) {
     return in;
 }
 
-char *OpenDDLParser::parseIdentifier( char *in, char *end ) {
-    return in;
-}
+char *OpenDDLParser::parseId( char *in, char *end ) {
+    if( nullptr == in || in == end ) {
+        return in;
+    }
 
-bool OpenDDLParser::isDDLDataType( char *in, char *end ) {
-    return true;
+    Identifier *id( nullptr );
+    in = OpenDDLParser::parseIdentifier( in, end, &id );
+    if( nullptr != id ) {
+        Name *name( nullptr );
+        in = OpenDDLParser::parseName( in, end, &name );
+        if( nullptr != name ) {
+
+        }
+    }
+
+    return in;
 }
 
 void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {
@@ -386,7 +390,7 @@ void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {
 
 char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
     *name = nullptr;
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
 
@@ -416,10 +420,10 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
 
 char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
     *id = nullptr;
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
-    
+
     // ignore blanks
     in = getNextToken( in, end );
     
@@ -447,7 +451,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
 
 char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **primData ) {
     *primData = nullptr;
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
 
@@ -491,7 +495,7 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **pri
 }
 
 char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &names ) {
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
 
@@ -533,10 +537,10 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
 
 char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolean ) {
     *boolean = nullptr;
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
-    
+
     in = getNextToken( in, end );
     char *start( in );
     size_t len( 0 );
@@ -564,10 +568,10 @@ char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolea
 
 char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType ) {
     *integer = nullptr;
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
-    
+
     if( !isIntegerType( integerType ) ) {
         return in;
     }
@@ -604,10 +608,10 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, PrimData **intege
 
 char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, PrimData **floating ) {
     *floating = nullptr;
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
-    
+
     in = getNextToken( in, end );
     char *start( in );
     while( !isSeparator( *in ) && in != end ) {
@@ -624,7 +628,7 @@ char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, PrimData **float
 
 char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringData ) {
     *stringData = nullptr;
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
 
@@ -642,6 +646,49 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringD
     return in;
 }
 
+char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
+    *prop = nullptr;
+    if( nullptr == in || in == end ) {
+        return in;
+    }
+
+    in = getNextToken( in, end );
+    Identifier *id( nullptr );
+    in = parseIdentifier( in, end, &id );
+    if( nullptr != id ) {
+        in = getNextToken( in, end );
+        if( *in == '=' ) {
+            in++;
+            in = getNextToken( in, end );
+            PrimData *primData( nullptr );
+            if( isNumeric( *in ) ) {        // numeric data
+                in = parseIntegerLiteral( in, end, &primData );
+                if( nullptr != primData ) {
+                    ( *prop ) = new Property( id );
+                    ( *prop )->m_primData = primData;
+                }
+            } else if( isCharacter( *in ) ) { // string data
+                in = parseStringLiteral( in, end, &primData );
+                if( nullptr != primData ) {
+                    ( *prop ) = new Property( id );
+                    ( *prop )->m_primData = primData;
+                }
+            } else {                          // reference data
+                Reference *ref( nullptr );
+                std::vector<Name*> names;
+                in = parseReference( in, end, names );
+                if( !names.empty() ) {
+                    Reference *ref = new Reference( names.size(), &names[ 0 ] );
+                    ( *prop ) = new Property( id );
+                    ( *prop )->m_ref = ref;
+                }
+            }
+        } 
+    }
+
+    return in;
+}
+
 const char *OpenDDLParser::getVersion() {
     return Version;
 }
@@ -655,10 +702,6 @@ char *OpenDDLParser::parseDataList( char *in, char *end ) {
 }
 
 char *OpenDDLParser::parseDataArrayList( char *in, char *end ) {
-    return false;
-}
-
-char *OpenDDLParser::parseProperty( char *in, char *end ) {
     return false;
 }
 
