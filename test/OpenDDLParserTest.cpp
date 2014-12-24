@@ -255,7 +255,7 @@ TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
 
     Identifier *id( nullptr );
     char *in = OpenDDLParser::parseIdentifier( name1, end1, &id );
-    EXPECT_TRUE( id != nullptr );
+    ASSERT_TRUE( id != nullptr );
     res = strncmp( id->m_buffer, name1, len1 );
     EXPECT_EQ( 0, res );
     

@@ -132,11 +132,13 @@ struct Property {
     Identifier *m_id;
     PrimData *m_primData;
     Reference *m_ref;
+    Property *m_next;
 
     Property( Identifier *id )
     : m_id( id )
     , m_primData( nullptr ) 
-    , m_ref( nullptr ) {
+    , m_ref( nullptr )
+    , m_next( nullptr ) {
         // empty
     }
 };
@@ -176,7 +178,7 @@ public:
     size_t getBufferSize() const;
     void clear();
     bool parse();
-    char *parseDataType( char *in, char *end );
+    char *parseStructure( char *in, char *end );
     char *parseId( char *in, char *end );
     static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );

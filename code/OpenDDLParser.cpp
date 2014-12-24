@@ -335,11 +335,13 @@ bool OpenDDLParser::parse() {
     char *end( &m_buffer[ m_len - 1 ] + 1 );
     while( current != end ) {
         current = parseId( current, end );
+        current = parseStructure( current, end );
     }
     return true;
 }
 
-char *OpenDDLParser::parseDataType( char *in, char *end ) {
+char *OpenDDLParser::parseStructure( char *in, char *end ) {
+    
     return in;
 }
 
@@ -354,7 +356,23 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
         Name *name( nullptr );
         in = OpenDDLParser::parseName( in, end, &name );
         if( nullptr != name ) {
-
+            in = getNextToken( in, end );
+            if( *in == '(' ) {
+                Property *prop( nullptr ), *prev( nullptr );
+                while( *in != ')' && in != end ) {
+                    in = parseProperty( in, end, &prop );
+                    if( *in != ',' && *in != ')' ) {
+                        std::cerr << "Invalid token " << *in << std::endl;
+                        return in;
+                    }
+                    if( nullptr != prop && *in != ',' ) {
+                        if( nullptr != prev ) {
+                            prev->m_next = prop;
+                        }
+                        prev = prop;
+                    }
+                }
+            }
         }
     }
 
