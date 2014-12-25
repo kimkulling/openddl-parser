@@ -8,6 +8,8 @@ SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
 
 if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
     find_package(Threads)
+else()
+    add_definitions( -D_CRT_SECURE_NO_WARNINGS )
 endif()
 
 add_definitions( -DOPENDDLPARSER_BUILD )

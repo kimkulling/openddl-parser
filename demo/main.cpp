@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 USE_ODDLPARSER_NS;
 
 static const char *FileOption = "--file";
-
+static const int   Error = -1;
 static void showhelp() {
     std::cout << "OpenDDL Parser Demo version " << OpenDDLParser::getVersion() << std::endl << std::endl;
     std::cout << "Usage:" << std::endl;
@@ -39,7 +39,7 @@ static void showhelp() {
 int main( int argc, char *argv[] ) {
     if( argc < 3 ) {
         showhelp();
-        return -1;
+        return Error;
     }
 
     char *filename( nullptr );
@@ -49,9 +49,15 @@ int main( int argc, char *argv[] ) {
 
     std::cout << "file to import: " << filename << std::endl;
     
-    FILE *fileStream = fopen(filename, "r+" );
+    if( nullptr == filename ) {
+        std::cerr << "Invalid filename." << std::endl;
+        return Error;
+    }
+
+    FILE *fileStream = fopen( filename, "r+" );
     if( NULL == filename ) {
-        return -1;
+        std::cerr << "Cannot open file " << filename << std::endl;
+        return Error;
     }
 
     // obtain file size:
