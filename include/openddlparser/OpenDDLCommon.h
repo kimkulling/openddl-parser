@@ -44,6 +44,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define USE_ODDLPARSER_NS   using namespace ODDLParser;
 
 #define ODDL_NO_COPYING( classname ) \
+private: \
+    classname( const classname & ); \
+    classname &operator = ( const classname & );
 
 #endif // OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
 
