@@ -124,6 +124,10 @@ TEST_F( OpenDDLParserTest, isSeparatorTest ) {
     EXPECT_TRUE( isSeparator( val ) );
     val = '\t';
     EXPECT_TRUE( isSeparator( val ) );
+    val = '(';
+    EXPECT_TRUE( isSeparator( val ) );
+    val = ')';
+    EXPECT_TRUE( isSeparator( val ) );
     val = '1';
     EXPECT_FALSE( isSeparator( val ) );
     val = 'a';

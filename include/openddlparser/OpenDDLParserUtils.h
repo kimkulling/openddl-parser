@@ -56,7 +56,7 @@ bool isLowerCase( T in ) {
 template<class T>
 inline
 bool isSeparator( T in ) {
-    if( ' ' == in || '\n' == in || '\t' == in || ',' == in ) {
+    if( ' ' == in || '\n' == in || '\t' == in || ',' == in || '(' == in || ')' == in ) {
         return true;
     }
     return false;
