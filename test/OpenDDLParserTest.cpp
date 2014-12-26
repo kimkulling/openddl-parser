@@ -72,7 +72,7 @@ TEST_F( OpenDDLParserTest, isUpperCaseTest) {
     EXPECT_FALSE(isLowerCase<char>(val));
 }
 
-TEST_F(OpenDDLParserTest, isLowerCaseTest) {
+TEST_F( OpenDDLParserTest, isLowerCaseTest ) {
     char val = 'A';
     EXPECT_TRUE(isUpperCase<char>(val));
     val = 'C';
@@ -219,6 +219,9 @@ TEST_F( OpenDDLParserTest, accessBufferTest ) {
     char *buffer = new char[ len ];
     OpenDDLParser myParser;
     myParser.setBuffer( buffer, len );
+    EXPECT_EQ( len, myParser.getBufferSize(), false );
+    EXPECT_EQ( buffer, myParser.getBuffer() );
+
     try {
         myParser.clear();
         buffer[ 1 ] = 'c';

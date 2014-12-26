@@ -297,12 +297,16 @@ void OpenDDLParser::setBuffer( char *buffer, size_t len, bool ownsIt ) {
         m_len = 0;
     }
 
-    // when we are owning the buffer we will do a deep copy
     m_ownsBuffer = ownsIt;
     if( m_ownsBuffer ) {
+        // when we are owning the buffer we will do a deep copy
         m_buffer = new char[ len ];
         m_len = len;
         ::memcpy( m_buffer, buffer, len );
+    } else {
+        // when we are not owning the buffer, we just do a shallow copy
+        m_buffer = buffer;
+        m_len = len;
     }
 }
 
