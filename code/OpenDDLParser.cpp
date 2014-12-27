@@ -272,7 +272,8 @@ OpenDDLParser::OpenDDLParser()
 : m_ownsBuffer( false )
 ,m_buffer( nullptr )
 , m_len( 0 )
-, m_root( nullptr ) {
+, m_root( nullptr )
+, m_stack() {
     // empty
 }
 
@@ -342,13 +343,40 @@ bool OpenDDLParser::parse() {
     char *current( &m_buffer[ 0 ] );
     char *end( &m_buffer[ m_len - 1 ] + 1 );
     while( current != end ) {
-        current = parseId( current, end );
-        current = parseStructure( current, end );
+        current = parseNextNode( current, end );
     }
     return true;
 }
 
+char *OpenDDLParser::parseNextNode( char *in, char *end ) {
+    in = parseId( in, end );
+    in = parseStructure( in, end );
+
+    return in;
+
+}
+
 char *OpenDDLParser::parseStructure( char *in, char *end ) {
+    if( nullptr == in || in == end ) {
+        return in;
+    }
+
+    in = getNextToken( in, end );
+    if( *in == '{' ) {
+        in++;
+        in = getNextToken( in, end );
+        PrimData *primData( nullptr );
+        in = OpenDDLParser::parsePrimitiveDataType( in, end, &primData );
+        if ( nullptr != primData ) {
+
+        }
+    } else {
+        in++;
+        std::cerr << "Invalid token " << *in << std::endl;
+        return in;
+
+    }
+
     in++;
     return in;
 }
@@ -382,9 +410,44 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
             }
             in++;
         }
+
+        // store the node
+        const std::string name( id->m_buffer );
+        DDLNode *parent( top() );
+        DDLNode *node = new DDLNode( name, parent );
+        push( node );
     }
 
+
     return in;
+}
+
+void OpenDDLParser::push( DDLNode *node ) {
+    if( nullptr == node ) {
+        return;
+    }
+
+    m_stack.push_back( node );
+}
+
+DDLNode *OpenDDLParser::pop() {
+    if( m_stack.empty() ) {
+        return nullptr;
+    }
+
+    DDLNode *top( top() );
+    m_stack.pop_back();
+
+    return top;
+}
+
+DDLNode *OpenDDLParser::top() {
+    if( m_stack.empty() ) {
+        return nullptr;
+    }
+    
+    DDLNode *top( m_stack.back() );
+    return top;
 }
 
 void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {

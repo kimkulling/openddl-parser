@@ -72,7 +72,8 @@ SET ( gtest_src
 )
 
 SET( openddl_parser_unittest_src  
-    test/OpenDDLParserTest.cpp 
+    test/OpenDDLParserTest.cpp
+    test/OpenDDLIntegrationTest.cpp
 )
 SOURCE_GROUP( code            FILES ${openddl_parser_unittest_src} )
 

@@ -24,10 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPENDDLPARSER_OPENDDLPARSER_H_INC
 #define OPENDDLPARSER_OPENDDLPARSER_H_INC
 
-#include <vector>
-#include <string>
 #include <openddlparser/OpenDDLCommon.h>
 #include <openddlparser/OpenDDLParserUtils.h>
+
+#include <vector>
+#include <string>
 
 BEGIN_ODDLPARSER_NS
 
@@ -178,10 +179,12 @@ public:
     size_t getBufferSize() const;
     void clear();
     bool parse();
+    char *parseNextNode( char *current, char *end );
     char *parseStructure( char *in, char *end );
     char *parseId( char *in, char *end );
     void push( DDLNode *node );
     DDLNode *pop();
+    DDLNode *top();
     static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
@@ -206,6 +209,8 @@ private:
     char *m_buffer;
     size_t m_len;
     DDLNode *m_root;
+    typedef std::vector<DDLNode*> DDLNodeStack;
+    DDLNodeStack m_stack;
 };
 
 END_ODDLPARSER_NS

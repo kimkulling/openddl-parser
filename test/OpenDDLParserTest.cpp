@@ -36,7 +36,24 @@ static char *findEnd( char *in, size_t &len ) {
 }
 
 class OpenDDLParserTest : public testing::Test {
+    std::vector<DDLNode*> m_nodes;
+public:
+    DDLNode *createNode( const std::string &name, DDLNode *parent ) {
+        DDLNode *node = new DDLNode( name, parent );
+        m_nodes.push_back( node );
+
+        return node;
+    }
+
 protected:
+    virtual void TearDown() {
+        for( size_t i = 0; i < m_nodes.size(); i++ ) {
+            delete m_nodes[ i ];
+        }
+        m_nodes.clear();
+
+        testing::Test::TearDown();
+    }
 };
 
 TEST_F( OpenDDLParserTest, isCommentTest ) {
@@ -449,15 +466,47 @@ TEST_F( OpenDDLParserTest, getVersionTest ) {
     EXPECT_NE( nullptr, version );
 }
 
-TEST_F( OpenDDLParserTest, parseMetricTest ) {
-    size_t len( 0 );
-    char token[] = "Metric( key = \"distance\" ) { float{ 1 } }";
-    char *end( findEnd( token, len ) );
-
-    bool result( false );
+TEST_F( OpenDDLParserTest, pushTest ) {
     OpenDDLParser theParser;
-    theParser.setBuffer( token, strlen( token ), false );
-    result = theParser.parse();
+
+    DDLNode *current = theParser.top();
+    EXPECT_EQ( nullptr, current );
+    DDLNode *node = createNode( "test", nullptr );
+    theParser.push( node );
+    current = theParser.top();
+    EXPECT_EQ( node, current );
+}
+
+TEST_F( OpenDDLParserTest, popTest ) {
+    OpenDDLParser theParser;
+
+    DDLNode *current = theParser.top();
+    EXPECT_EQ( nullptr, current );
+
+    DDLNode *node1 = createNode( "test1", nullptr );
+    theParser.push( node1 );
+    current = theParser.top();
+    EXPECT_EQ( node1, current );
+
+    DDLNode *node2 = createNode( "test2", nullptr );
+    theParser.push( node2 );
+    current = theParser.top();
+    EXPECT_EQ( node2, current );
+
+    DDLNode *node3 = createNode( "test3", nullptr );
+    theParser.push( node3 );
+    current = theParser.top();
+    EXPECT_EQ( node3, current );
+
+    current = theParser.pop();
+    EXPECT_EQ( node3, current );
+    current = theParser.pop();
+    EXPECT_EQ( node2, current );
+    current = theParser.pop();
+    EXPECT_EQ( node1, current );
+
+    current = theParser.top();
+    EXPECT_EQ( nullptr, current );
 }
 
 END_ODDLPARSER_NS
