@@ -180,6 +180,8 @@ public:
     bool parse();
     char *parseStructure( char *in, char *end );
     char *parseId( char *in, char *end );
+    void push( DDLNode *node );
+    DDLNode *pop();
     static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );

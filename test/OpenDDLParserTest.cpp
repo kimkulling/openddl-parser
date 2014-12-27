@@ -124,10 +124,6 @@ TEST_F( OpenDDLParserTest, isSeparatorTest ) {
     EXPECT_TRUE( isSeparator( val ) );
     val = '\t';
     EXPECT_TRUE( isSeparator( val ) );
-    val = '(';
-    EXPECT_TRUE( isSeparator( val ) );
-    val = ')';
-    EXPECT_TRUE( isSeparator( val ) );
     val = '1';
     EXPECT_FALSE( isSeparator( val ) );
     val = 'a';
@@ -451,6 +447,17 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
 TEST_F( OpenDDLParserTest, getVersionTest ) {
     const char *version( OpenDDLParser::getVersion() );
     EXPECT_NE( nullptr, version );
+}
+
+TEST_F( OpenDDLParserTest, parseMetricTest ) {
+    size_t len( 0 );
+    char token[] = "Metric( key = \"distance\" ) { float{ 1 } }";
+    char *end( findEnd( token, len ) );
+
+    bool result( false );
+    OpenDDLParser theParser;
+    theParser.setBuffer( token, strlen( token ), false );
+    result = theParser.parse();
 }
 
 END_ODDLPARSER_NS

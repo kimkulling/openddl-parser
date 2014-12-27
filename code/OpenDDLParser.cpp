@@ -349,7 +349,7 @@ bool OpenDDLParser::parse() {
 }
 
 char *OpenDDLParser::parseStructure( char *in, char *end ) {
-    
+    in++;
     return in;
 }
 
@@ -360,27 +360,27 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
 
     Identifier *id( nullptr );
     in = OpenDDLParser::parseIdentifier( in, end, &id );
+    in = getNextToken( in, end );
     if( nullptr != id ) {
-        Name *name( nullptr );
-        in = OpenDDLParser::parseName( in, end, &name );
-        if( nullptr != name ) {
-            in = getNextToken( in, end );
-            if( *in == '(' ) {
-                Property *prop( nullptr ), *prev( nullptr );
-                while( *in != ')' && in != end ) {
-                    in = parseProperty( in, end, &prop );
-                    if( *in != ',' && *in != ')' ) {
-                        std::cerr << "Invalid token " << *in << std::endl;
-                        return in;
+        if( *in == '(' ) {
+            in++;
+            Property *prop( nullptr ), *prev( nullptr );
+            while( *in != ')' && in != end ) {
+                in = parseProperty( in, end, &prop );
+                in = getNextToken( in, end );
+
+                if( *in != ',' && *in != ')' ) {
+                    std::cerr << "Invalid token " << *in << std::endl;
+                    return in;
+                }
+                if( nullptr != prop && *in != ',' ) {
+                    if( nullptr != prev ) {
+                        prev->m_next = prop;
                     }
-                    if( nullptr != prop && *in != ',' ) {
-                        if( nullptr != prev ) {
-                            prev->m_next = prop;
-                        }
-                        prev = prop;
-                    }
+                    prev = prop;
                 }
             }
+            in++;
         }
     }
 
@@ -463,7 +463,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
     // get size of id
     size_t idLen( 0 );
     char *start( in );
-    while( !isSeparator( *in ) && ( in != end ) ) {
+    while( !isSeparator( *in ) && ( in != end ) && *in != '(' && *in != ')' ) {
         in++;
         idLen++;
     }
@@ -674,6 +674,7 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringD
         *stringData = PrimDataAllocator::allocPrimData( ddl_string, len+1 );
         ::strncpy( ( char* ) ( *stringData )->m_data, start, len );
         ( *stringData )->m_data[len] = '\0';
+        in++;
     }
 
     return in;
