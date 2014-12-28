@@ -206,6 +206,14 @@ float PrimData::getFloat() const {
     return v;
 }
 
+void PrimData::setNext( PrimData *next ) {
+    m_next = next;
+}
+
+PrimData *PrimData::getNext() const {
+    return m_next;
+}
+
 DDLNode::DDLNode( const std::string &name, DDLNode *parent )
 : m_name( name )
 , m_parent( parent )

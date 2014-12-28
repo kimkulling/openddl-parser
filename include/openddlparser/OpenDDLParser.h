@@ -70,11 +70,13 @@ struct DLL_ODDLPARSER_EXPORT PrimData {
     PrimitiveDataType m_type;
     size_t m_size;
     unsigned char *m_data;
+    PrimData *m_next;
 
     PrimData()
-        : m_type( ddl_none )
-        , m_size( 0 )
-        , m_data( nullptr ) {
+    : m_type( ddl_none )
+    , m_size( 0 )
+    , m_data( nullptr )
+    , m_next( nullptr ) {
         // empty
     }
 
@@ -90,6 +92,8 @@ struct DLL_ODDLPARSER_EXPORT PrimData {
     int64_t  getInt64();
     void setFloat( float value );
     float getFloat() const;
+    void setNext( PrimData *next );
+    PrimData *getNext() const;
 };
 
 enum NameType {

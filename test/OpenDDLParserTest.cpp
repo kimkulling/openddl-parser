@@ -236,6 +236,8 @@ TEST_F( OpenDDLParserTest, isSeparatorTest ) {
     EXPECT_FALSE( isSeparator( val ) );
     val = 'Z';
     EXPECT_FALSE( isSeparator( val ) );
+    val = '}';
+    EXPECT_TRUE( isSeparator( val ) );
 }
 
 TEST_F( OpenDDLParserTest, getNextSeparatorTest ) {
@@ -270,6 +272,18 @@ TEST_F( OpenDDLParserTest, PrimDataAccessBoolTest ) {
     EXPECT_EQ( false, data->getBool() );
     PrimDataAllocator::releasePrimData( &data );
     EXPECT_EQ( nullptr, data );
+}
+
+TEST_F( OpenDDLParserTest, PrimDataAccessNextTest ) {
+    PrimData *data = PrimDataAllocator::allocPrimData( ddl_bool );
+    EXPECT_EQ( nullptr, data->getNext() );
+
+    PrimData *dataNext = PrimDataAllocator::allocPrimData( ddl_bool );
+    EXPECT_EQ( nullptr, dataNext->getNext() );
+
+    data->setNext( dataNext );
+    EXPECT_EQ( dataNext, data->getNext() );
+
 }
 
 TEST_F( OpenDDLParserTest, createDDLNodeTest ) {
