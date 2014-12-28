@@ -30,7 +30,7 @@ BEGIN_ODDLPARSER_NS
 
 static char *findEnd( char *in, size_t &len ) {
     len = strlen( in );
-    char *end( &in[ len ] + 1 );
+    char *end( &in[ len ] );
 
     return end;
 }
@@ -113,6 +113,20 @@ TEST_F( OpenDDLParserTest, isNumericTest) {
     EXPECT_FALSE(isNumeric<char>(notChar));
 }
 
+TEST_F( OpenDDLParserTest, isIntegerTest ) {    
+    size_t len( 0 );
+    char val1[] = "12";
+    char *end = findEnd( val1, len );
+    bool result( false );
+    result = isInteger( val1, end );
+    EXPECT_TRUE( result );
+
+    char val2[] = "12.";
+    end = findEnd( val2, len );
+    result = isInteger( val2, end );
+    EXPECT_FALSE( result );
+}
+
 TEST_F( OpenDDLParserTest, isCharacterTest ) {
     char val = 'a';
     EXPECT_TRUE( isCharacter<char>( val ) );
@@ -131,6 +145,34 @@ TEST_F( OpenDDLParserTest, isStringLiteralTest ) {
     EXPECT_TRUE( isStringLiteral<char>( val ) );
     val = 'a';
     EXPECT_FALSE( isStringLiteral<char>( val ) );
+}
+
+TEST_F( OpenDDLParserTest, isSpaceTest ) {
+    bool result( false );
+    char val;
+    val = ' ';
+    result = isSpace( val );
+    EXPECT_TRUE( result );
+
+    val = '\t';
+    result = isSpace( val );
+    EXPECT_TRUE( result );
+    
+    val = '1';
+    result = isSpace( val );
+    EXPECT_FALSE( result );
+}
+
+TEST_F( OpenDDLParserTest, isNewLineTest ) {
+    bool result( false );
+    char val;
+    val = '\n';
+    result = isNewLine( val );
+    EXPECT_TRUE( val );
+
+    val = ' ';
+    result = isNewLine( val );
+    EXPECT_FALSE( result );
 }
 
 TEST_F( OpenDDLParserTest, isSeparatorTest ) {
@@ -370,12 +412,14 @@ TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     size_t len1( 0 );
     char token1[] = "true", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parseBooleanLiteral( token1, end1, &data );
+    ASSERT_NE( nullptr, data );
     EXPECT_EQ( ddl_bool, data->m_type );
     EXPECT_EQ( true, data->getBool() );
 
     size_t len2( 0 );
     char token2[] = "false", *end2( findEnd( token2, len2 ) );
     in = OpenDDLParser::parseBooleanLiteral( token2, end2, &data );
+    ASSERT_NE( nullptr, data );
     EXPECT_EQ( ddl_bool, data->m_type );
     EXPECT_EQ( false, data->getBool() );
 

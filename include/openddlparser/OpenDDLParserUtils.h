@@ -53,10 +53,22 @@ bool isLowerCase( T in ) {
     return ( in >= 'a' && in <= 'z' );
 }
 
+template<class T> 
+inline 
+bool isSpace( const T in ) {
+    return ( ' ' == in || '\t' == in );
+}
+
+template<class T>
+inline
+bool isNewLine( const T in ) {
+    return ( '\n' == in );
+}
+
 template<class T>
 inline
 bool isSeparator( T in ) {
-    if( ' ' == in || '\n' == in || '\t' == in || ',' == in ) {
+    if( isSpace( in ) || isNewLine( in ) || ',' == in ) {
         return true;
     }
     return false;
@@ -93,6 +105,29 @@ bool isNumeric( const T in ) {
     return true;
 
     return false;*/
+}
+
+template<class T>
+inline
+bool isInteger( T *in, T *end ) {
+    bool result( false );
+    while( !isSpace( *in ) && in != end ) {
+        bool hasspace( isSpace( *in ) );
+        bool ending( in == end );
+        result = isNumeric( *in );
+        if( !result ) {
+            break;
+        }
+        in++;
+    }
+
+    return result;
+}
+
+template<class T>
+inline
+bool isFloat( const T in ) {
+
 }
 
 template<class T>
