@@ -510,6 +510,12 @@ TEST_F( OpenDDLParserTest, getVersionTest ) {
     EXPECT_NE( nullptr, version );
 }
 
+TEST_F( OpenDDLParserTest, parseDataListTest ) {
+    size_t len1( 0 );
+    char token1[] = "1,2,3,4", *end( findEnd( token1, len1 ) );
+    char *in = OpenDDLParser::parseDataList( token1, end );
+}
+
 TEST_F( OpenDDLParserTest, pushTest ) {
     OpenDDLParser theParser;
 

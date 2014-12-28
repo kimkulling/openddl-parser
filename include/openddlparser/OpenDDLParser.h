@@ -195,8 +195,8 @@ public:
     static char *parseFloatingLiteral( char *in, char *end, PrimData **floating );
     static char *parseStringLiteral( char *in, char *end, PrimData **stringData );
     static char *parseProperty( char *in, char *end, Property **prop );
+    static char *parseDataList( char *in, char *end );
     static const char *getVersion();
-    char *parseDataList( char *in, char *end );
     char *parseDataArrayList( char *in, char *end );
     DDLNode *getRoot() const;
 

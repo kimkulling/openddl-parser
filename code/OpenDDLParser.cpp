@@ -51,24 +51,12 @@ static const char* PrimitiveTypeToken[ ddl_types_max ] = {
     "ref"
 };
 
-static const char *RefToken = "ref";
+static const char *BoolTrue  = "true";
+static const char *BoolFalse = "false";
+static const char *RefToken  = "ref";
 
-template<typename T, typename... Args>
-void debugLog( const char *s, T value, Args... args ) {
-    while( *s ) {
-        if( *s == '%' ) {
-            if( *( s + 1 ) == '%' ) {
-                ++s;
-            } else {
-                std::cout << value;
-                s += 2;
-                printf( s, args... ); // call even when *s == 0 to detect extra arguments
-//                ::OutputDebugString( buffer );
-                return;
-            }
-        }
-        std::cout << *s++;
-    }
+static void logInvalidTokenError( char *in, char *exp ) {
+    std::cerr << "Invalid token " << *in << ", " << exp << " expected." << std::endl;
 }
 
 static bool isIntegerType( PrimitiveDataType integerType ) {
@@ -338,6 +326,9 @@ bool OpenDDLParser::parse() {
     // remove comments
     normalizeBuffer( m_buffer, m_len );
 
+    m_root = new DDLNode( "root", nullptr );
+    push( m_root );
+
     // do the main parsing
     const size_t buffersize( m_len );
     char *current( &m_buffer[ 0 ] );
@@ -368,16 +359,24 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         PrimData *primData( nullptr );
         in = OpenDDLParser::parsePrimitiveDataType( in, end, &primData );
         if ( nullptr != primData ) {
+            in = getNextToken( in, end );
+            if( *in == '{' ) {
+                in = parseDataList( in, end );
+            }
 
+            if( *in != '}' ) {
+                logInvalidTokenError(in, "}" );
+            }
         }
     } else {
         in++;
-        std::cerr << "Invalid token " << *in << std::endl;
+        logInvalidTokenError( in, "{" );
         return in;
 
     }
 
     in++;
+
     return in;
 }
 
@@ -398,7 +397,7 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
                 in = getNextToken( in, end );
 
                 if( *in != ',' && *in != ')' ) {
-                    std::cerr << "Invalid token " << *in << std::endl;
+                    logInvalidTokenError( in, ")" );
                     return in;
                 }
                 if( nullptr != prop && *in != ',' ) {
@@ -580,6 +579,8 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **pri
     }
     if( ok ) {
         *primData = PrimDataAllocator::allocPrimData( type, size );
+    } else {
+        logInvalidTokenError( in, "]" );
     }
 
     return in;
@@ -640,9 +641,9 @@ char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolea
         len++;
     }
     len++;
-    int res = ::strncmp( "true", start, len );
+    int res = ::strncmp( BoolTrue, start, strlen( BoolTrue ) );
     if( 0 != res ) {
-        res = ::strncmp( "false", start, len );
+        res = ::strncmp( BoolFalse, start, strlen( BoolFalse ) );
         if( 0 != res ) {
             *boolean = nullptr;
             return in;
@@ -786,16 +787,25 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
     return in;
 }
 
-const char *OpenDDLParser::getVersion() {
-    return Version;
-}
-
 char *OpenDDLParser::parseDataList( char *in, char *end ) {
-    if( nullptr == in ) {
+    if( nullptr == in || in == end ) {
         return in;
     }
 
+    in = getNextToken( in, end );
+    if( *in == '{' ) {
+        in = getNextToken( in, end );
+        in = parseDataList( in, end );
+        if( *in != '}' ) {
+            logInvalidTokenError( in, "}" );
+        }
+    }
+
     return false;
+}
+
+const char *OpenDDLParser::getVersion() {
+    return Version;
 }
 
 char *OpenDDLParser::parseDataArrayList( char *in, char *end ) {
