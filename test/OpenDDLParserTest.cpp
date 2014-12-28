@@ -35,6 +35,17 @@ static char *findEnd( char *in, size_t &len ) {
     return end;
 }
 
+static size_t countItems( PrimData *data ) {
+    if( nullptr == data ) {
+        return 0;
+    }
+    size_t numItems( 1 );
+    while( nullptr != data->getNext() ) {
+        numItems++;
+        data = data->getNext();
+    }
+    return numItems;
+}
 class OpenDDLParserTest : public testing::Test {
     std::vector<DDLNode*> m_nodes;
 public:
@@ -572,9 +583,14 @@ TEST_F( OpenDDLParserTest, getVersionTest ) {
 }
 
 TEST_F( OpenDDLParserTest, parseDataListTest ) {
+    PrimData *data( nullptr ), *current( nullptr );
     size_t len1( 0 );
-    char token1[] = "1,2,3,4", *end( findEnd( token1, len1 ) );
-    char *in = OpenDDLParser::parseDataList( token1, end );
+    char token1[] = "{1,2,3,4}", *end( findEnd( token1, len1 ) );
+    char *in = OpenDDLParser::parseDataList( token1, end, &data );
+    ASSERT_NE( nullptr, data );
+    
+    // check intrinsic list
+    EXPECT_EQ( 4, countItems( data ) );
 }
 
 TEST_F( OpenDDLParserTest, pushTest ) {

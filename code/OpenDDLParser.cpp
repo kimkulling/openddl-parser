@@ -369,7 +369,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         if ( nullptr != primData ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
-                in = parseDataList( in, end );
+                in = parseDataList( in, end, &primData );
             }
 
             if( *in != '}' ) {
@@ -795,21 +795,47 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
     return in;
 }
 
-char *OpenDDLParser::parseDataList( char *in, char *end ) {
+char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
+    *data = nullptr;
     if( nullptr == in || in == end ) {
         return in;
     }
 
     in = getNextToken( in, end );
     if( *in == '{' ) {
-        in = getNextToken( in, end );
-        in = parseDataList( in, end );
-        if( *in != '}' ) {
-            logInvalidTokenError( in, "}" );
+        in++;
+        PrimData *first( nullptr ), *prev( nullptr );
+        while( '}' != *in ) {
+            in = getNextToken( in, end );
+            if( isInteger( in, end ) ) {
+                in = parseIntegerLiteral( in, end, data );
+            } else if( isFloat( in, end ) ) {
+                in = parseFloatingLiteral( in, end, data );
+            } else if( *in == '{' ) {
+                in = parseDataList( in, end, data );
+            }
+
+            if( nullptr != *data ) {
+                if( nullptr == first ) {
+                    first = *data;
+                }
+                if( nullptr != prev ) {
+                    prev->setNext( *data );
+                }
+                prev = *data;
+            }
+
+            in = getNextSeparator( in, end );
+            if( ',' != *in && '}' != *in ) {
+                logInvalidTokenError( in, "} or ," );
+                break;
+            }
         }
+        in++;
+        *data = first;
     }
 
-    return false;
+    return in;
 }
 
 const char *OpenDDLParser::getVersion() {
