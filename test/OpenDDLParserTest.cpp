@@ -123,22 +123,28 @@ TEST_F( OpenDDLParserTest, isIntegerTest ) {
     result = isInteger( val1, end );
     EXPECT_TRUE( result );
 
-    // negative value
-    char val2[] = "-12";
+    // positive value, separated by a comma
+    char val2[] = "12,";
     end = findEnd( val2, len );
     result = isInteger( val2, end );
     EXPECT_TRUE( result );
 
-    // float value
-    char val3[] = "12.";
+    // negative value
+    char val3[] = "-12";
     end = findEnd( val3, len );
     result = isInteger( val3, end );
+    EXPECT_TRUE( result );
+
+    // float value
+    char val4[] = "12.";
+    end = findEnd( val4, len );
+    result = isInteger( val4, end );
     EXPECT_FALSE( result );
 
     // string literal
-    char val4[] = "test";
-    end = findEnd( val3, len );
-    result = isInteger( val3, end );
+    char val5[] = "test";
+    end = findEnd( val5, len );
+    result = isInteger( val5, end );
     EXPECT_FALSE( result );
 }
 

@@ -117,7 +117,7 @@ bool isInteger( T *in, T *end ) {
     }
 
     bool result( false );
-    while( !isSpace( *in ) && in != end ) {
+    while( ',' != *in && !isSpace( *in ) && in != end ) {
         result = isNumeric( *in );
         if( !result ) {
             break;
