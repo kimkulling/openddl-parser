@@ -44,7 +44,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     bool result( false );
     OpenDDLParser theParser;
     theParser.setBuffer( token, strlen( token ), false );
-    //result = theParser.parse();
+    result = theParser.parse();
     //EXPECT_TRUE( result );
 }
 

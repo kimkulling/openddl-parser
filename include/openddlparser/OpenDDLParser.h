@@ -161,6 +161,8 @@ public:
     const DllNodeList &getChildNodeList() const;
     void setName( const std::string &name );
     const std::string &getName() const;
+    void setProperties( Property *first );
+    Property *getProperties() const;
 
 private:
     DDLNode();
@@ -171,6 +173,7 @@ private:
     std::string m_name;
     DDLNode *m_parent;
     std::vector<DDLNode*> m_children;
+    Property *m_properties;
 };
 
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {

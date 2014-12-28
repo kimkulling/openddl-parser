@@ -333,6 +333,17 @@ TEST_F( OpenDDLParserTest, accessParentDDLNodeTest ) {
     EXPECT_EQ( 2, parentNode.getChildNodeList().size() );
 }
 
+TEST_F( OpenDDLParserTest, accessPropertiesDDLNodeTest ) {
+    static const std::string name1 = "test";
+    DDLNode myNode( name1 );
+
+    EXPECT_EQ( nullptr, myNode.getProperties() );
+    Identifier *id = new Identifier(4, "test" );
+    Property *first = new Property( id );
+    myNode.setProperties( first );
+    EXPECT_EQ( first, myNode.getProperties() );
+}
+
 TEST_F( OpenDDLParserTest, createTest ) {
     bool success( true );
     try {
@@ -350,7 +361,7 @@ TEST_F( OpenDDLParserTest, accessBufferTest ) {
     char *buffer = new char[ len ];
     OpenDDLParser myParser;
     myParser.setBuffer( buffer, len );
-    EXPECT_EQ( len, myParser.getBufferSize(), false );
+    EXPECT_EQ( len, myParser.getBufferSize() );
     EXPECT_EQ( buffer, myParser.getBuffer() );
 
     try {

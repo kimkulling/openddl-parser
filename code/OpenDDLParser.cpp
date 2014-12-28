@@ -217,7 +217,8 @@ PrimData *PrimData::getNext() const {
 DDLNode::DDLNode( const std::string &name, DDLNode *parent )
 : m_name( name )
 , m_parent( parent )
-, m_children() {
+, m_children()
+, m_properties( nullptr ) {
     if( m_parent ) {
         m_parent->m_children.push_back( parent );
     }
@@ -262,6 +263,14 @@ void DDLNode::setName( const std::string &name ) {
 
 const std::string &DDLNode::getName() const {
     return m_name;
+}
+
+void DDLNode::setProperties( Property *first ) {
+    m_properties = first;
+}
+
+Property *DDLNode::getProperties() const {
+    return m_properties;
 }
 
 OpenDDLParser::OpenDDLParser()
@@ -396,6 +405,7 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
     Identifier *id( nullptr );
     in = OpenDDLParser::parseIdentifier( in, end, &id );
     in = getNextToken( in, end );
+    Property *first( nullptr );
     if( nullptr != id ) {
         if( *in == '(' ) {
             in++;
@@ -409,6 +419,9 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
                     return in;
                 }
                 if( nullptr != prop && *in != ',' ) {
+                    if( nullptr == first ) {
+                        first = prop;
+                    }
                     if( nullptr != prev ) {
                         prev->m_next = prop;
                     }
@@ -422,6 +435,9 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
         const std::string name( id->m_buffer );
         DDLNode *parent( top() );
         DDLNode *node = new DDLNode( name, parent );
+        if( nullptr != first ) {
+            node->setProperties( first );
+        }
         push( node );
     }
 
