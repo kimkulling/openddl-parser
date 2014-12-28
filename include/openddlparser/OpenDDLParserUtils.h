@@ -130,8 +130,44 @@ bool isInteger( T *in, T *end ) {
 
 template<class T>
 inline
-bool isFloat( const T in ) {
+bool isFloat( T *in, T *end ) {
+    if( in != end ) {
+        if( *in == '-' ) {
+            in++;
+        }
+    }
 
+    // check for <1>.0f
+    bool result( false );
+    while( !isSpace( *in ) && in != end ) {
+        if( *in == '.' ) {
+            result = true;
+            break;
+        }
+        result = isNumeric( *in );
+        if( !result ) {
+            return false;
+        }
+        in++;
+    }
+
+    // check for 1<.>0f
+    if( *in == '.' ) {
+        in++;
+    } else {
+        return false;
+    }
+
+    // check for 1.<0>f
+    while( !isSpace( *in ) && in != end ) {
+        result = isNumeric( *in );
+        if( !result ) {
+            return false;
+        }
+        in++;
+    }
+
+    return result;
 }
 
 template<class T>
