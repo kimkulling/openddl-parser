@@ -115,15 +115,30 @@ TEST_F( OpenDDLParserTest, isNumericTest) {
 
 TEST_F( OpenDDLParserTest, isIntegerTest ) {    
     size_t len( 0 );
+    
+    // positive value
     char val1[] = "12";
     char *end = findEnd( val1, len );
     bool result( false );
     result = isInteger( val1, end );
     EXPECT_TRUE( result );
 
-    char val2[] = "12.";
+    // negative value
+    char val2[] = "-12";
     end = findEnd( val2, len );
     result = isInteger( val2, end );
+    EXPECT_TRUE( result );
+
+    // float value
+    char val3[] = "12.";
+    end = findEnd( val3, len );
+    result = isInteger( val3, end );
+    EXPECT_FALSE( result );
+
+    // string literal
+    char val4[] = "test";
+    end = findEnd( val3, len );
+    result = isInteger( val3, end );
     EXPECT_FALSE( result );
 }
 

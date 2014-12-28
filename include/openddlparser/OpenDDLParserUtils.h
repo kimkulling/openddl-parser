@@ -110,10 +110,14 @@ bool isNumeric( const T in ) {
 template<class T>
 inline
 bool isInteger( T *in, T *end ) {
+    if( in != end ) {
+        if( *in == '-' ) {
+            in++;
+        }
+    }
+
     bool result( false );
     while( !isSpace( *in ) && in != end ) {
-        bool hasspace( isSpace( *in ) );
-        bool ending( in == end );
         result = isNumeric( *in );
         if( !result ) {
             break;
