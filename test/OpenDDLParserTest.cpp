@@ -146,6 +146,13 @@ TEST_F( OpenDDLParserTest, isIntegerTest ) {
     end = findEnd( val5, len );
     result = isInteger( val5, end );
     EXPECT_FALSE( result );
+
+    // positive value, separated by a curly bracket
+    char val6[] = "12}";
+    end = findEnd( val6, len );
+    result = isInteger( val6, end );
+    EXPECT_TRUE( result );
+
 }
 
 TEST_F( OpenDDLParserTest, isFloatTest ) {
