@@ -25,12 +25,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define OPENDDLPARSER_OPENDDLPARSER_H_INC
 
 #include <openddlparser/OpenDDLCommon.h>
+#include <openddlparser/DDLNode.h>
 #include <openddlparser/OpenDDLParserUtils.h>
 
 #include <vector>
 #include <string>
 
 BEGIN_ODDLPARSER_NS
+
+class DDLNode;
 
 struct Identifier;
 struct Reference;
@@ -146,34 +149,6 @@ struct Property {
     , m_next( nullptr ) {
         // empty
     }
-};
-
-class DLL_ODDLPARSER_EXPORT DDLNode {
-public:
-    typedef std::vector<DDLNode*> DllNodeList;
-
-public:
-    DDLNode( const std::string &name, DDLNode *parent = nullptr );
-    ~DDLNode();
-    void attachParent( DDLNode *parent );
-    void detachParent();
-    DDLNode *getParent() const;
-    const DllNodeList &getChildNodeList() const;
-    void setName( const std::string &name );
-    const std::string &getName() const;
-    void setProperties( Property *first );
-    Property *getProperties() const;
-
-private:
-    DDLNode();
-    DDLNode( const DDLNode & );
-    DDLNode &operator = ( const DDLNode & );
-
-private:
-    std::string m_name;
-    DDLNode *m_parent;
-    std::vector<DDLNode*> m_children;
-    Property *m_properties;
 };
 
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {

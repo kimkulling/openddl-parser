@@ -46,9 +46,11 @@ endif()
 
 SET ( openddl_parser_src
     code/OpenDDLParser.cpp
+    code/DDLNode.cpp
     include/openddlparser/OpenDDLParser.h
     include/openddlparser/OpenDDLParserUtils.h
     include/openddlparser/OpenDDLCommon.h
+    include/openddlparser/DDLNode.h
 )
  
 SOURCE_GROUP( code            FILES ${openddl_parser_src} )

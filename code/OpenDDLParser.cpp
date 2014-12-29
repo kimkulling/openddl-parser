@@ -214,65 +214,6 @@ PrimData *PrimData::getNext() const {
     return m_next;
 }
 
-DDLNode::DDLNode( const std::string &name, DDLNode *parent )
-: m_name( name )
-, m_parent( parent )
-, m_children()
-, m_properties( nullptr ) {
-    if( m_parent ) {
-        m_parent->m_children.push_back( this );
-    }
-}
-
-DDLNode::~DDLNode() {
-    detachParent();
-}
-
-void DDLNode::attachParent( DDLNode *parent ) {
-    if( m_parent == parent ) {
-        return;
-    }
-
-    m_parent = parent;
-    m_parent->m_children.push_back( this );
-}
-
-void DDLNode::detachParent() {
-    if( m_parent ) {
-        std::vector<DDLNode*>::iterator it;
-        it = std::find( m_parent->m_children.begin(), m_parent->m_children.end(), this );
-        if( m_parent->m_children.end() != it ) {
-            m_parent->m_children.erase( it );
-        }
-        m_parent = nullptr;
-    }
-}
-
-DDLNode *DDLNode::getParent() const {
-    return m_parent;
-}
-
-const DDLNode::DllNodeList &DDLNode::getChildNodeList() const {
-    return m_children;
-}
-
-
-void DDLNode::setName( const std::string &name ) {
-    m_name = name;
-}
-
-const std::string &DDLNode::getName() const {
-    return m_name;
-}
-
-void DDLNode::setProperties( Property *first ) {
-    m_properties = first;
-}
-
-Property *DDLNode::getProperties() const {
-    return m_properties;
-}
-
 OpenDDLParser::OpenDDLParser()
 : m_ownsBuffer( false )
 ,m_buffer( nullptr )
