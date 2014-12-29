@@ -45,7 +45,20 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     OpenDDLParser theParser;
     theParser.setBuffer( token, strlen( token ), false );
     result = theParser.parse();
-    //EXPECT_TRUE( result );
+    EXPECT_TRUE( result );
+
+    DDLNode *myNode = theParser.getRoot();
+    ASSERT_NE( nullptr, myNode );
+
+    DDLNode::DllNodeList myList = myNode->getChildNodeList();
+    EXPECT_EQ(1, myList.size() );
+    DDLNode *child = myList[ 0 ];
+    ASSERT_NE( nullptr, child );
+    EXPECT_EQ( "Metric", child->getName() );
+    Property *prop = child->getProperties();
+    ASSERT_NE( nullptr, prop );
+    
+    EXPECT_EQ( ddl_string, prop->m_primData->m_type );
 }
 
 END_ODDLPARSER_NS
