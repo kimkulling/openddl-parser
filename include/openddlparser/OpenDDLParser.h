@@ -164,8 +164,8 @@ public:
     char *parseNextNode( char *current, char *end );
     char *parseStructure( char *in, char *end );
     char *parseId( char *in, char *end );
-    void push( DDLNode *node );
-    DDLNode *pop();
+    void pushNode( DDLNode *node );
+    DDLNode *popNode();
     DDLNode *top();
     static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );

@@ -615,7 +615,7 @@ TEST_F( OpenDDLParserTest, pushTest ) {
     DDLNode *current = theParser.top();
     EXPECT_EQ( nullptr, current );
     DDLNode *node = createNode( "test", nullptr );
-    theParser.push( node );
+    theParser.pushNode( node );
     current = theParser.top();
     EXPECT_EQ( node, current );
 }
@@ -627,25 +627,25 @@ TEST_F( OpenDDLParserTest, popTest ) {
     EXPECT_EQ( nullptr, current );
 
     DDLNode *node1 = createNode( "test1", nullptr );
-    theParser.push( node1 );
+    theParser.pushNode( node1 );
     current = theParser.top();
     EXPECT_EQ( node1, current );
 
     DDLNode *node2 = createNode( "test2", nullptr );
-    theParser.push( node2 );
+    theParser.pushNode( node2 );
     current = theParser.top();
     EXPECT_EQ( node2, current );
 
     DDLNode *node3 = createNode( "test3", nullptr );
-    theParser.push( node3 );
+    theParser.pushNode( node3 );
     current = theParser.top();
     EXPECT_EQ( node3, current );
 
-    current = theParser.pop();
+    current = theParser.popNode();
     EXPECT_EQ( node3, current );
-    current = theParser.pop();
+    current = theParser.popNode();
     EXPECT_EQ( node2, current );
-    current = theParser.pop();
+    current = theParser.popNode();
     EXPECT_EQ( node1, current );
 
     current = theParser.top();

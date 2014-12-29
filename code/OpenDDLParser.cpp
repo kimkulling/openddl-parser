@@ -285,7 +285,7 @@ bool OpenDDLParser::parse() {
     normalizeBuffer( m_buffer, m_len );
 
     m_root = new DDLNode( "root", nullptr );
-    push( m_root );
+    pushNode( m_root );
 
     // do the main parsing
     const size_t buffersize( m_len );
@@ -379,14 +379,14 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
         if( nullptr != first ) {
             node->setProperties( first );
         }
-        push( node );
+        pushNode( node );
     }
 
 
     return in;
 }
 
-void OpenDDLParser::push( DDLNode *node ) {
+void OpenDDLParser::pushNode( DDLNode *node ) {
     if( nullptr == node ) {
         return;
     }
@@ -394,7 +394,7 @@ void OpenDDLParser::push( DDLNode *node ) {
     m_stack.push_back( node );
 }
 
-DDLNode *OpenDDLParser::pop() {
+DDLNode *OpenDDLParser::popNode() {
     if( m_stack.empty() ) {
         return nullptr;
     }
