@@ -220,7 +220,7 @@ DDLNode::DDLNode( const std::string &name, DDLNode *parent )
 , m_children()
 , m_properties( nullptr ) {
     if( m_parent ) {
-        m_parent->m_children.push_back( parent );
+        m_parent->m_children.push_back( this );
     }
 }
 
@@ -234,7 +234,7 @@ void DDLNode::attachParent( DDLNode *parent ) {
     }
 
     m_parent = parent;
-    m_parent->m_children.push_back( parent );
+    m_parent->m_children.push_back( this );
 }
 
 void DDLNode::detachParent() {

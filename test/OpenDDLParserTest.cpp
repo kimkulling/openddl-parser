@@ -320,7 +320,7 @@ TEST_F( OpenDDLParserTest, accessNameDDLNodeTest ) {
 TEST_F( OpenDDLParserTest, accessParentDDLNodeTest ) {
     static const std::string parent = "test";
     DDLNode parentNode( parent );
-    static const std::string name1 = "test";
+    static const std::string name1 = "test1";
     DDLNode myNode( name1, &parentNode );
     EXPECT_EQ( &parentNode, myNode.getParent() );
     EXPECT_EQ(1, parentNode.getChildNodeList().size() );
@@ -330,7 +330,12 @@ TEST_F( OpenDDLParserTest, accessParentDDLNodeTest ) {
     
     myNodeWithoutParent.attachParent( &parentNode );
     EXPECT_EQ( &parentNode, myNodeWithoutParent.getParent() );
-    EXPECT_EQ( 2, parentNode.getChildNodeList().size() );
+    DDLNode::DllNodeList myChilds = parentNode.getChildNodeList();
+    EXPECT_EQ( 2, myChilds.size() );
+
+    // check if the child node is not the parent node ( bug )
+    EXPECT_EQ( "test1", myChilds[ 0 ]->getName() );
+    EXPECT_EQ( "test1", myChilds[ 1 ]->getName() );
 }
 
 TEST_F( OpenDDLParserTest, accessPropertiesDDLNodeTest ) {
