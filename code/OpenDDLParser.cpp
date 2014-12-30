@@ -338,6 +338,21 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
     return in;
 }
 
+static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *parser ) {
+    if( nullptr == id || nullptr == first || nullptr == parser ) {
+        return nullptr;
+    }
+
+    const std::string name( id->m_buffer );
+    DDLNode *parent( parser->top() );
+    DDLNode *node = new DDLNode( name, parent );
+    if( nullptr != first ) {
+        node->setProperties( first );
+    }
+
+    return node;
+}
+
 char *OpenDDLParser::parseId( char *in, char *end ) {
     if( nullptr == in || in == end ) {
         return in;
@@ -373,13 +388,12 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
         }
 
         // store the node
-        const std::string name( id->m_buffer );
-        DDLNode *parent( top() );
-        DDLNode *node = new DDLNode( name, parent );
-        if( nullptr != first ) {
-            node->setProperties( first );
+        DDLNode *node( createDDLNode( id, first, this ) );
+        if( nullptr != node ) {
+            pushNode( node );
+        } else {
+            std::cerr << "nullptr returned by creating DDLNode." << std::endl;
         }
-        pushNode( node );
     }
 
 
