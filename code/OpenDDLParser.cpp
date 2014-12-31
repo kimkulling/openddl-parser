@@ -339,7 +339,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
 }
 
 static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *parser ) {
-    if( nullptr == id || nullptr == first || nullptr == parser ) {
+    if( nullptr == id ||  nullptr == parser ) {
         return nullptr;
     }
 
