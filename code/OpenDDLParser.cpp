@@ -394,8 +394,14 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
         } else {
             std::cerr << "nullptr returned by creating DDLNode." << std::endl;
         }
-    }
 
+        Name *name( nullptr );
+        in = OpenDDLParser::parseName( in, end, &name );
+        if( nullptr != name ) {
+            std::string nodeName( name->m_id->m_buffer );
+            node->setName( nodeName );
+        }
+    }
 
     return in;
 }

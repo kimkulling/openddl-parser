@@ -247,6 +247,8 @@ TEST_F( OpenDDLParserTest, isSeparatorTest ) {
     EXPECT_FALSE( isSeparator( val ) );
     val = 'Z';
     EXPECT_FALSE( isSeparator( val ) );
+    val = '{';
+    EXPECT_TRUE( isSeparator( val ) );
     val = '}';
     EXPECT_TRUE( isSeparator( val ) );
 }
@@ -469,14 +471,12 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
 }
 
 TEST_F( OpenDDLParserTest, parseReferenceTest ) {
-    bool success( true );
     size_t len1( 0 );
     char token1[] = "ref { $name1, %name2 }", *end( findEnd( token1, len1 ) );
 
     std::vector<Name*> names;
-    success = OpenDDLParser::parseReference( token1, end, names );
-    EXPECT_TRUE( success );
-    EXPECT_EQ( 2, names.size() );
+    char *in = OpenDDLParser::parseReference( token1, end, names );
+    ASSERT_EQ( 2, names.size() );
 
     int res( 0 );
     Name *name( nullptr );
