@@ -140,7 +140,7 @@ void PrimDataAllocator::releasePrimData( PrimData **data ) {
 template<class T>
 inline
 T *getNextToken( T *in, T *end ) {
-    while( isSeparator( *in ) && ( in != end ) ) {
+    while( ( isSpace( *in ) || isNewLine( *in ) || ',' == *in ) && ( in != end ) ) {
         in++;
     }
     return in;
@@ -339,7 +339,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
 }
 
 static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *parser ) {
-    if( nullptr == id ||  nullptr == parser ) {
+    if( nullptr == id || nullptr == parser ) {
         return nullptr;
     }
 
