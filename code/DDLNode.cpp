@@ -24,11 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-DDLNode::DDLNode( const std::string &name, DDLNode *parent )
-    : m_name( name )
-    , m_parent( parent )
-    , m_children()
-    , m_properties( nullptr ) {
+DDLNode::DDLNode( const std::string &type, const std::string &name, DDLNode *parent )
+: m_type( type )
+, m_name( name )
+, m_parent( parent )
+, m_children()
+, m_properties( nullptr ) {
     if( m_parent ) {
         m_parent->m_children.push_back( this );
     }
@@ -64,6 +65,14 @@ DDLNode *DDLNode::getParent() const {
 
 const DDLNode::DllNodeList &DDLNode::getChildNodeList() const {
     return m_children;
+}
+
+void DDLNode::setType( const std::string &type ) {
+    m_type = type;
+}
+
+const std::string &DDLNode::getType() const {
+    return m_type;
 }
 
 

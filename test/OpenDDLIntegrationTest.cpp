@@ -51,7 +51,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     EXPECT_EQ(1, myList.size() );
     DDLNode *child = myList[ 0 ];
     ASSERT_NE( nullptr, child );
-    EXPECT_EQ( "Metric", child->getName() );
+    EXPECT_EQ( "Metric", child->getType() );
     Property *prop = child->getProperties();
     ASSERT_NE( nullptr, prop );
     

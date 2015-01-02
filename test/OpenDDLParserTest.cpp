@@ -49,8 +49,8 @@ static size_t countItems( PrimData *data ) {
 class OpenDDLParserTest : public testing::Test {
     std::vector<DDLNode*> m_nodes;
 public:
-    DDLNode *createNode( const std::string &name, DDLNode *parent ) {
-        DDLNode *node = new DDLNode( name, parent );
+    DDLNode *createNode( const std::string &type, const std::string &name, DDLNode *parent ) {
+        DDLNode *node = new DDLNode( type, name, parent );
         m_nodes.push_back( node );
 
         return node;
@@ -61,7 +61,7 @@ protected:
         for( size_t i = 0; i < m_nodes.size(); i++ ) {
             delete m_nodes[ i ];
         }
-        m_nodes.clear();
+        m_nodes.resize( 0 );
 
         testing::Test::TearDown();
     }
@@ -299,57 +299,6 @@ TEST_F( OpenDDLParserTest, PrimDataAccessNextTest ) {
 
 }
 
-TEST_F( OpenDDLParserTest, createDDLNodeTest ) {
-    bool success( true );
-    try {
-        DDLNode myNode( "test" );
-    } catch ( ... ) {
-        success = false;
-    }
-    EXPECT_TRUE( success );
-}
-
-TEST_F( OpenDDLParserTest, accessNameDDLNodeTest ) {
-    static const std::string name1 = "test";
-    DDLNode myNode( name1 );
-    EXPECT_EQ( name1, myNode.getName() );
-
-    static const std::string name2 = "test";
-    myNode.setName( name2 );
-    EXPECT_EQ( name2, myNode.getName() );
-}
-
-TEST_F( OpenDDLParserTest, accessParentDDLNodeTest ) {
-    static const std::string parent = "test";
-    DDLNode parentNode( parent );
-    static const std::string name1 = "test1";
-    DDLNode myNode( name1, &parentNode );
-    EXPECT_EQ( &parentNode, myNode.getParent() );
-    EXPECT_EQ(1, parentNode.getChildNodeList().size() );
-
-    DDLNode myNodeWithoutParent( name1 );
-    EXPECT_EQ( nullptr, myNodeWithoutParent.getParent() );
-    
-    myNodeWithoutParent.attachParent( &parentNode );
-    EXPECT_EQ( &parentNode, myNodeWithoutParent.getParent() );
-    DDLNode::DllNodeList myChilds = parentNode.getChildNodeList();
-    EXPECT_EQ( 2, myChilds.size() );
-
-    // check if the child node is not the parent node ( bug )
-    EXPECT_EQ( "test1", myChilds[ 0 ]->getName() );
-    EXPECT_EQ( "test1", myChilds[ 1 ]->getName() );
-}
-
-TEST_F( OpenDDLParserTest, accessPropertiesDDLNodeTest ) {
-    static const std::string name1 = "test";
-    DDLNode myNode( name1 );
-
-    EXPECT_EQ( nullptr, myNode.getProperties() );
-    Identifier *id = new Identifier(4, "test" );
-    Property *first = new Property( id );
-    myNode.setProperties( first );
-    EXPECT_EQ( first, myNode.getProperties() );
-}
 
 TEST_F( OpenDDLParserTest, createTest ) {
     bool success( true );
@@ -614,7 +563,7 @@ TEST_F( OpenDDLParserTest, pushTest ) {
 
     DDLNode *current = theParser.top();
     EXPECT_EQ( nullptr, current );
-    DDLNode *node = createNode( "test", nullptr );
+    DDLNode *node = createNode( "test", "", nullptr );
     theParser.pushNode( node );
     current = theParser.top();
     EXPECT_EQ( node, current );
@@ -626,17 +575,17 @@ TEST_F( OpenDDLParserTest, popTest ) {
     DDLNode *current = theParser.top();
     EXPECT_EQ( nullptr, current );
 
-    DDLNode *node1 = createNode( "test1", nullptr );
+    DDLNode *node1 = createNode( "test1", "", nullptr );
     theParser.pushNode( node1 );
     current = theParser.top();
     EXPECT_EQ( node1, current );
 
-    DDLNode *node2 = createNode( "test2", nullptr );
+    DDLNode *node2 = createNode( "test2", "", nullptr );
     theParser.pushNode( node2 );
     current = theParser.top();
     EXPECT_EQ( node2, current );
 
-    DDLNode *node3 = createNode( "test3", nullptr );
+    DDLNode *node3 = createNode( "test3", "", nullptr );
     theParser.pushNode( node3 );
     current = theParser.top();
     EXPECT_EQ( node3, current );

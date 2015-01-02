@@ -284,7 +284,7 @@ bool OpenDDLParser::parse() {
     // remove comments
     normalizeBuffer( m_buffer, m_len );
 
-    m_root = new DDLNode( "root", nullptr );
+    m_root = new DDLNode( "root", "", nullptr );
     pushNode( m_root );
 
     // do the main parsing
@@ -343,9 +343,9 @@ static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *p
         return nullptr;
     }
 
-    const std::string name( id->m_buffer );
+    const std::string type( id->m_buffer );
     DDLNode *parent( parser->top() );
-    DDLNode *node = new DDLNode( name, parent );
+    DDLNode *node = new DDLNode( type, "", parent );
     if( nullptr != first ) {
         node->setProperties( first );
     }

@@ -40,12 +40,14 @@ public:
     typedef std::vector<DDLNode*> DllNodeList;
 
 public:
-    DDLNode( const std::string &name, DDLNode *parent = nullptr );
+    DDLNode( const std::string &type, const std::string &name, DDLNode *parent = nullptr );
     ~DDLNode();
     void attachParent( DDLNode *parent );
     void detachParent();
     DDLNode *getParent() const;
     const DllNodeList &getChildNodeList() const;
+    void setType( const std::string &name );
+    const std::string &getType() const;
     void setName( const std::string &name );
     const std::string &getName() const;
     void setProperties( Property *first );
@@ -57,6 +59,7 @@ private:
     DDLNode &operator = ( const DDLNode & );
 
 private:
+    std::string m_type;
     std::string m_name;
     DDLNode *m_parent;
     std::vector<DDLNode*> m_children;

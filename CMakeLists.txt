@@ -74,6 +74,7 @@ SET ( gtest_src
 )
 
 SET( openddl_parser_unittest_src  
+    test/DDLNodeTest.cpp
     test/OpenDDLParserTest.cpp
     test/OpenDDLIntegrationTest.cpp
 )
