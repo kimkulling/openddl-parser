@@ -162,11 +162,15 @@ public:
     void clear();
     bool parse();
     char *parseNextNode( char *current, char *end );
+    char *parseHeader( char *in, char *end );
     char *parseStructure( char *in, char *end );
-    char *parseId( char *in, char *end );
     void pushNode( DDLNode *node );
     DDLNode *popNode();
     DDLNode *top();
+    char *parseDataArrayList( char *in, char *end );
+    DDLNode *getRoot() const;
+
+public: // static parser helpers
     static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
@@ -179,8 +183,6 @@ public:
     static char *parseProperty( char *in, char *end, Property **prop );
     static char *parseDataList( char *in, char *end, PrimData **data );
     static const char *getVersion();
-    char *parseDataArrayList( char *in, char *end );
-    DDLNode *getRoot() const;
 
 private:
     OpenDDLParser( const OpenDDLParser & );

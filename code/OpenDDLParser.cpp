@@ -67,6 +67,21 @@ static bool isIntegerType( PrimitiveDataType integerType ) {
     return true;
 }
 
+static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *parser ) {
+    if( nullptr == id || nullptr == parser ) {
+        return nullptr;
+    }
+
+    const std::string type( id->m_buffer );
+    DDLNode *parent( parser->top() );
+    DDLNode *node = new DDLNode( type, "", parent );
+    if( nullptr != first ) {
+        node->setProperties( first );
+    }
+
+    return node;
+}
+
 PrimData *PrimDataAllocator::allocPrimData( PrimitiveDataType type, size_t len ) {
     if( type == ddl_none || ddl_types_max == type ) {
         return nullptr;
@@ -298,62 +313,14 @@ bool OpenDDLParser::parse() {
 }
 
 char *OpenDDLParser::parseNextNode( char *in, char *end ) {
-    in = parseId( in, end );
+    in = parseHeader( in, end );
     in = parseStructure( in, end );
 
     return in;
 
 }
 
-char *OpenDDLParser::parseStructure( char *in, char *end ) {
-    if( nullptr == in || in == end ) {
-        return in;
-    }
-
-    in = getNextToken( in, end );
-    if( *in == '{' ) {
-        in++;
-        in = getNextToken( in, end );
-        PrimData *primData( nullptr );
-        in = OpenDDLParser::parsePrimitiveDataType( in, end, &primData );
-        if ( nullptr != primData ) {
-            in = getNextToken( in, end );
-            if( *in == '{' ) {
-                in = parseDataList( in, end, &primData );
-            }
-
-            if( *in != '}' ) {
-                logInvalidTokenError(in, "}" );
-            }
-        }
-    } else {
-        in++;
-        logInvalidTokenError( in, "{" );
-        return in;
-
-    }
-
-    in++;
-
-    return in;
-}
-
-static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *parser ) {
-    if( nullptr == id || nullptr == parser ) {
-        return nullptr;
-    }
-
-    const std::string type( id->m_buffer );
-    DDLNode *parent( parser->top() );
-    DDLNode *node = new DDLNode( type, "", parent );
-    if( nullptr != first ) {
-        node->setProperties( first );
-    }
-
-    return node;
-}
-
-char *OpenDDLParser::parseId( char *in, char *end ) {
+char *OpenDDLParser::parseHeader( char *in, char *end ) {
     if( nullptr == in || in == end ) {
         return in;
     }
@@ -398,10 +365,46 @@ char *OpenDDLParser::parseId( char *in, char *end ) {
         Name *name( nullptr );
         in = OpenDDLParser::parseName( in, end, &name );
         if( nullptr != name ) {
-            std::string nodeName( name->m_id->m_buffer );
+            const std::string nodeName( name->m_id->m_buffer );
             node->setName( nodeName );
         }
     }
+
+    return in;
+}
+
+char *OpenDDLParser::parseStructure( char *in, char *end ) {
+    if( nullptr == in || in == end ) {
+        return in;
+    }
+
+    in = getNextToken( in, end );
+    if( *in == '{' ) {
+        in++;
+        in = getNextToken( in, end );
+        PrimData *primData( nullptr );
+        in = OpenDDLParser::parsePrimitiveDataType( in, end, &primData );
+        if ( nullptr != primData ) {
+            in = getNextToken( in, end );
+            if( *in == '{' ) {
+                in = parseDataList( in, end, &primData );
+            }
+
+            if( *in != '}' ) {
+                logInvalidTokenError(in, "}" );
+            }
+        } else {
+            in = parseHeader( in, end );
+            in = parseStructure( in, end );
+        }
+    } else {
+        in++;
+        logInvalidTokenError( in, "{" );
+        return in;
+
+    }
+
+    in++;
 
     return in;
 }
@@ -432,6 +435,14 @@ DDLNode *OpenDDLParser::top() {
     
     DDLNode *top( m_stack.back() );
     return top;
+}
+
+char *OpenDDLParser::parseDataArrayList( char *in, char *end ) {
+    return false;
+}
+
+DDLNode *OpenDDLParser::getRoot() const {
+    return m_root;
 }
 
 void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {
@@ -817,14 +828,6 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
 
 const char *OpenDDLParser::getVersion() {
     return Version;
-}
-
-char *OpenDDLParser::parseDataArrayList( char *in, char *end ) {
-    return false;
-}
-
-DDLNode *OpenDDLParser::getRoot() const {
-    return m_root;
 }
 
 END_ODDLPARSER_NS
