@@ -59,7 +59,6 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
 }
 
 TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
-    size_t len( 0 );
     char token[] = "GeometryNode $node1\n"
     "{\n"
     "    Name{ string{ \"Box001\" } }\n"
