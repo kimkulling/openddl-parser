@@ -799,6 +799,8 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
                 in = parseIntegerLiteral( in, end, data );
             } else if( isFloat( in, end ) ) {
                 in = parseFloatingLiteral( in, end, data );
+            } else if( isStringLiteral( *in ) ) {
+                in = parseStringLiteral( in, end, data );
             } else if( *in == '{' ) {
                 in = parseDataList( in, end, data );
             }

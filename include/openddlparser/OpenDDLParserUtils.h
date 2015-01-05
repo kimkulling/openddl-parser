@@ -200,4 +200,3 @@ static T *getNextSeparator( T *in, T *end ) {
 END_ODDLPARSER_NS
 
 #endif // OPENDDLPARSER_OPENDDLPARSERUTILS_H_INC
-
