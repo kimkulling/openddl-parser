@@ -58,24 +58,42 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     EXPECT_EQ( ddl_string, prop->m_primData->m_type );
 }
 
+TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureTest ) {
+    char token[] =
+        "GeometryNode $node1\n"
+        "{\n"
+        "    string\n"
+        "    {\n"
+        "        \"test\"\n"
+        "    }\n"
+        "}";
+
+    bool result( false );
+    OpenDDLParser theParser;
+    theParser.setBuffer( token, strlen( token ), false );
+    result = theParser.parse();
+    EXPECT_TRUE( result );
+}
+
 TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
-    char token[] = "GeometryNode $node1\n"
-    "{\n"
-    "    Name{ string{ \"Box001\" } }\n"
-    "    ObjectRef{ ref{ $geometry1 } }\n"
-    "    MaterialRef{ ref{ $material1 } }\n"
-    "\n"
-    "    Transform\n"
-    "    {\n"
-    "        float[ 16 ]\n"
-    "        {\n"
-    "            {0x3F800000, 0x00000000, 0x00000000, 0x00000000,		// {1, 0, 0, 0\n"
-    "                0x00000000, 0x3F800000, 0x00000000, 0x00000000,		//  0, 1, 0, 0\n"
-    "                0x00000000, 0x00000000, 0x3F800000, 0x00000000,		//  0, 0, 1, 0\n"
-    "                0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
-    "        }\n"
-    "    }\n"
-    "}\n";
+    char token[] =
+        "GeometryNode $node1\n"
+        "{\n"
+        "    Name{ string{ \"Box001\" } }\n"
+        "    ObjectRef{ ref{ $geometry1 } }\n"
+        "    MaterialRef{ ref{ $material1 } }\n"
+        "\n"
+        "    Transform\n"
+        "    {\n"
+        "        float[ 16 ]\n"
+        "        {\n"
+        "            {0x3F800000, 0x00000000, 0x00000000, 0x00000000,		// {1, 0, 0, 0\n"
+        "                0x00000000, 0x3F800000, 0x00000000, 0x00000000,		//  0, 1, 0, 0\n"
+        "                0x00000000, 0x00000000, 0x3F800000, 0x00000000,		//  0, 0, 1, 0\n"
+        "                0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
+        "        }\n"
+        "    }\n"
+        "}\n";
     bool result( false );
     OpenDDLParser theParser;
     theParser.setBuffer( token, strlen( token ), false );

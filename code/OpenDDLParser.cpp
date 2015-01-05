@@ -816,7 +816,7 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
             }
 
             in = getNextSeparator( in, end );
-            if( ',' != *in && '}' != *in ) {
+            if( ',' != *in && '}' != *in && !isSpace( *in ) ) {
                 logInvalidTokenError( in, "} or ," );
                 break;
             }

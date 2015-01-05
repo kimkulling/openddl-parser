@@ -68,7 +68,7 @@ bool isNewLine( const T in ) {
 template<class T>
 inline
 bool isSeparator( T in ) {
-    if( isSpace( in ) || isNewLine( in ) || ',' == in || '{' == in || '}' == in ) {
+    if( isSpace( in ) || ',' == in || '{' == in || '}' == in ) {
         return true;
     }
     return false;
