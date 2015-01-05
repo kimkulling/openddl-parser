@@ -550,12 +550,24 @@ TEST_F( OpenDDLParserTest, getVersionTest ) {
 TEST_F( OpenDDLParserTest, parseDataListTest ) {
     PrimData *data( nullptr ), *current( nullptr );
     size_t len1( 0 );
-    char token1[] = "{1,2,3,4}", *end( findEnd( token1, len1 ) );
-    char *in = OpenDDLParser::parseDataList( token1, end, &data );
+    
+    char *in( nullptr ), *end( nullptr );
+    char token1[] = "{1,2,3,4}";
+    end = findEnd( token1, len1 );
+    in = OpenDDLParser::parseDataList( token1, end, &data );
     ASSERT_NE( nullptr, data );
     
-    // check intrinsic list
+    // check intrinsic list with integers
     EXPECT_EQ( 4, countItems( data ) );
+
+    size_t len2( 0 );
+    char token2[] = "{ \"string1\",\"string2\"}";
+    end = findEnd( token2, len2 );
+    in = OpenDDLParser::parseDataList( token2, end, &data );
+    ASSERT_NE( nullptr, data );
+
+    // check intrinsic list with strings
+    EXPECT_EQ( 2, countItems( data ) );
 }
 
 TEST_F( OpenDDLParserTest, pushTest ) {
