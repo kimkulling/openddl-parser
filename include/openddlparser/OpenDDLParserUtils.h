@@ -184,6 +184,20 @@ bool isStringLiteral( const T in ) {
 
 template<class T>
 inline
+bool isHexLiteral( T *in, T *end ) {
+    if( *in == '0' ) {
+        if( in + 1 != end ) {
+            if( *( in + 1 ) == 'x' ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+template<class T>
+inline
 bool isEndofLine( const T in ) {
     return ( '\n' == in );
 }

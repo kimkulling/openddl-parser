@@ -205,6 +205,23 @@ TEST_F( OpenDDLParserTest, isStringLiteralTest ) {
     EXPECT_FALSE( isStringLiteral<char>( val ) );
 }
 
+TEST_F( OpenDDLParserTest, isHexLiteralTest ) {
+    size_t len( 0 );
+    char token1[] = "0x10";
+    char *end = findEnd( token1, len );
+
+    bool result = isHexLiteral( token1, end );
+    EXPECT_TRUE( result );
+
+    char token2[] = "10";
+    result = isHexLiteral( token2, end );
+    EXPECT_FALSE( result );
+
+    char token3[] = "lala";
+    result = isHexLiteral( token3, end );
+    EXPECT_FALSE( result );
+}
+
 TEST_F( OpenDDLParserTest, isSpaceTest ) {
     bool result( false );
     char val;
