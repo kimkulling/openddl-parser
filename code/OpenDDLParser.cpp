@@ -740,6 +740,13 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringD
     return in;
 }
 
+static void createPropertyWithData( Identifier *id, PrimData *primData, Property **prop ) {
+    if( nullptr != primData ) {
+        ( *prop ) = new Property( id );
+        ( *prop )->m_primData = primData;
+    }
+}
+
 char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
     *prop = nullptr;
     if( nullptr == in || in == end ) {
@@ -755,18 +762,15 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
             in++;
             in = getNextToken( in, end );
             PrimData *primData( nullptr );
-            if( isNumeric( *in ) ) {        // numeric data
+            if( isInteger( in, end ) ) {
                 in = parseIntegerLiteral( in, end, &primData );
-                if( nullptr != primData ) {
-                    ( *prop ) = new Property( id );
-                    ( *prop )->m_primData = primData;
-                }
+                createPropertyWithData( id, primData, prop );
+            } else if( isFloat( in, end ) ) {
+                in = parseFloatingLiteral( in, end, &primData );
+                createPropertyWithData( id, primData, prop );
             } else if( isStringLiteral( *in ) ) { // string data
                 in = parseStringLiteral( in, end, &primData );
-                if( nullptr != primData ) {
-                    ( *prop ) = new Property( id );
-                    ( *prop )->m_primData = primData;
-                }
+                createPropertyWithData( id, primData, prop );
             } else {                          // reference data
                 Reference *ref( nullptr );
                 std::vector<Name*> names;
@@ -794,6 +798,7 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
         in++;
         PrimData *first( nullptr ), *prev( nullptr );
         while( '}' != *in ) {
+            //data = nullptr;?
             in = getNextToken( in, end );
             if( isInteger( in, end ) ) {
                 in = parseIntegerLiteral( in, end, data );
