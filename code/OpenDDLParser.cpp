@@ -390,6 +390,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
                 in = parseDataList( in, end, &primData );
             }
 
+            in = getNextSeparator( in, end );
             if( *in != '}' ) {
                 logInvalidTokenError(in, "}" );
             }
@@ -796,21 +797,22 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
     in = getNextToken( in, end );
     if( *in == '{' ) {
         in++;
-        PrimData *first( nullptr ), *prev( nullptr );
+        PrimData *first( nullptr ), *prev( nullptr ), *current( nullptr );
         while( '}' != *in ) {
-            //data = nullptr;?
+            current = nullptr;
             in = getNextToken( in, end );
             if( isInteger( in, end ) ) {
-                in = parseIntegerLiteral( in, end, data );
+                in = parseIntegerLiteral( in, end, &current );
             } else if( isFloat( in, end ) ) {
-                in = parseFloatingLiteral( in, end, data );
+                in = parseFloatingLiteral( in, end, &current );
             } else if( isStringLiteral( *in ) ) {
-                in = parseStringLiteral( in, end, data );
+                in = parseStringLiteral( in, end, &current );
             } else if( *in == '{' ) {
-                in = parseDataList( in, end, data );
+                in = parseDataList( in, end, &current );
             }
 
-            if( nullptr != *data ) {
+            if( nullptr != current ) {
+                *data = current;
                 if( nullptr == first ) {
                     first = *data;
                 }
