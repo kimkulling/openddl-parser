@@ -73,6 +73,9 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureTest ) {
     theParser.setBuffer( token, strlen( token ), false );
     result = theParser.parse();
     EXPECT_TRUE( result );
+
+    DDLNode *root( theParser.getRoot() );
+    ASSERT_NE( nullptr, root );
 }
 
 TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
