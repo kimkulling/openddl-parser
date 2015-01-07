@@ -26,13 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-static char *findEnd( char *in, size_t &len ) {
-    len = strlen( in );
-    char *end( &in[ len ] + 1 );
-
-    return end;
-}
-
 class OpenDDLIntegrationTest : public testing::Test {
 };
 

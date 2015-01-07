@@ -243,7 +243,7 @@ TEST_F( OpenDDLParserTest, isNewLineTest ) {
     char val;
     val = '\n';
     result = isNewLine( val );
-    EXPECT_TRUE( val );
+    EXPECT_TRUE( result );
 
     val = ' ';
     result = isNewLine( val );
@@ -563,7 +563,7 @@ TEST_F( OpenDDLParserTest, getVersionTest ) {
 }
 
 TEST_F( OpenDDLParserTest, parseDataListTest ) {
-    PrimData *data( nullptr ), *current( nullptr );
+    PrimData *data( nullptr );
     size_t len1( 0 );
     
     char *in( nullptr ), *end( nullptr );

@@ -303,7 +303,6 @@ bool OpenDDLParser::parse() {
     pushNode( m_root );
 
     // do the main parsing
-    const size_t buffersize( m_len );
     char *current( &m_buffer[ 0 ] );
     char *end( &m_buffer[ m_len - 1 ] + 1 );
     while( current != end ) {
@@ -564,7 +563,6 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **pri
         ok = false;
         in++;
         char *start( in );
-        bool brackedClosed( false );
         while ( in != end ) {
             in++;
             if( *in == ']' ) {
@@ -588,7 +586,6 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
         return in;
     }
 
-    char *start( in );
     if( 0 != strncmp( in, RefToken, strlen( RefToken ) ) ) {
         return false;
     } else {
@@ -773,7 +770,6 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
                 in = parseStringLiteral( in, end, &primData );
                 createPropertyWithData( id, primData, prop );
             } else {                          // reference data
-                Reference *ref( nullptr );
                 std::vector<Name*> names;
                 in = parseReference( in, end, names );
                 if( !names.empty() ) {
