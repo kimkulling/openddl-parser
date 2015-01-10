@@ -837,10 +837,23 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, PrimData **data ) 
     size_t len( 0 );
     in = parsePrimitiveDataType( in, end, type, len );
     if( ddl_none != type ) {
+        in = getNextToken( in, end );
         if( *in == '{' ) {
-            while( ',' != *in ) {
-                in = parseDataList( in, end, data );
-            }
+            do {
+                PrimData *prev( nullptr ), *next( nullptr );
+                in = parseDataList( in, end, &next );
+                if( nullptr != next ) {
+                    if( nullptr == *data ) {
+                        *data = next;
+                        prev = *data;
+                    } else {
+                        if( nullptr != prev ) {
+                            prev->m_next = next;
+                        }
+                    }
+                }
+                in = getNextToken( in, end );
+            } while( ',' == *in && in != end );
         }
     }
 

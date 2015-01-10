@@ -519,7 +519,6 @@ TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
     size_t len1( 0 );
     PrimData *data( nullptr );
     char token1[] = "1.0f", *end1( findEnd( token1, len1 ) );
-    char *in( token1 );
     char *out = OpenDDLParser::parseFloatingLiteral( token1, end1, &data );
     EXPECT_NE( nullptr, data );
     EXPECT_EQ( ddl_float, data->m_type );
@@ -534,6 +533,7 @@ TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     char *in( token1 );
 
     char *out = OpenDDLParser::parseStringLiteral( token1, end1, &data );
+    EXPECT_NE( in, out );
     EXPECT_NE( nullptr, data );
     EXPECT_EQ( ddl_string, data->m_type );
     std::string str( (char*) data->m_data );
@@ -577,6 +577,8 @@ TEST_F( OpenDDLParserTest, parseDataArrayListTest ) {
     char *end( findEnd( token, len ) );
     PrimData *data( nullptr );
     char *in = OpenDDLParser::parseDataArrayList( token, end, &data );
+    ASSERT_NE( nullptr, data );
+    EXPECT_NE( token, in );
 }
 
 TEST_F( OpenDDLParserTest, getVersionTest ) {
