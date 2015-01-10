@@ -565,6 +565,7 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimitiveDataT
             if( *in == ']' ) {
                 len = atoi( start );
                 ok = true;
+                in++;
                 break;
             }
         }
