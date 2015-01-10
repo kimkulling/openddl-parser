@@ -167,14 +167,13 @@ public:
     void pushNode( DDLNode *node );
     DDLNode *popNode();
     DDLNode *top();
-    char *parseDataArrayList( char *in, char *end );
     DDLNode *getRoot() const;
 
 public: // static parser helpers
     static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
-    static char *parsePrimitiveDataType( char *in, char *end, PrimData **primData );
+    static char *parsePrimitiveDataType( char *in, char *end, PrimitiveDataType &type, size_t &len );
     static char *parseReference( char *in, char *end, std::vector<Name*> &names );
     static char *parseBooleanLiteral( char *in, char *end, PrimData **boolean );
     static char *parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType = ddl_int32 );
@@ -182,6 +181,7 @@ public: // static parser helpers
     static char *parseStringLiteral( char *in, char *end, PrimData **stringData );
     static char *parseProperty( char *in, char *end, Property **prop );
     static char *parseDataList( char *in, char *end, PrimData **data );
+    static char *parseDataArrayList( char *in, char *end, PrimData **data );
     static const char *getVersion();
 
 private:

@@ -382,7 +382,9 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         in++;
         in = getNextToken( in, end );
         PrimData *primData( nullptr );
-        in = OpenDDLParser::parsePrimitiveDataType( in, end, &primData );
+        PrimitiveDataType type( ddl_none );
+        size_t arrayLen( 0 );
+        in = OpenDDLParser::parsePrimitiveDataType( in, end, type, arrayLen );
         if ( nullptr != primData ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
@@ -437,16 +439,12 @@ DDLNode *OpenDDLParser::top() {
     return top;
 }
 
-char *OpenDDLParser::parseDataArrayList( char *in, char *end ) {
-    return false;
-}
-
 DDLNode *OpenDDLParser::getRoot() const {
     return m_root;
 }
 
 void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {
-    if( nullptr == buffer || 0 == len) {
+    if( nullptr == buffer || 0 == len ) {
         return;
     }
 
@@ -470,7 +468,7 @@ void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {
     }
 
     if( writeIdx < len ) {
-        buffer[writeIdx] = '\0';
+        buffer[ writeIdx ] = '\0';
     }
 }
 
@@ -535,13 +533,13 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
     return in;
 }
 
-char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **primData ) {
-    *primData = nullptr;
+char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimitiveDataType &type, size_t &len ) {
+    type = ddl_none;
+    len = 0;
     if( nullptr == in || in == end ) {
         return in;
     }
 
-    PrimitiveDataType type( ddl_none );
     for( unsigned int i = 0; i < ddl_types_max; i++ ) {
         const size_t prim_len( strlen( PrimitiveTypeToken[ i ] ) );
         if( 0 == strncmp( in, PrimitiveTypeToken[ i ], prim_len ) ) {
@@ -557,7 +555,6 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **pri
         in += strlen( PrimitiveTypeToken[ type ] );
     }
 
-    size_t size = 1;
     bool ok( true );
     if( *in == '[' ) {
         ok = false;
@@ -566,16 +563,14 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimData **pri
         while ( in != end ) {
             in++;
             if( *in == ']' ) {
-                size = atoi( start );
+                len = atoi( start );
                 ok = true;
                 break;
             }
         }
     }
-    if( ok ) {
-        *primData = PrimDataAllocator::allocPrimData( type, size );
-    } else {
-        logInvalidTokenError( in, "]" );
+    if( !ok ) {
+        type = ddl_none;
     }
 
     return in;
@@ -826,6 +821,26 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
         }
         in++;
         *data = first;
+    }
+
+    return in;
+}
+
+char *OpenDDLParser::parseDataArrayList( char *in, char *end, PrimData **data ) {
+    if( nullptr == in || in == end ) {
+        return in;
+    }
+
+    in = getNextToken( in, end );
+    PrimitiveDataType type( ddl_none );
+    size_t len( 0 );
+    in = parsePrimitiveDataType( in, end, type, len );
+    if( ddl_none != type ) {
+        if( *in == '{' ) {
+            while( ',' != *in ) {
+                in = parseDataList( in, end, data );
+            }
+        }
     }
 
     return in;
