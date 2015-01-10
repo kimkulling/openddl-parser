@@ -399,7 +399,6 @@ TEST_F( OpenDDLParserTest, parseNameTest ) {
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
     PrimitiveDataType type;
     size_t len( 0 );
-    PrimData *data1( nullptr );
     char *in = OpenDDLParser::parsePrimitiveDataType( nullptr, nullptr, type, len );
     EXPECT_EQ( ddl_none, type );
     EXPECT_EQ( 0, len );
@@ -411,7 +410,6 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
     EXPECT_EQ( 0, len );
 
     size_t len2( 0 );
-    PrimData *data2( nullptr );
     char invalidToken[] = "foat", *end2( findEnd( token1, len2 ) );
     in = OpenDDLParser::parsePrimitiveDataType( invalidToken, end2, type, len );
     EXPECT_EQ( ddl_none, type );
@@ -425,14 +423,13 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithArrayTest ) {
     PrimitiveDataType type;
     size_t arrayLen( 0 );
 
-    const size_t len( strlen( token ) );
     char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, arrayLen );
     EXPECT_EQ( ddl_float, type );
     EXPECT_EQ( 3, arrayLen );
+    EXPECT_NE( in, token );
 }
 
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
-    PrimData *data( nullptr );
     size_t len1( 0 );
     char token1[] = "float[3", *end( findEnd( token1, len1 ) );
     PrimitiveDataType type;
@@ -440,6 +437,7 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
     char *in = OpenDDLParser::parsePrimitiveDataType( token1, end, type, arrayLen );
     EXPECT_EQ( ddl_none, type );
     EXPECT_EQ( 0, arrayLen );
+    EXPECT_NE( in, token1 );
 }
 
 TEST_F( OpenDDLParserTest, parseReferenceTest ) {
@@ -449,6 +447,7 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     std::vector<Name*> names;
     char *in = OpenDDLParser::parseReference( token1, end, names );
     ASSERT_EQ( 2, names.size() );
+    EXPECT_NE( in, token1 );
 
     int res( 0 );
     Name *name( nullptr );
@@ -468,7 +467,6 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
 TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     char *in( nullptr );
     PrimData *data( nullptr );
-    bool success( true );
     size_t len1( 0 );
     char token1[] = "true", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parseBooleanLiteral( token1, end1, &data );
@@ -520,9 +518,9 @@ TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
     PrimData *data( nullptr );
     char token1[] = "1.0f", *end1( findEnd( token1, len1 ) );
     char *out = OpenDDLParser::parseFloatingLiteral( token1, end1, &data );
+    EXPECT_NE( out, token1 );
     EXPECT_NE( nullptr, data );
     EXPECT_EQ( ddl_float, data->m_type );
-    float v( data->getFloat() );
     EXPECT_EQ(1.0f, data->getFloat() );
 }
 
