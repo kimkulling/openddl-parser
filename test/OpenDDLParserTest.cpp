@@ -266,6 +266,8 @@ TEST_F( OpenDDLParserTest, isSeparatorTest ) {
     EXPECT_TRUE( isSeparator( val ) );
     val = '}';
     EXPECT_TRUE( isSeparator( val ) );
+    val = '[';
+    EXPECT_TRUE( isSeparator( val ) );
 }
 
 TEST_F( OpenDDLParserTest, getNextSeparatorTest ) {
