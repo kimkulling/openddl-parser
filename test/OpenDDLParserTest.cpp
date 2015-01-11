@@ -469,6 +469,15 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithArrayTest ) {
     EXPECT_NE( in, token );
 }
 
+TEST_F( OpenDDLParserTest , parsePrimitiveArrayWithSpacesTest ) {
+    PrimitiveDataType type;
+    size_t arrayLen( 0 ), len( 0 );
+    char token[] = "float[ 16 ]", *end( findEnd( token, len ) );
+    char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, arrayLen );
+    EXPECT_NE( in, token );
+    EXPECT_EQ( ddl_float, type );
+    EXPECT_EQ( 16, arrayLen );
+}
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
     size_t len1( 0 );
     char token1[] = "float[3", *end( findEnd( token1, len1 ) );
