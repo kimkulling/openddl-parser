@@ -47,7 +47,10 @@ static size_t countItems( PrimData *data ) {
     return numItems;
 }
 class OpenDDLParserTest : public testing::Test {
+    static OpenDDLParserTest *s_instance;
     std::vector<DDLNode*> m_nodes;
+    std::vector<std::string> m_logs;
+
 public:
     DDLNode *createNode( const std::string &type, const std::string &name, DDLNode *parent ) {
         DDLNode *node = new DDLNode( type, name, parent );
@@ -56,16 +59,44 @@ public:
         return node;
     }
 
+    static void setInstance( OpenDDLParserTest *instance ) {
+        s_instance = instance;
+    }
+
+    static OpenDDLParserTest *getInstance() {
+        return s_instance;
+    }
+
+    static void testLogCallback( LogSeverity severity, const std::string &msg ) {
+        std::stringstream stream;
+        stream << static_cast<int>( severity ) << msg;
+        OpenDDLParserTest::getInstance()->addLog( stream.str() );
+    }
+
+    void addLog( const std::string &msg ) {
+        m_logs.push_back( msg );
+    }
+    
+    void clearTestLog() {
+        m_logs.clear();
+    }
+
 protected:
+    virtual void SetUp() {
+        OpenDDLParserTest::setInstance( this );
+    }
+
     virtual void TearDown() {
         for( size_t i = 0; i < m_nodes.size(); i++ ) {
             delete m_nodes[ i ];
         }
         m_nodes.resize( 0 );
-
-        testing::Test::TearDown();
+        clearTestLog();
+        OpenDDLParserTest::setInstance( nullptr );
     }
 };
+
+OpenDDLParserTest *OpenDDLParserTest::s_instance = nullptr;
 
 TEST_F( OpenDDLParserTest, isCommentTest ) {
     size_t len( 0 );
@@ -316,7 +347,6 @@ TEST_F( OpenDDLParserTest, PrimDataAccessNextTest ) {
 
 }
 
-
 TEST_F( OpenDDLParserTest, createTest ) {
     bool success( true );
     try {
@@ -326,6 +356,16 @@ TEST_F( OpenDDLParserTest, createTest ) {
         success = false;
     }
     EXPECT_TRUE( success );
+}
+
+TEST_F( OpenDDLParserTest, setLogCallbackTest ) {    
+    OpenDDLParser myParser;
+
+    myParser.setLogCallback( OpenDDLParserTest::testLogCallback );
+    EXPECT_EQ( &OpenDDLParserTest::testLogCallback, myParser.getLogCallback() );
+
+    myParser.setLogCallback( nullptr );
+    EXPECT_NE( &OpenDDLParserTest::testLogCallback, myParser.getLogCallback() );
 }
 
 TEST_F( OpenDDLParserTest, accessBufferTest ) {

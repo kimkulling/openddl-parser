@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cassert>
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 
 #ifdef _WIN32
@@ -55,8 +56,10 @@ static const char *BoolTrue  = "true";
 static const char *BoolFalse = "false";
 static const char *RefToken  = "ref";
 
-static void logInvalidTokenError( char *in, char *exp ) {
-    std::cerr << "Invalid token " << *in << ", " << exp << " expected." << std::endl;
+static void logInvalidTokenError( char *in, char *exp, OpenDDLParser::logCallback callback ) {
+    std::stringstream stream;
+    stream << "Invalid token " << *in << ", " << exp << " expected." << std::endl;
+    callback( ddl_error_msg, stream.str() );
 }
 
 static bool isIntegerType( PrimitiveDataType integerType ) {
@@ -229,8 +232,31 @@ PrimData *PrimData::getNext() const {
     return m_next;
 }
 
+void logMessage( LogSeverity severity, const std::string &msg ) {
+    std::string log;
+    if( ddl_debug_msg == severity ) {
+        log += "Debug:";
+    }
+    else if( ddl_info_msg == severity ) {
+        log += "Info :";
+    }
+    else if( ddl_warn_msg == severity ) {
+        log += "Warn :";
+    }
+    else if( ddl_error_msg == severity ) {
+        log += "Error:";
+    }
+    else {
+        log += "None :";
+    }
+
+    log += msg;
+    std::cout << log;
+}
+
 OpenDDLParser::OpenDDLParser()
-: m_ownsBuffer( false )
+: m_logCallback( logMessage )
+, m_ownsBuffer( false )
 ,m_buffer( nullptr )
 , m_len( 0 )
 , m_root( nullptr )
@@ -239,7 +265,8 @@ OpenDDLParser::OpenDDLParser()
 }
 
 OpenDDLParser::OpenDDLParser( char *buffer, size_t len, bool ownsIt )
-: m_ownsBuffer( false )
+: m_logCallback( &logMessage )
+, m_ownsBuffer( false )
 , m_buffer( nullptr )
 , m_len( 0 )
 , m_root( nullptr ) {
@@ -250,6 +277,20 @@ OpenDDLParser::OpenDDLParser( char *buffer, size_t len, bool ownsIt )
 
 OpenDDLParser::~OpenDDLParser() {
     clear();
+}
+
+void OpenDDLParser::setLogCallback( logCallback callback ) {
+    if( nullptr != callback ) {
+        // install user-specific log callback
+        m_logCallback = callback;
+    } else {
+        // install default log callback
+        m_logCallback = &logMessage;
+    }
+}
+
+OpenDDLParser::logCallback OpenDDLParser::getLogCallback() const {
+    return m_logCallback;
 }
 
 void OpenDDLParser::setBuffer( char *buffer, size_t len, bool ownsIt ) {
@@ -337,7 +378,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
                 in = getNextToken( in, end );
 
                 if( *in != ',' && *in != ')' ) {
-                    logInvalidTokenError( in, ")" );
+                    logInvalidTokenError( in, ")", m_logCallback );
                     return in;
                 }
                 if( nullptr != prop && *in != ',' ) {
@@ -393,7 +434,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
 
             in = getNextSeparator( in, end );
             if( *in != '}' ) {
-                logInvalidTokenError(in, "}" );
+                logInvalidTokenError( in, "}", m_logCallback );
             }
         } else {
             in = parseHeader( in, end );
@@ -401,7 +442,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         }
     } else {
         in++;
-        logInvalidTokenError( in, "{" );
+        logInvalidTokenError( in, "{", m_logCallback );
         return in;
 
     }
@@ -816,7 +857,6 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
 
             in = getNextSeparator( in, end );
             if( ',' != *in && '}' != *in && !isSpace( *in ) ) {
-                logInvalidTokenError( in, "} or ," );
                 break;
             }
         }

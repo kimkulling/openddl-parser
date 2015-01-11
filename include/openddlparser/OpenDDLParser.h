@@ -151,11 +151,23 @@ struct Property {
     }
 };
 
+enum LogSeverity {
+    ddl_debug_msg = 0,
+    ddl_info_msg,
+    ddl_warn_msg,
+    ddl_error_msg,
+};
+
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {
+public:
+    typedef void( *logCallback )( LogSeverity severity, const std::string &msg );
+
 public:
     OpenDDLParser();
     OpenDDLParser( char *buffer, size_t len, bool ownsIt = false );
     ~OpenDDLParser();
+    void setLogCallback( logCallback callback );
+    logCallback getLogCallback() const;
     void setBuffer( char *buffer, size_t len, bool ownsIt = false );
     char *getBuffer() const;
     size_t getBufferSize() const;
@@ -189,6 +201,7 @@ private:
     OpenDDLParser &operator = ( const OpenDDLParser & );
 
 private:
+    logCallback m_logCallback;
     bool m_ownsBuffer;
     char *m_buffer;
     size_t m_len;
