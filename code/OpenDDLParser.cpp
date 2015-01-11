@@ -669,16 +669,16 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, PrimData **intege
         *integer = PrimDataAllocator::allocPrimData( integerType );
         switch( integerType ) {
             case ddl_int8:
-                ( *integer )->setInt8( value );
+                ( *integer )->setInt8( (int8_t) value );
                 break;
             case ddl_int16:
-                ( *integer )->setInt16( value );
+                ( *integer )->setInt16( ( int16_t ) value );
                 break;
             case ddl_int32:
-                ( *integer )->setInt32( value );
+                ( *integer )->setInt32( ( int32_t ) value );
                 break;
             case ddl_int64:
-                ( *integer )->setInt64( value );
+                ( *integer )->setInt64( ( int64_t ) value );
                 break;
             default:
                 break;
@@ -700,7 +700,7 @@ char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, PrimData **float
         in++;
     }
     if( isNumeric( *start ) ) {
-        const float value( atof( start ) );
+        const float value( (float) atof( start ) );
         *floating = PrimDataAllocator::allocPrimData( ddl_float );
         ( *floating )->setFloat( value );
     }
