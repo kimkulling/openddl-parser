@@ -535,7 +535,7 @@ TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     EXPECT_NE( nullptr, data );
     EXPECT_EQ( ddl_string, data->m_type );
     std::string str( (char*) data->m_data );
-    int res(strncmp( "teststring", str.c_str(), str.size() ) );
+    int res( ::strncmp( "teststring", str.c_str(), str.size() ) );
     EXPECT_EQ( 0, res );
 }
 

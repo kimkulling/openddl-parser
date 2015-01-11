@@ -381,13 +381,13 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
     if( *in == '{' ) {
         in++;
         in = getNextToken( in, end );
-        PrimData *primData( nullptr );
         PrimitiveDataType type( ddl_none );
         size_t arrayLen( 0 );
         in = OpenDDLParser::parsePrimitiveDataType( in, end, type, arrayLen );
-        if ( nullptr != primData ) {
+        if ( ddl_none != type ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
+                PrimData *primData( nullptr );
                 in = parseDataList( in, end, &primData );
             }
 
