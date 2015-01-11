@@ -432,7 +432,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
                 in = parseDataList( in, end, &primData );
             }
 
-            in = getNextSeparator( in, end );
+            in = getNextToken( in, end );
             if( *in != '}' ) {
                 logInvalidTokenError( in, "}", m_logCallback );
             }

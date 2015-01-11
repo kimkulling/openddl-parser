@@ -47,8 +47,12 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     EXPECT_EQ( "Metric", child->getType() );
     Property *prop = child->getProperties();
     ASSERT_NE( nullptr, prop );
+
+    const char *data = ( const char *) prop->m_primData->m_data;
+    const int res( ::strncmp( "distance", data, strlen( "distance " ) ) );
     
     EXPECT_EQ( ddl_string, prop->m_primData->m_type );
+    EXPECT_EQ( 0, res );
 }
 
 TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureTest ) {
