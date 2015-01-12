@@ -483,6 +483,7 @@ TEST_F( OpenDDLParserTest , parsePrimitiveArrayWithSpacesTest ) {
     EXPECT_EQ( ddl_float, type );
     EXPECT_EQ( 16, arrayLen );
 }
+TEST_F( OpenDDLParserTest, parsePrimitiveArrayHexTest ) {
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
     size_t len1( 0 );
     char token1[] = "float[3", *end( findEnd( token1, len1 ) );
