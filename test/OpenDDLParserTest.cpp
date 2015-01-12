@@ -240,9 +240,14 @@ TEST_F( OpenDDLParserTest, isHexLiteralTest ) {
     size_t len( 0 );
     char token1[] = "0x10";
     char *end = findEnd( token1, len );
-
     bool result = isHexLiteral( token1, end );
     EXPECT_TRUE( result );
+
+    char token11[] = "0X10";
+    end = findEnd( token11, len );
+    result = isHexLiteral( token11, end );
+    EXPECT_TRUE( result );
+
 
     char token2[] = "10";
     result = isHexLiteral( token2, end );

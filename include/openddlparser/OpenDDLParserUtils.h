@@ -187,7 +187,7 @@ inline
 bool isHexLiteral( T *in, T *end ) {
     if( *in == '0' ) {
         if( in + 1 != end ) {
-            if( *( in + 1 ) == 'x' ) {
+            if( *( in + 1 ) == 'x' || *( in + 1 ) == 'X' ) {
                 return true;
             }
         }
