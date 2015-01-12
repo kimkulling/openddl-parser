@@ -211,6 +211,23 @@ static T *getNextSeparator( T *in, T *end ) {
     return in;
 }
 
+static const int ErrorHex2Decimal = 9999;
+
+inline
+int hex2Decimal( char in ) {
+    if( isNumeric( in ) ) {
+        return (int) in-48;
+    }
+    char hexCodeLower( 'a' ), hexCodeUpper( 'A' );
+    for( unsigned int i = 0; i<16; i++ ) {
+        if( in == hexCodeLower + i || in == hexCodeUpper + i ) {
+            return i+10;
+        }
+    }
+
+    return ErrorHex2Decimal;
+}
+
 END_ODDLPARSER_NS
 
 #endif // OPENDDLPARSER_OPENDDLPARSERUTILS_H_INC

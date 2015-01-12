@@ -322,6 +322,29 @@ TEST_F( OpenDDLParserTest, getNextSeparatorTest ) {
     EXPECT_TRUE( res );
 }
 
+TEST_F( OpenDDLParserTest, hex2DecimalTest ) {
+    int res = hex2Decimal( '1' );
+    EXPECT_EQ( 1, res );
+
+    res = hex2Decimal( '0' );
+    EXPECT_EQ( 0, res );
+
+    res = hex2Decimal( '9' );
+    EXPECT_EQ( 9, res );
+
+    res = hex2Decimal( 'a' );
+    EXPECT_EQ( 10, res );
+
+    res = hex2Decimal( 'f' );
+    EXPECT_EQ( 15, res );
+
+    res = hex2Decimal( 'A' );
+    EXPECT_EQ( 10, res );
+
+    res = hex2Decimal( 'F' );
+    EXPECT_EQ( 15, res );
+}
+
 TEST_F( OpenDDLParserTest, PrimDataAllocTest ) {
     PrimData *data = PrimDataAllocator::allocPrimData( ddl_bool );
     EXPECT_NE( nullptr, data );
