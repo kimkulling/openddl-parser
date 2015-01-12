@@ -782,6 +782,52 @@ static void createPropertyWithData( Identifier *id, PrimData *primData, Property
     }
 }
 
+char *OpenDDLParser::parseHexaLiteral( char *in, char *end, PrimData **data ) {
+    *data = nullptr;
+    if( nullptr == in || in == end ) {
+        return in;
+    }
+
+    in = getNextToken( in, end );
+    if( *in != '0' ) {
+        return in;
+    }
+
+    in++;
+    if( *in != 'x' && *in != 'X' ) {
+        return in;
+    }
+
+    in++;
+    bool ok( true );
+    char *start( in );
+    int pos( 0 );
+    while( !isSeparator( *in ) && in != end ) {
+        if( ( *in < '0' && *in > '9' ) || ( *in < 'a' && *in > 'f' ) || ( *in < 'A' && *in > 'F' ) ) {
+            ok = false;
+            break;
+        }
+        pos++;
+        in++;
+    }
+
+    if( !ok ) {
+        return in;
+    }
+
+    int value( 0 );
+    while( pos > 0 ) {
+        value += hex2Decimal( *start );
+        start++;
+        pos--;
+    }
+
+    *data = PrimDataAllocator::allocPrimData( ddl_int32 );
+    (*data)->setInt32( value );
+
+    return in;
+}
+
 char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
     *prop = nullptr;
     if( nullptr == in || in == end ) {

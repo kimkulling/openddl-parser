@@ -191,6 +191,7 @@ public: // static parser helpers
     static char *parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType = ddl_int32 );
     static char *parseFloatingLiteral( char *in, char *end, PrimData **floating );
     static char *parseStringLiteral( char *in, char *end, PrimData **stringData );
+    static char *parseHexaLiteral( char *in, char *end, PrimData **data );
     static char *parseProperty( char *in, char *end, Property **prop );
     static char *parseDataList( char *in, char *end, PrimData **data );
     static char *parseDataArrayList( char *in, char *end, PrimData **data );

@@ -506,7 +506,17 @@ TEST_F( OpenDDLParserTest , parsePrimitiveArrayWithSpacesTest ) {
     EXPECT_EQ( ddl_float, type );
     EXPECT_EQ( 16, arrayLen );
 }
+
 TEST_F( OpenDDLParserTest, parsePrimitiveArrayHexTest ) {
+    size_t len( 0 );
+    char token[] = 
+        "{0x01,0x02,0x03}\n";
+    char *end( findEnd( token, len ) );
+    PrimData *data( nullptr );
+    char *in = OpenDDLParser::parseDataList( token, end, &data );
+    EXPECT_NE( in, token );
+}
+
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
     size_t len1( 0 );
     char token1[] = "float[3", *end( findEnd( token1, len1 ) );
@@ -615,6 +625,16 @@ TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     std::string str( (char*) data->m_data );
     int res( ::strncmp( "teststring", str.c_str(), str.size() ) );
     EXPECT_EQ( 0, res );
+}
+
+TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
+    size_t len( 0 );
+    char token1[] = "0x01", *end( findEnd( token1, len ) );
+    PrimData *data( nullptr );
+    char *in = OpenDDLParser::parseHexaLiteral( token1, end, &data );
+    ASSERT_NE( nullptr, data );
+    int v( data->getInt32() );
+    EXPECT_EQ( 1, data->getInt32() );
 }
 
 TEST_F( OpenDDLParserTest, parsePropertyTest ) {
