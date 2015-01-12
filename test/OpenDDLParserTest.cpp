@@ -661,7 +661,7 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     EXPECT_EQ( 255, data->getInt32() );
     registerPrimDataForDeletion( data );
 
-    char token3[] = "0xff";
+    char token3[] = "0xFF";
     end = findEnd( token3, len );
     in = OpenDDLParser::parseHexaLiteral( token3, end, &data );
     ASSERT_NE( nullptr, data );
