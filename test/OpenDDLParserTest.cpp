@@ -655,7 +655,19 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
 
     char token2[] = "0xff";
     end = findEnd( token2, len );
-    in = OpenDDLParser::parseHexaLiteral( token1, end, &data );
+    in = OpenDDLParser::parseHexaLiteral( token2, end, &data );
+    ASSERT_NE( nullptr, data );
+    v = data->getInt32();
+    EXPECT_EQ( 255, data->getInt32() );
+    registerPrimDataForDeletion( data );
+
+    char token3[] = "0xff";
+    end = findEnd( token3, len );
+    in = OpenDDLParser::parseHexaLiteral( token3, end, &data );
+    ASSERT_NE( nullptr, data );
+    v = data->getInt32();
+    EXPECT_EQ( 255, data->getInt32() );
+    registerPrimDataForDeletion( data );
 }
 
 TEST_F( OpenDDLParserTest, parsePropertyTest ) {

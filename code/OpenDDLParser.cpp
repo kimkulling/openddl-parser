@@ -817,9 +817,9 @@ char *OpenDDLParser::parseHexaLiteral( char *in, char *end, PrimData **data ) {
 
     int value( 0 );
     while( pos > 0 ) {
-        value += hex2Decimal( *start );
-        start++;
         pos--;
+        value += hex2Decimal( *start ) * pow( 16.0, pos );
+        start++;
     }
 
     *data = PrimDataAllocator::allocPrimData( ddl_int32 );
