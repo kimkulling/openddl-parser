@@ -41,7 +41,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     ASSERT_NE( nullptr, myNode );
 
     DDLNode::DllNodeList myList = myNode->getChildNodeList();
-    EXPECT_EQ(1, myList.size() );
+    EXPECT_EQ( 1, myList.size() );
     DDLNode *child = myList[ 0 ];
     ASSERT_NE( nullptr, child );
     EXPECT_EQ( "Metric", child->getType() );
@@ -49,7 +49,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     ASSERT_NE( nullptr, prop );
 
     const char *data = ( const char *) prop->m_primData->m_data;
-    const int res( ::strncmp( "distance", data, strlen( "distance " ) ) );
+    const int res( ::strncmp( "distance", data, strlen( "distance" ) ) );
     
     EXPECT_EQ( ddl_string, prop->m_primData->m_type );
     EXPECT_EQ( 0, res );
@@ -88,9 +88,9 @@ TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
         "        float[ 16 ]\n"
         "        {\n"
         "            {0x3F800000, 0x00000000, 0x00000000, 0x00000000,		// {1, 0, 0, 0\n"
-        "                0x00000000, 0x3F800000, 0x00000000, 0x00000000,		//  0, 1, 0, 0\n"
-        "                0x00000000, 0x00000000, 0x3F800000, 0x00000000,		//  0, 0, 1, 0\n"
-        "                0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
+        "             0x00000000, 0x3F800000, 0x00000000, 0x00000000,		//  0, 1, 0, 0\n"
+        "             0x00000000, 0x00000000, 0x3F800000, 0x00000000,		//  0, 0, 1, 0\n"
+        "             0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
         "        }\n"
         "    }\n"
         "}\n";
