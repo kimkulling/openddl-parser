@@ -465,10 +465,10 @@ DDLNode *OpenDDLParser::popNode() {
         return nullptr;
     }
 
-    DDLNode *top( top() );
+    DDLNode *topNode( top() );
     m_stack.pop_back();
 
-    return top;
+    return topNode;
 }
 
 DDLNode *OpenDDLParser::top() {

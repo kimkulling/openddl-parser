@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/DDLNode.h>
 
+#include <algorithm>
+
 BEGIN_ODDLPARSER_NS
 
 DDLNode::DDLNode( const std::string &type, const std::string &name, DDLNode *parent )
