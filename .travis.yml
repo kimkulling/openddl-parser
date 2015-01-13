@@ -1,6 +1,5 @@
 install:
   - sudo apt-get install cmake
-  - sudo apt-get install -qq libsdl2-dev gcc-4.8
 env:
   - TRAVIS_NO_EXPORT=YES
   - TRAVIS_NO_EXPORT=NO
