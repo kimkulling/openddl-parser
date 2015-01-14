@@ -429,7 +429,13 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
                 PrimData *primData( nullptr );
-                in = parseDataList( in, end, &primData );
+                if( 1 == arrayLen ) {
+                    in = parseDataList( in, end, &primData );
+                } else if( arrayLen > 1 ) {
+                    in = parseDataArrayList( in, end, &primData  );
+                } else {
+                    std::cerr << "0 for array is invalid." << std::endl;
+                }
             }
 
             in = getNextToken( in, end );
