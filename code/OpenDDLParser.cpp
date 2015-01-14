@@ -616,6 +616,8 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimitiveDataT
                 break;
             }
         }
+    } else {
+        len = 1;
     }
     if( !ok ) {
         type = ddl_none;

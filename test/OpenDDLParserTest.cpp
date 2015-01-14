@@ -486,7 +486,7 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
     char token1[] = "float", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parsePrimitiveDataType( token1, end1, type, len );
     EXPECT_EQ( ddl_float, type );
-    EXPECT_EQ( 0, len );
+    EXPECT_EQ( 1, len );
 
     size_t len2( 0 );
     char invalidToken[] = "foat", *end2( findEnd( token1, len2 ) );
