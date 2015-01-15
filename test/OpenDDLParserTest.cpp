@@ -473,7 +473,6 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
 
 TEST_F( OpenDDLParserTest, parseDataArrayListTest ) {
     char token[] =
-        "float[ 3 ]\n"
         "{\n"
         "    { 1.0, 2.0, 3.0 },\n"
         "    { 0.5, 0.0, 0.5 },\n"
