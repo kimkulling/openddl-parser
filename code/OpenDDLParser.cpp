@@ -31,6 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #  include <windows.h>
 #endif // _WIN32
 
+#define DEBUG_HEADER_NAME 
+
 BEGIN_ODDLPARSER_NS
 
 static const char *Version = "0.1.0";
@@ -367,6 +369,13 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
 
     Identifier *id( nullptr );
     in = OpenDDLParser::parseIdentifier( in, end, &id );
+
+#ifdef DEBUG_HEADER_NAME    
+    if( id ) {
+        std::cout << id->m_buffer << std::endl;
+    }
+#endif // DEBUG_HEADER_NAME
+
     in = getNextToken( in, end );
     Property *first( nullptr );
     if( nullptr != id ) {
