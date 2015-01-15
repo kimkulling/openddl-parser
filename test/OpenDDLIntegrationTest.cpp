@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <openddlparser/OpenDDLParser.h>
 
+#include "UnitTestCommon.h"
+
 BEGIN_ODDLPARSER_NS
 
 class OpenDDLIntegrationTest : public testing::Test {

@@ -219,7 +219,7 @@ int hex2Decimal( char in ) {
         return (int) in-48;
     }
     char hexCodeLower( 'a' ), hexCodeUpper( 'A' );
-    for( unsigned int i = 0; i<16; i++ ) {
+    for( int i = 0; i<16; i++ ) {
         if( in == hexCodeLower + i || in == hexCodeUpper + i ) {
             return i+10;
         }

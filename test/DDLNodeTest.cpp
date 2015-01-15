@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+#include "UnitTestCommon.h"
+
 class DDLNodeTest : public testing::Test {
 };
 
