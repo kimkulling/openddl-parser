@@ -37,58 +37,62 @@ to your lib-folder. Link the openddl.lib to your application.
 
 Here is a small example how to use the lib:
 
->#include <iostream>
->#include <cassert>
->#include <openddlparser/OpenDDLParser.h>
->
->USE_ODDLPARSER_NS;
->
->int main( int argc, char *argv[] ) {
->    if( argc < 3 ) {
->        return 1;
->    }
+'''
+#include <iostream>
+#include <cassert>
+#include <openddlparser/OpenDDLParser.h>
 
->    char *filename( nullptr );
->    if( 0 == strncmp( FileOption, argv[ 1 ], strlen( FileOption ) ) ) {
->        filename = argv[ 2 ];
->    }
->    std::cout << "file to import: " << filename << std::endl;   
->    if( nullptr == filename ) {
->        std::cerr << "Invalid filename." << std::endl;
->        return Error;
->    }
->
->    FILE *fileStream = fopen( filename, "r+" );
->    if( NULL == filename ) {
->        std::cerr << "Cannot open file " << filename << std::endl;
->        return 1;
->    }
->
->    // obtain file size:
->    fseek( fileStream, 0, SEEK_END );
->    const size_t size( ftell( fileStream ) );   
->    rewind( fileStream );   
->    if( size > 0 ) {
->        char *buffer = new char[ size ];
->        const size_t readSize( fread( buffer, sizeof( char ), size, fileStream ) );
->        assert( readSize == size );
->        OpenDDLParser theParser;
->        theParser.setBuffer( buffer, size );
->        const bool result( theParser.parse() );
->        if( !result ) {
->            std::cerr << "Error while parsing file " << filename << "." << std::endl;
->        }
->    }
->    return 0;
->}
+USE_ODDLPARSER_NS;
+
+int main( int argc, char *argv[] ) {
+    if( argc < 3 ) {
+        return 1;
+    }
+
+    char *filename( nullptr );
+    if( 0 == strncmp( FileOption, argv[ 1 ], strlen( FileOption ) ) ) {
+        filename = argv[ 2 ];
+    }
+    std::cout << "file to import: " << filename << std::endl;   
+    if( nullptr == filename ) {
+        std::cerr << "Invalid filename." << std::endl;
+        return Error;
+    }
+
+    FILE *fileStream = fopen( filename, "r+" );
+    if( NULL == filename ) {
+        std::cerr << "Cannot open file " << filename << std::endl;
+        return 1;
+    }
+
+    // obtain file size:
+    fseek( fileStream, 0, SEEK_END );
+    const size_t size( ftell( fileStream ) );   
+    rewind( fileStream );   
+    if( size > 0 ) {
+        char *buffer = new char[ size ];
+        const size_t readSize( fread( buffer, sizeof( char ), size, fileStream ) );
+        assert( readSize == size );
+        OpenDDLParser theParser;
+        theParser.setBuffer( buffer, size );
+        const bool result( theParser.parse() );
+        if( !result ) {
+            std::cerr << "Error while parsing file " << filename << "." << std::endl;
+        }
+    }
+    return 0;
+}
+'''
 
 How to access the imported data
 ===============================
 The data is organized as a tree. You can get the root tree with the following code:
 
->OpenDDLParser theParser;
->theParser.setBuffer( buffer, size );
->const bool result( theParser.parse() );
->if ( result ) {
->    DDLNode *root = theParser.getRoot();
->}
+'''
+OpenDDLParser theParser;
+theParser.setBuffer( buffer, size );
+const bool result( theParser.parse() );
+if ( result ) {
+    DDLNode *root = theParser.getRoot();
+}
+'''
