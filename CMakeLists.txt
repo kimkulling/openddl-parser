@@ -51,6 +51,7 @@ SET ( openddl_parser_src
     include/openddlparser/OpenDDLParserUtils.h
     include/openddlparser/OpenDDLCommon.h
     include/openddlparser/DDLNode.h
+    README.md
 )
  
 SOURCE_GROUP( code            FILES ${openddl_parser_src} )

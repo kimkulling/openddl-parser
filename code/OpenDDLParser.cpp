@@ -835,7 +835,7 @@ char *OpenDDLParser::parseHexaLiteral( char *in, char *end, PrimData **data ) {
     int value( 0 );
     while( pos > 0 ) {
         pos--;
-        value += hex2Decimal( *start ) * pow( 16.0, pos );
+        value += hex2Decimal( *start ) * static_cast<int>( pow( 16.0, pos ) );
         start++;
     }
 
