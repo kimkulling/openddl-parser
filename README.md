@@ -38,6 +38,7 @@ to your lib-folder. Link the openddl.lib to your application.
 Here is a small example how to use the lib:
 
 '''
+
 #include <iostream>
 #include <cassert>
 #include <openddlparser/OpenDDLParser.h>
@@ -82,6 +83,7 @@ int main( int argc, char *argv[] ) {
     }
     return 0;
 }
+
 '''
 
 How to access the imported data
@@ -89,12 +91,14 @@ How to access the imported data
 The data is organized as a tree. You can get the root tree with the following code:
 
 '''
+
 OpenDDLParser theParser;
 theParser.setBuffer( buffer, size );
 const bool result( theParser.parse() );
 if ( result ) {
     DDLNode *root = theParser.getRoot();
 }
+
 '''
 
 The instance called root contains the data.
