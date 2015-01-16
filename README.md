@@ -96,3 +96,5 @@ if ( result ) {
     DDLNode *root = theParser.getRoot();
 }
 '''
+
+The instance called root contains the data.
