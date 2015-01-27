@@ -53,7 +53,7 @@ int main( int argc, char *argv[] ) {
 
     char *filename( nullptr );
     bool dump( false );
-    for (unsigned int i = 1; i < argc; i++) {
+    for ( int i = 1; i < argc; i++) {
         if (0 == strncmp(FileOption, argv[i], strlen(FileOption))) {
             if ((i + 1) >= argc) {
                 std::cerr << "No filename specified" << std::endl;
