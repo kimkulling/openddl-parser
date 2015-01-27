@@ -483,6 +483,7 @@ TEST_F( OpenDDLParserTest, parseDataArrayListTest ) {
     PrimData *data( nullptr );
     char *in = OpenDDLParser::parseDataArrayList( token, end, &data );
     ASSERT_NE( nullptr, data );
+    const size_t numItems( countItems( data ) );
     registerPrimDataForDeletion( data );
     EXPECT_NE( token, in );
 }
