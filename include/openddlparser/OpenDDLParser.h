@@ -37,7 +37,7 @@ class DDLNode;
 
 struct Identifier;
 struct Reference;
-struct PrimData;
+struct Value;
 struct Property;
 
 typedef char  int8_t;
@@ -65,17 +65,17 @@ enum PrimitiveDataType {
 };
 
 struct DLL_ODDLPARSER_EXPORT PrimDataAllocator {
-    static PrimData *allocPrimData( PrimitiveDataType type, size_t len = 1 );
-    static void releasePrimData( PrimData **data );
+    static Value *allocPrimData( PrimitiveDataType type, size_t len = 1 );
+    static void releasePrimData( Value **data );
 };
 
-struct DLL_ODDLPARSER_EXPORT PrimData {
+struct DLL_ODDLPARSER_EXPORT Value {
     PrimitiveDataType m_type;
     size_t m_size;
     unsigned char *m_data;
-    PrimData *m_next;
+    Value *m_next;
 
-    PrimData()
+    Value()
     : m_type( ddl_none )
     , m_size( 0 )
     , m_data( nullptr )
@@ -95,8 +95,11 @@ struct DLL_ODDLPARSER_EXPORT PrimData {
     int64_t  getInt64();
     void setFloat( float value );
     float getFloat() const;
-    void setNext( PrimData *next );
-    PrimData *getNext() const;
+    void setDouble( double value );
+    double getDouble() const;
+    void dump();
+    void setNext( Value *next );
+    Value *getNext() const;
 };
 
 enum NameType {
@@ -109,7 +112,8 @@ struct Name {
     Identifier *m_id;
 
     Name( NameType type, Identifier *id )
-    : m_type( type ), m_id( id ) {
+    : m_type( type )
+    , m_id( id ) {
         // empty
     }
 };
@@ -138,7 +142,7 @@ struct Identifier {
 
 struct Property {
     Identifier *m_id;
-    PrimData *m_primData;
+    Value *m_primData;
     Reference *m_ref;
     Property *m_next;
 
@@ -187,14 +191,14 @@ public: // static parser helpers
     static char *parseIdentifier( char *in, char *end, Identifier **id );
     static char *parsePrimitiveDataType( char *in, char *end, PrimitiveDataType &type, size_t &len );
     static char *parseReference( char *in, char *end, std::vector<Name*> &names );
-    static char *parseBooleanLiteral( char *in, char *end, PrimData **boolean );
-    static char *parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType = ddl_int32 );
-    static char *parseFloatingLiteral( char *in, char *end, PrimData **floating );
-    static char *parseStringLiteral( char *in, char *end, PrimData **stringData );
-    static char *parseHexaLiteral( char *in, char *end, PrimData **data );
+    static char *parseBooleanLiteral( char *in, char *end, Value **boolean );
+    static char *parseIntegerLiteral( char *in, char *end, Value **integer, PrimitiveDataType integerType = ddl_int32 );
+    static char *parseFloatingLiteral( char *in, char *end, Value **floating );
+    static char *parseStringLiteral( char *in, char *end, Value **stringData );
+    static char *parseHexaLiteral( char *in, char *end, Value **data );
     static char *parseProperty( char *in, char *end, Property **prop );
-    static char *parseDataList( char *in, char *end, PrimData **data );
-    static char *parseDataArrayList( char *in, char *end, PrimData **data );
+    static char *parseDataList( char *in, char *end, Value **data );
+    static char *parseDataArrayList( char *in, char *end, Value **data );
     static const char *getVersion();
 
 private:

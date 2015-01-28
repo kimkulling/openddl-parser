@@ -87,12 +87,12 @@ static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *p
     return node;
 }
 
-PrimData *PrimDataAllocator::allocPrimData( PrimitiveDataType type, size_t len ) {
+Value *PrimDataAllocator::allocPrimData( PrimitiveDataType type, size_t len ) {
     if( type == ddl_none || ddl_types_max == type ) {
         return nullptr;
     }
 
-    PrimData *data = new PrimData;
+    Value *data = new Value;
     data->m_type = type;
     switch( type ) {
         case ddl_bool:
@@ -148,7 +148,7 @@ PrimData *PrimDataAllocator::allocPrimData( PrimitiveDataType type, size_t len )
     return data;
 }
 
-void PrimDataAllocator::releasePrimData( PrimData **data ) {
+void PrimDataAllocator::releasePrimData( Value **data ) {
     if( !data ) {
         return;
     }
@@ -166,71 +166,135 @@ T *getNextToken( T *in, T *end ) {
     return in;
 }
 
-void PrimData::setBool( bool value ) {
+void Value::setBool( bool value ) {
     assert( ddl_bool == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-bool PrimData::getBool() {
+bool Value::getBool() {
     assert( ddl_bool == m_type );
     return ( bool ) ( *m_data );
 }
 
-void PrimData::setInt8( int8_t value ) {
+void Value::setInt8( int8_t value ) {
     assert( ddl_int8 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-int8_t PrimData::getInt8() {
+int8_t Value::getInt8() {
     assert( ddl_int8 == m_type );
     return ( int8_t ) ( *m_data );
 }
 
-void PrimData::setInt16( int16_t value ) {
+void Value::setInt16( int16_t value ) {
     assert( ddl_int16 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-int16_t PrimData::getInt16() {
+int16_t Value::getInt16() {
     assert( ddl_int16 == m_type );
     return ( int16_t ) ( *m_data );
 }
 
-void PrimData::setInt32( int32_t value ) {
+void Value::setInt32( int32_t value ) {
     assert( ddl_int32 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-int32_t PrimData::getInt32() {
+int32_t Value::getInt32() {
     assert( ddl_int32 == m_type );
     return ( int32_t ) ( *m_data );
 }
 
-void PrimData::setInt64( int64_t value ) {
+void Value::setInt64( int64_t value ) {
     assert( ddl_int32 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-int64_t PrimData::getInt64() {
+int64_t Value::getInt64() {
     return ( int64_t ) ( *m_data );
 }
 
-void PrimData::setFloat( float value ) {
+void Value::setFloat( float value ) {
     assert( ddl_float == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-float PrimData::getFloat() const {
+float Value::getFloat() const {
     float v;
     ::memcpy( &v, m_data, m_size );
     return v;
 }
 
-void PrimData::setNext( PrimData *next ) {
+void Value::setDouble( double value ) {
+    assert( ddl_double == m_type );
+    ::memcpy( m_data, &value, m_size );
+}
+
+double Value::getDouble() const {
+    double v;
+    ::memcpy( &v, m_data, m_size );
+    return v;
+}
+
+
+void Value::dump() {
+    switch( m_type ) {
+    case ddl_none:
+        std::cout << "None" << std::endl;
+        break;
+    case ddl_bool:
+        std::cout << getBool() << std::endl;
+        break;
+    case ddl_int8:
+        std::cout << getInt8() << std::endl;
+        break;
+    case ddl_int16:
+        std::cout << getInt16() << std::endl;
+        break;
+    case ddl_int32:
+        std::cout << getInt32() << std::endl;
+        break;
+    case ddl_int64:
+        std::cout << getInt64() << std::endl;
+        break;
+    case ddl_unsigned_int8:
+        std::cout << "Not supported" << std::endl;
+        break;
+    case ddl_unsigned_int16:
+        std::cout << "Not supported" << std::endl;
+        break;
+    case ddl_unsigned_int32:
+        std::cout << "Not supported" << std::endl;
+        break;
+    case ddl_unsigned_int64:
+        std::cout << "Not supported" << std::endl;
+        break;
+    case ddl_half:
+        std::cout << "Not supported" << std::endl;
+        break;
+    case ddl_float:
+        std::cout << getFloat() << std::endl;
+        break;
+    case ddl_double:
+        std::cout << getDouble() << std::endl;
+        break;
+    case ddl_string:
+        std::cout << "Not supported" << std::endl;
+        break;
+    case ddl_ref:
+        std::cout << "Not supported" << std::endl;
+        break;
+    default:
+        break;
+    }
+}
+
+void Value::setNext( Value *next ) {
     m_next = next;
 }
 
-PrimData *PrimData::getNext() const {
+Value *Value::getNext() const {
     return m_next;
 }
 
@@ -437,7 +501,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         if ( ddl_none != type ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
-                PrimData *primData( nullptr );
+                Value *primData( nullptr );
                 if( 1 == arrayLen ) {
                     in = parseDataList( in, end, &primData );
                 } else if( arrayLen > 1 ) {
@@ -675,7 +739,7 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
     return in;
 }
 
-char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolean ) {
+char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, Value **boolean ) {
     *boolean = nullptr;
     if( nullptr == in || in == end ) {
         return in;
@@ -706,7 +770,7 @@ char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, PrimData **boolea
     return in;
 }
 
-char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, PrimData **integer, PrimitiveDataType integerType ) {
+char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, PrimitiveDataType integerType ) {
     *integer = nullptr;
     if( nullptr == in || in == end ) {
         return in;
@@ -746,7 +810,7 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, PrimData **intege
     return in;
 }
 
-char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, PrimData **floating ) {
+char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, Value **floating ) {
     *floating = nullptr;
     if( nullptr == in || in == end ) {
         return in;
@@ -766,7 +830,7 @@ char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, PrimData **float
     return in;
 }
 
-char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringData ) {
+char *OpenDDLParser::parseStringLiteral( char *in, char *end, Value **stringData ) {
     *stringData = nullptr;
     if( nullptr == in || in == end ) {
         return in;
@@ -792,14 +856,14 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, PrimData **stringD
     return in;
 }
 
-static void createPropertyWithData( Identifier *id, PrimData *primData, Property **prop ) {
+static void createPropertyWithData( Identifier *id, Value *primData, Property **prop ) {
     if( nullptr != primData ) {
         ( *prop ) = new Property( id );
         ( *prop )->m_primData = primData;
     }
 }
 
-char *OpenDDLParser::parseHexaLiteral( char *in, char *end, PrimData **data ) {
+char *OpenDDLParser::parseHexaLiteral( char *in, char *end, Value **data ) {
     *data = nullptr;
     if( nullptr == in || in == end ) {
         return in;
@@ -859,7 +923,7 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
         if( *in == '=' ) {
             in++;
             in = getNextToken( in, end );
-            PrimData *primData( nullptr );
+            Value *primData( nullptr );
             if( isInteger( in, end ) ) {
                 in = parseIntegerLiteral( in, end, &primData );
                 createPropertyWithData( id, primData, prop );
@@ -884,7 +948,7 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
     return in;
 }
 
-char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
+char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
     *data = nullptr;
     if( nullptr == in || in == end ) {
         return in;
@@ -893,7 +957,7 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
     in = getNextToken( in, end );
     if( *in == '{' ) {
         in++;
-        PrimData *first( nullptr ), *prev( nullptr ), *current( nullptr );
+        Value *first( nullptr ), *prev( nullptr ), *current( nullptr );
         while( '}' != *in ) {
             current = nullptr;
             in = getNextToken( in, end );
@@ -930,23 +994,23 @@ char *OpenDDLParser::parseDataList( char *in, char *end, PrimData **data ) {
     return in;
 }
 
-char *OpenDDLParser::parseDataArrayList( char *in, char *end, PrimData **data ) {
+char *OpenDDLParser::parseDataArrayList( char *in, char *end, Value **data ) {
     if( nullptr == in || in == end ) {
         return in;
     }
 
     in = getNextToken( in, end );
     if( *in == '{' ) {
+        Value *prev( nullptr ), *current( nullptr );
         do {
-            PrimData *prev( nullptr ), *next( nullptr );
-            in = parseDataList( in, end, &next );
-            if( nullptr != next ) {
+            in = parseDataList( in, end, &current );
+            if( nullptr != current ) {
                 if( nullptr == *data ) {
-                    *data = next;
+                    *data = current;
                     prev = *data;
                 } else {
                     if( nullptr != prev ) {
-                        prev->m_next = next;
+                        prev->setNext( current );
                     }
                 }
             }

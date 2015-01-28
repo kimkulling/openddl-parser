@@ -33,7 +33,7 @@ BEGIN_ODDLPARSER_NS
 
 struct Identifier;
 struct Reference;
-struct PrimData;
+struct Value;
 struct Property;
 
 class DLL_ODDLPARSER_EXPORT DDLNode {

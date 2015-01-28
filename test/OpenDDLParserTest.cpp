@@ -33,7 +33,7 @@ BEGIN_ODDLPARSER_NS
 class OpenDDLParserTest : public testing::Test {
     static OpenDDLParserTest *s_instance;
     std::vector<DDLNode*> m_nodes;
-    std::vector<PrimData*> m_data;
+    std::vector<Value*> m_data;
     std::vector<std::string> m_logs;
 
 public:
@@ -66,7 +66,7 @@ public:
         m_logs.clear();
     }
 
-    void registerPrimDataForDeletion( PrimData *data ) {
+    void registerPrimDataForDeletion( Value *data ) {
         if( data ) {
             m_data.push_back( data );
         }
@@ -134,14 +134,14 @@ TEST_F( OpenDDLParserTest, hex2DecimalTest ) {
 }
 
 TEST_F( OpenDDLParserTest, PrimDataAllocTest ) {
-    PrimData *data = PrimDataAllocator::allocPrimData( ddl_bool );
+    Value *data = PrimDataAllocator::allocPrimData( ddl_bool );
     EXPECT_NE( nullptr, data );
     PrimDataAllocator::releasePrimData( &data );
     EXPECT_EQ( nullptr, data );
 }
 
 TEST_F( OpenDDLParserTest, PrimDataAccessBoolTest ) {
-    PrimData *data = PrimDataAllocator::allocPrimData( ddl_bool );
+    Value *data = PrimDataAllocator::allocPrimData( ddl_bool );
     EXPECT_NE( nullptr, data );
     data->setBool( true );
     EXPECT_EQ( true, data->getBool() );
@@ -152,10 +152,10 @@ TEST_F( OpenDDLParserTest, PrimDataAccessBoolTest ) {
 }
 
 TEST_F( OpenDDLParserTest, PrimDataAccessNextTest ) {
-    PrimData *data = PrimDataAllocator::allocPrimData( ddl_bool );
+    Value *data = PrimDataAllocator::allocPrimData( ddl_bool );
     EXPECT_EQ( nullptr, data->getNext() );
 
-    PrimData *dataNext = PrimDataAllocator::allocPrimData( ddl_bool );
+    Value *dataNext = PrimDataAllocator::allocPrimData( ddl_bool );
     EXPECT_EQ( nullptr, dataNext->getNext() );
 
     data->setNext( dataNext );
@@ -300,7 +300,7 @@ TEST_F( OpenDDLParserTest, parsePrimitiveArrayHexTest ) {
     char token[] = 
         "{0x01,0x02,0x03}\n";
     char *end( findEnd( token, len ) );
-    PrimData *data( nullptr );
+    Value *data( nullptr );
     char *in = OpenDDLParser::parseDataList( token, end, &data );
     EXPECT_NE( in, token );
 }
@@ -342,7 +342,7 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
 
 TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     char *in( nullptr );
-    PrimData *data( nullptr );
+    Value *data( nullptr );
     size_t len1( 0 );
     char token1[] = "true", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parseBooleanLiteral( token1, end1, &data );
@@ -368,7 +368,7 @@ TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
 TEST_F( OpenDDLParserTest, parseIntegerLiteralTest ) {
     char *in( nullptr );
     size_t len1( 0 );
-    PrimData *data( nullptr );
+    Value *data( nullptr );
 
     char token1[] = "1", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parseIntegerLiteral( token1, end1, &data );
@@ -385,7 +385,7 @@ TEST_F( OpenDDLParserTest, parseIntegerLiteralTest ) {
 
 TEST_F( OpenDDLParserTest, parseInvalidIntegerLiteralTest ) {
     size_t len1( 0 );
-    PrimData *data( nullptr );
+    Value *data( nullptr );
     char token1[] = "1", *end1( findEnd( token1, len1 ) );
     char *in( token1 );
     char *out = OpenDDLParser::parseIntegerLiteral( token1, end1, &data, ddl_float );
@@ -395,7 +395,7 @@ TEST_F( OpenDDLParserTest, parseInvalidIntegerLiteralTest ) {
 
 TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
     size_t len1( 0 );
-    PrimData *data( nullptr );
+    Value *data( nullptr );
     char token1[] = "1.0f", *end1( findEnd( token1, len1 ) );
     char *out = OpenDDLParser::parseFloatingLiteral( token1, end1, &data );
     EXPECT_NE( out, token1 );
@@ -406,7 +406,7 @@ TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
 
 TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     size_t len1( 0 );
-    PrimData *data( nullptr );
+    Value *data( nullptr );
     char token1[] = "\"teststring\"", *end1( findEnd( token1, len1 ) );
     char *in( token1 );
 
@@ -422,7 +422,7 @@ TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
 TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     size_t len( 0 );
     char token1[] = "0x01", *end( findEnd( token1, len ) );
-    PrimData *data( nullptr );
+    Value *data( nullptr );
     char *in = OpenDDLParser::parseHexaLiteral( token1, end, &data );
     ASSERT_NE( nullptr, data );
     registerPrimDataForDeletion( data );
@@ -480,7 +480,7 @@ TEST_F( OpenDDLParserTest, parseDataArrayListTest ) {
         "}\n";
     size_t len( 0 );
     char *end( findEnd( token, len ) );
-    PrimData *data( nullptr );
+    Value *data( nullptr );
     char *in = OpenDDLParser::parseDataArrayList( token, end, &data );
     ASSERT_NE( nullptr, data );
     const size_t numItems( countItems( data ) );
@@ -494,7 +494,7 @@ TEST_F( OpenDDLParserTest, getVersionTest ) {
 }
 
 TEST_F( OpenDDLParserTest, parseDataListTest ) {
-    PrimData *data( nullptr );
+    Value *data( nullptr );
     size_t len1( 0 );
     
     char *in( nullptr ), *end( nullptr );

@@ -38,7 +38,7 @@ char *findEnd( char *in, size_t &len ) {
 }
 
 inline
-size_t countItems( PrimData *data ) {
+size_t countItems( Value *data ) {
     if( nullptr == data ) {
         return 0;
     }

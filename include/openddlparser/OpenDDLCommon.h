@@ -34,11 +34,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #       define DLL_ODDLPARSER_EXPORT TAG_DLL_EXPORT
 #   else
 #        define DLL_ODDLPARSER_EXPORT TAG_DLL_IMPORT
-#   endif
+#   endif // OPENDDLPARSER_BUILD
 #   pragma warning( disable : 4251 )
 #else
 #   define DLL_ODDLPARSER_EXPORT
-#endif
+#endif // _WIN32
+
 #define BEGIN_ODDLPARSER_NS namespace ODDLParser {
 #define END_ODDLPARSER_NS   }
 #define USE_ODDLPARSER_NS   using namespace ODDLParser;
