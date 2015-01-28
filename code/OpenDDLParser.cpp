@@ -610,8 +610,21 @@ char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, Value **floating
     while( !isSeparator( *in ) && in != end ) {
         in++;
     }
+
+    // parse the float value
+    bool ok( false );
     if( isNumeric( *start ) ) {
-        const float value( (float) atof( start ) );
+        ok = true;
+    } else {
+        if( *start == '-' ) {
+            if( isNumeric( *(start+1) ) ) {
+                ok = true;
+            }
+        }
+    }
+
+    if( ok ) {
+        const float value( ( float ) atof( start ) );
         *floating = ValueAllocator::allocPrimData( Value::ddl_float );
         ( *floating )->setFloat( value );
     }

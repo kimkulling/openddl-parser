@@ -35,10 +35,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BEGIN_ODDLPARSER_NS
 
 class DDLNode;
+class Value;
 
 struct Identifier;
 struct Reference;
-struct Value;
 struct Property;
 
 template<class T>

@@ -364,14 +364,21 @@ TEST_F( OpenDDLParserTest, parseInvalidIntegerLiteralTest ) {
 }
 
 TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
-    size_t len1( 0 );
+    size_t len( 0 );
     Value *data( nullptr );
-    char token1[] = "1.0f", *end1( findEnd( token1, len1 ) );
+    char token1[] = "1.0f", *end1( findEnd( token1, len ) );
     char *out = OpenDDLParser::parseFloatingLiteral( token1, end1, &data );
     EXPECT_NE( out, token1 );
-    EXPECT_NE( nullptr, data );
+    ASSERT_NE( nullptr, data );
     EXPECT_EQ( Value::ddl_float, data->m_type );
     EXPECT_EQ(1.0f, data->getFloat() );
+
+    char token2[] = "-1.0f", *end2( findEnd( token2, len ) );
+    out = OpenDDLParser::parseFloatingLiteral( token2, end2, &data );
+    EXPECT_NE( out, token2 );
+    ASSERT_NE( nullptr, data );
+    EXPECT_EQ( Value::ddl_float, data->m_type );
+    EXPECT_EQ( -1.0f, data->getFloat() );
 }
 
 TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
