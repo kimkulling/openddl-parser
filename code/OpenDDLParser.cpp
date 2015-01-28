@@ -37,7 +37,7 @@ BEGIN_ODDLPARSER_NS
 
 static const char *Version = "0.1.0";
 
-static const char* PrimitiveTypeToken[ ddl_types_max ] = {
+static const char* PrimitiveTypeToken[ Value::ddl_types_max ] = {
     "bool",
     "int8",
     "int16",
@@ -64,8 +64,8 @@ static void logInvalidTokenError( char *in, char *exp, OpenDDLParser::logCallbac
     callback( ddl_error_msg, stream.str() );
 }
 
-static bool isIntegerType( PrimitiveDataType integerType ) {
-    if( integerType != ddl_int8 && integerType != ddl_int16 && integerType != ddl_int32 && integerType != ddl_int64 ) {
+static bool isIntegerType( Value::ValueType integerType ) {
+    if( integerType != Value::ddl_int8 && integerType != Value::ddl_int16 && integerType != Value::ddl_int32 && integerType != Value::ddl_int64 ) {
         return false;
     }
 
@@ -85,217 +85,6 @@ static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *p
     }
 
     return node;
-}
-
-Value *PrimDataAllocator::allocPrimData( PrimitiveDataType type, size_t len ) {
-    if( type == ddl_none || ddl_types_max == type ) {
-        return nullptr;
-    }
-
-    Value *data = new Value;
-    data->m_type = type;
-    switch( type ) {
-        case ddl_bool:
-            data->m_size = sizeof( bool );
-            break;
-        case ddl_int8:
-            data->m_size = sizeof( char );
-            break;
-        case ddl_int16:
-            data->m_size = sizeof( short );
-            break;
-        case ddl_int32:
-            data->m_size = sizeof( int );
-            break;
-        case ddl_int64:
-            data->m_size = sizeof( long );
-            break;
-        case ddl_unsigned_int8:
-            data->m_size = sizeof( unsigned char );
-            break;
-        case ddl_unsigned_int32:
-            data->m_size = sizeof( unsigned int );
-            break;
-        case ddl_unsigned_int64:
-            data->m_size = sizeof( unsigned long );
-            break;
-        case ddl_half:
-            data->m_size = sizeof( short );
-            break;
-        case ddl_float:
-            data->m_size = sizeof( float );
-            break;
-        case ddl_double:
-            data->m_size = sizeof( double );
-            break;
-        case ddl_string:
-            data->m_size = sizeof( char );
-            break;
-        case ddl_ref:
-            data->m_size = sizeof( char );
-            break;
-        case ddl_none:
-        case ddl_types_max:
-        default:
-            break;
-    }
-
-    if( data->m_size ) {
-        data->m_size *= len;
-        data->m_data = new unsigned char[ data->m_size ];
-    }
-
-    return data;
-}
-
-void PrimDataAllocator::releasePrimData( Value **data ) {
-    if( !data ) {
-        return;
-    }
-
-    delete *data;
-    *data = nullptr;
-}
-
-template<class T>
-inline
-T *getNextToken( T *in, T *end ) {
-    while( ( isSpace( *in ) || isNewLine( *in ) || ',' == *in ) && ( in != end ) ) {
-        in++;
-    }
-    return in;
-}
-
-void Value::setBool( bool value ) {
-    assert( ddl_bool == m_type );
-    ::memcpy( m_data, &value, m_size );
-}
-
-bool Value::getBool() {
-    assert( ddl_bool == m_type );
-    return ( bool ) ( *m_data );
-}
-
-void Value::setInt8( int8_t value ) {
-    assert( ddl_int8 == m_type );
-    ::memcpy( m_data, &value, m_size );
-}
-
-int8_t Value::getInt8() {
-    assert( ddl_int8 == m_type );
-    return ( int8_t ) ( *m_data );
-}
-
-void Value::setInt16( int16_t value ) {
-    assert( ddl_int16 == m_type );
-    ::memcpy( m_data, &value, m_size );
-}
-
-int16_t Value::getInt16() {
-    assert( ddl_int16 == m_type );
-    return ( int16_t ) ( *m_data );
-}
-
-void Value::setInt32( int32_t value ) {
-    assert( ddl_int32 == m_type );
-    ::memcpy( m_data, &value, m_size );
-}
-
-int32_t Value::getInt32() {
-    assert( ddl_int32 == m_type );
-    return ( int32_t ) ( *m_data );
-}
-
-void Value::setInt64( int64_t value ) {
-    assert( ddl_int32 == m_type );
-    ::memcpy( m_data, &value, m_size );
-}
-
-int64_t Value::getInt64() {
-    return ( int64_t ) ( *m_data );
-}
-
-void Value::setFloat( float value ) {
-    assert( ddl_float == m_type );
-    ::memcpy( m_data, &value, m_size );
-}
-
-float Value::getFloat() const {
-    float v;
-    ::memcpy( &v, m_data, m_size );
-    return v;
-}
-
-void Value::setDouble( double value ) {
-    assert( ddl_double == m_type );
-    ::memcpy( m_data, &value, m_size );
-}
-
-double Value::getDouble() const {
-    double v;
-    ::memcpy( &v, m_data, m_size );
-    return v;
-}
-
-
-void Value::dump() {
-    switch( m_type ) {
-    case ddl_none:
-        std::cout << "None" << std::endl;
-        break;
-    case ddl_bool:
-        std::cout << getBool() << std::endl;
-        break;
-    case ddl_int8:
-        std::cout << getInt8() << std::endl;
-        break;
-    case ddl_int16:
-        std::cout << getInt16() << std::endl;
-        break;
-    case ddl_int32:
-        std::cout << getInt32() << std::endl;
-        break;
-    case ddl_int64:
-        std::cout << getInt64() << std::endl;
-        break;
-    case ddl_unsigned_int8:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_unsigned_int16:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_unsigned_int32:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_unsigned_int64:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_half:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_float:
-        std::cout << getFloat() << std::endl;
-        break;
-    case ddl_double:
-        std::cout << getDouble() << std::endl;
-        break;
-    case ddl_string:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_ref:
-        std::cout << "Not supported" << std::endl;
-        break;
-    default:
-        break;
-    }
-}
-
-void Value::setNext( Value *next ) {
-    m_next = next;
-}
-
-Value *Value::getNext() const {
-    return m_next;
 }
 
 void logMessage( LogSeverity severity, const std::string &msg ) {
@@ -495,10 +284,10 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
     if( *in == '{' ) {
         in++;
         in = getNextToken( in, end );
-        PrimitiveDataType type( ddl_none );
+        Value::ValueType type( Value::ddl_none );
         size_t arrayLen( 0 );
         in = OpenDDLParser::parsePrimitiveDataType( in, end, type, arrayLen );
-        if ( ddl_none != type ) {
+        if( Value::ddl_none != type ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
                 Value *primData( nullptr );
@@ -653,22 +442,22 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
     return in;
 }
 
-char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimitiveDataType &type, size_t &len ) {
-    type = ddl_none;
+char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, Value::ValueType &type, size_t &len ) {
+    type = Value::ddl_none;
     len = 0;
     if( nullptr == in || in == end ) {
         return in;
     }
 
-    for( unsigned int i = 0; i < ddl_types_max; i++ ) {
+    for( unsigned int i = 0; i < Value::ddl_types_max; i++ ) {
         const size_t prim_len( strlen( PrimitiveTypeToken[ i ] ) );
         if( 0 == strncmp( in, PrimitiveTypeToken[ i ], prim_len ) ) {
-            type = ( PrimitiveDataType ) i;
+            type = ( Value::ValueType ) i;
             break;
         }
     }
 
-    if( ddl_none == type ) {
+    if( Value::ddl_none == type ) {
         in = getNextToken( in, end );
         return in;
     } else {
@@ -693,7 +482,7 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, PrimitiveDataT
         len = 1;
     }
     if( !ok ) {
-        type = ddl_none;
+        type = Value::ddl_none;
     }
 
     return in;
@@ -760,17 +549,17 @@ char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, Value **boolean )
             *boolean = nullptr;
             return in;
         }
-        *boolean = PrimDataAllocator::allocPrimData( ddl_bool );
+        *boolean = ValueAllocator::allocPrimData( Value::ddl_bool );
         (*boolean)->setBool( false );
     } else {
-        *boolean = PrimDataAllocator::allocPrimData( ddl_bool );
+        *boolean = ValueAllocator::allocPrimData( Value::ddl_bool );
         (*boolean)->setBool( true );
     }
 
     return in;
 }
 
-char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, PrimitiveDataType integerType ) {
+char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, Value::ValueType integerType ) {
     *integer = nullptr;
     if( nullptr == in || in == end ) {
         return in;
@@ -788,20 +577,20 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
 
     if( isNumeric( *start ) ) {
         const int value( atoi( start ) );
-        *integer = PrimDataAllocator::allocPrimData( integerType );
+        *integer = ValueAllocator::allocPrimData( integerType );
         switch( integerType ) {
-            case ddl_int8:
-                ( *integer )->setInt8( (int8_t) value );
-                break;
-            case ddl_int16:
-                ( *integer )->setInt16( ( int16_t ) value );
-                break;
-            case ddl_int32:
-                ( *integer )->setInt32( ( int32_t ) value );
-                break;
-            case ddl_int64:
-                ( *integer )->setInt64( ( int64_t ) value );
-                break;
+            case Value::ddl_int8:
+                    ( *integer )->setInt8( (int8_t) value );
+                    break;
+            case Value::ddl_int16:
+                    ( *integer )->setInt16( ( int16_t ) value );
+                    break;
+            case Value::ddl_int32:
+                    ( *integer )->setInt32( ( int32_t ) value );
+                    break;
+            case Value::ddl_int64:
+                    ( *integer )->setInt64( ( int64_t ) value );
+                    break;
             default:
                 break;
         }
@@ -823,7 +612,7 @@ char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, Value **floating
     }
     if( isNumeric( *start ) ) {
         const float value( (float) atof( start ) );
-        *floating = PrimDataAllocator::allocPrimData( ddl_float );
+        *floating = ValueAllocator::allocPrimData( Value::ddl_float );
         ( *floating )->setFloat( value );
     }
 
@@ -847,7 +636,7 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, Value **stringData
             len++;
         }
 
-        *stringData = PrimDataAllocator::allocPrimData( ddl_string, len+1 );
+        *stringData = ValueAllocator::allocPrimData( Value::ddl_string, len + 1 );
         ::strncpy( ( char* ) ( *stringData )->m_data, start, len );
         ( *stringData )->m_data[len] = '\0';
         in++;
@@ -903,7 +692,7 @@ char *OpenDDLParser::parseHexaLiteral( char *in, char *end, Value **data ) {
         start++;
     }
 
-    *data = PrimDataAllocator::allocPrimData( ddl_int32 );
+    *data = ValueAllocator::allocPrimData( Value::ddl_int32 );
     (*data)->setInt32( value );
 
     return in;

@@ -133,36 +133,6 @@ TEST_F( OpenDDLParserTest, hex2DecimalTest ) {
     EXPECT_EQ( 15, res );
 }
 
-TEST_F( OpenDDLParserTest, PrimDataAllocTest ) {
-    Value *data = PrimDataAllocator::allocPrimData( ddl_bool );
-    EXPECT_NE( nullptr, data );
-    PrimDataAllocator::releasePrimData( &data );
-    EXPECT_EQ( nullptr, data );
-}
-
-TEST_F( OpenDDLParserTest, PrimDataAccessBoolTest ) {
-    Value *data = PrimDataAllocator::allocPrimData( ddl_bool );
-    EXPECT_NE( nullptr, data );
-    data->setBool( true );
-    EXPECT_EQ( true, data->getBool() );
-    data->setBool( false );
-    EXPECT_EQ( false, data->getBool() );
-    PrimDataAllocator::releasePrimData( &data );
-    EXPECT_EQ( nullptr, data );
-}
-
-TEST_F( OpenDDLParserTest, PrimDataAccessNextTest ) {
-    Value *data = PrimDataAllocator::allocPrimData( ddl_bool );
-    EXPECT_EQ( nullptr, data->getNext() );
-
-    Value *dataNext = PrimDataAllocator::allocPrimData( ddl_bool );
-    EXPECT_EQ( nullptr, dataNext->getNext() );
-
-    data->setNext( dataNext );
-    EXPECT_EQ( dataNext, data->getNext() );
-
-}
-
 TEST_F( OpenDDLParserTest, createTest ) {
     bool success( true );
     try {
@@ -253,22 +223,22 @@ TEST_F( OpenDDLParserTest, parseNameTest ) {
 }
 
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
-    PrimitiveDataType type;
+    Value::ValueType type;
     size_t len( 0 );
     char *in = OpenDDLParser::parsePrimitiveDataType( nullptr, nullptr, type, len );
-    EXPECT_EQ( ddl_none, type );
+    EXPECT_EQ( Value::ddl_none, type );
     EXPECT_EQ( 0, len );
 
     size_t len1( 0 );
     char token1[] = "float", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parsePrimitiveDataType( token1, end1, type, len );
-    EXPECT_EQ( ddl_float, type );
+    EXPECT_EQ( Value::ddl_float, type );
     EXPECT_EQ( 1, len );
 
     size_t len2( 0 );
     char invalidToken[] = "foat", *end2( findEnd( token1, len2 ) );
     in = OpenDDLParser::parsePrimitiveDataType( invalidToken, end2, type, len );
-    EXPECT_EQ( ddl_none, type );
+    EXPECT_EQ( Value::ddl_none, type );
     EXPECT_EQ( 0, len );
 }
  
@@ -276,22 +246,22 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithArrayTest ) {
     size_t len1( 0 );
     char token[] = "float[3]", *end( findEnd( token, len1 ) );
 
-    PrimitiveDataType type;
+    Value::ValueType type;
     size_t arrayLen( 0 );
 
     char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, arrayLen );
-    EXPECT_EQ( ddl_float, type );
+    EXPECT_EQ( Value::ddl_float, type );
     EXPECT_EQ( 3, arrayLen );
     EXPECT_NE( in, token );
 }
 
 TEST_F( OpenDDLParserTest , parsePrimitiveArrayWithSpacesTest ) {
-    PrimitiveDataType type;
+    Value::ValueType type;
     size_t arrayLen( 0 ), len( 0 );
     char token[] = "float[ 16 ]", *end( findEnd( token, len ) );
     char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, arrayLen );
     EXPECT_NE( in, token );
-    EXPECT_EQ( ddl_float, type );
+    EXPECT_EQ( Value::ddl_float, type );
     EXPECT_EQ( 16, arrayLen );
 }
 
@@ -308,10 +278,10 @@ TEST_F( OpenDDLParserTest, parsePrimitiveArrayHexTest ) {
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
     size_t len1( 0 );
     char token1[] = "float[3", *end( findEnd( token1, len1 ) );
-    PrimitiveDataType type;
+    Value::ValueType type;
     size_t arrayLen( 0 );
     char *in = OpenDDLParser::parsePrimitiveDataType( token1, end, type, arrayLen );
-    EXPECT_EQ( ddl_none, type );
+    EXPECT_EQ( Value::ddl_none, type );
     EXPECT_EQ( 0, arrayLen );
     EXPECT_NE( in, token1 );
 }
@@ -347,7 +317,7 @@ TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     char token1[] = "true", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parseBooleanLiteral( token1, end1, &data );
     ASSERT_NE( nullptr, data );
-    EXPECT_EQ( ddl_bool, data->m_type );
+    EXPECT_EQ( Value::ddl_bool, data->m_type );
     EXPECT_EQ( true, data->getBool() );
     registerPrimDataForDeletion( data );
 
@@ -355,7 +325,7 @@ TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     char token2[] = "false", *end2( findEnd( token2, len2 ) );
     in = OpenDDLParser::parseBooleanLiteral( token2, end2, &data );
     ASSERT_NE( nullptr, data );
-    EXPECT_EQ( ddl_bool, data->m_type );
+    EXPECT_EQ( Value::ddl_bool, data->m_type );
     EXPECT_EQ( false, data->getBool() );
     registerPrimDataForDeletion( data );
 
@@ -373,7 +343,7 @@ TEST_F( OpenDDLParserTest, parseIntegerLiteralTest ) {
     char token1[] = "1", *end1( findEnd( token1, len1 ) );
     in = OpenDDLParser::parseIntegerLiteral( token1, end1, &data );
     ASSERT_NE( nullptr, data );
-    EXPECT_EQ( ddl_int32, data->m_type );
+    EXPECT_EQ( Value::ddl_int32, data->m_type );
     EXPECT_EQ( 1, data->getInt32() );
     registerPrimDataForDeletion( data );
 
@@ -388,7 +358,7 @@ TEST_F( OpenDDLParserTest, parseInvalidIntegerLiteralTest ) {
     Value *data( nullptr );
     char token1[] = "1", *end1( findEnd( token1, len1 ) );
     char *in( token1 );
-    char *out = OpenDDLParser::parseIntegerLiteral( token1, end1, &data, ddl_float );
+    char *out = OpenDDLParser::parseIntegerLiteral( token1, end1, &data, Value::ddl_float );
     EXPECT_EQ( out, in );
     ASSERT_EQ( nullptr, data );
 }
@@ -400,7 +370,7 @@ TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
     char *out = OpenDDLParser::parseFloatingLiteral( token1, end1, &data );
     EXPECT_NE( out, token1 );
     EXPECT_NE( nullptr, data );
-    EXPECT_EQ( ddl_float, data->m_type );
+    EXPECT_EQ( Value::ddl_float, data->m_type );
     EXPECT_EQ(1.0f, data->getFloat() );
 }
 
@@ -413,7 +383,7 @@ TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     char *out = OpenDDLParser::parseStringLiteral( token1, end1, &data );
     EXPECT_NE( in, out );
     EXPECT_NE( nullptr, data );
-    EXPECT_EQ( ddl_string, data->m_type );
+    EXPECT_EQ( Value::ddl_string, data->m_type );
     std::string str( (char*) data->m_data );
     int res( ::strncmp( "teststring", str.c_str(), str.size() ) );
     EXPECT_EQ( 0, res );
@@ -465,7 +435,7 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
     res = strncmp( "key", prop->m_id->m_buffer, prop->m_id->m_len );
     EXPECT_EQ( 0, res );
 
-    EXPECT_EQ( ddl_string, prop->m_primData->m_type );
+    EXPECT_EQ( Value::ddl_string, prop->m_primData->m_type );
     EXPECT_NE( nullptr, prop->m_primData->m_data );
     res = strncmp( "angle", (char*) prop->m_primData->m_data, prop->m_primData->m_size );
     EXPECT_EQ( 0, res );

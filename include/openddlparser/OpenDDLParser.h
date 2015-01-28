@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <openddlparser/OpenDDLCommon.h>
 #include <openddlparser/DDLNode.h>
 #include <openddlparser/OpenDDLParserUtils.h>
+#include <openddlparser/Value.h>
 
 #include <vector>
 #include <string>
@@ -40,67 +41,14 @@ struct Reference;
 struct Value;
 struct Property;
 
-typedef char  int8_t;
-typedef short int16_t;
-typedef int   int32_t;
-typedef long  int64_t;
-
-enum PrimitiveDataType {
-    ddl_none = -1,
-    ddl_bool = 0,
-    ddl_int8,
-    ddl_int16,
-    ddl_int32,
-    ddl_int64,
-    ddl_unsigned_int8,
-    ddl_unsigned_int16,
-    ddl_unsigned_int32,
-    ddl_unsigned_int64,
-    ddl_half,
-    ddl_float,
-    ddl_double,
-    ddl_string,
-    ddl_ref,
-    ddl_types_max
-};
-
-struct DLL_ODDLPARSER_EXPORT PrimDataAllocator {
-    static Value *allocPrimData( PrimitiveDataType type, size_t len = 1 );
-    static void releasePrimData( Value **data );
-};
-
-struct DLL_ODDLPARSER_EXPORT Value {
-    PrimitiveDataType m_type;
-    size_t m_size;
-    unsigned char *m_data;
-    Value *m_next;
-
-    Value()
-    : m_type( ddl_none )
-    , m_size( 0 )
-    , m_data( nullptr )
-    , m_next( nullptr ) {
-        // empty
+template<class T>
+inline
+T *getNextToken( T *in, T *end ) {
+    while( ( isSpace( *in ) || isNewLine( *in ) || ',' == *in ) && ( in != end ) ) {
+        in++;
     }
-
-    void setBool( bool value );
-    bool getBool();
-    void setInt8( int8_t value );
-    int8_t getInt8();
-    void setInt16( int16_t value );
-    int16_t  getInt16();
-    void setInt32( int32_t value );
-    int32_t  getInt32();
-    void setInt64( int64_t value );
-    int64_t  getInt64();
-    void setFloat( float value );
-    float getFloat() const;
-    void setDouble( double value );
-    double getDouble() const;
-    void dump();
-    void setNext( Value *next );
-    Value *getNext() const;
-};
+    return in;
+}
 
 enum NameType {
     GlobalName,
@@ -189,10 +137,10 @@ public: // static parser helpers
     static void normalizeBuffer( char *buffer, size_t len );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
-    static char *parsePrimitiveDataType( char *in, char *end, PrimitiveDataType &type, size_t &len );
+    static char *parsePrimitiveDataType( char *in, char *end, Value::ValueType &type, size_t &len );
     static char *parseReference( char *in, char *end, std::vector<Name*> &names );
     static char *parseBooleanLiteral( char *in, char *end, Value **boolean );
-    static char *parseIntegerLiteral( char *in, char *end, Value **integer, PrimitiveDataType integerType = ddl_int32 );
+    static char *parseIntegerLiteral( char *in, char *end, Value **integer, Value::ValueType integerType = Value::ddl_int32 );
     static char *parseFloatingLiteral( char *in, char *end, Value **floating );
     static char *parseStringLiteral( char *in, char *end, Value **stringData );
     static char *parseHexaLiteral( char *in, char *end, Value **data );

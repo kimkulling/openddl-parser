@@ -47,10 +47,12 @@ endif()
 SET ( openddl_parser_src
     code/OpenDDLParser.cpp
     code/DDLNode.cpp
+    code/Value.cpp
     include/openddlparser/OpenDDLParser.h
     include/openddlparser/OpenDDLParserUtils.h
     include/openddlparser/OpenDDLCommon.h
     include/openddlparser/DDLNode.h
+    include/openddlparser/Value.h
     README.md
 )
  
@@ -80,6 +82,7 @@ SET( openddl_parser_unittest_src
     test/OpenDDLParserTest.cpp
     test/OpenDDLParserUtilsTest.cpp
     test/OpenDDLIntegrationTest.cpp
+    test/ValueTest.cpp
 )
 SOURCE_GROUP( code            FILES ${openddl_parser_unittest_src} )
 

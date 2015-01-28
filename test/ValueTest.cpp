@@ -20,39 +20,43 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
-#pragma once
-#ifndef OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
-#define OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
+#include "gtest/gtest.h"
 
-#include <cstddef>
-#include <string.h>
+#include <openddlparser/Value.h>
 
-#ifdef _WIN32
-#   define TAG_DLL_EXPORT __declspec(dllexport)
-#   define TAG_DLL_IMPORT __declspec(dllimport )
-#   ifdef OPENDDLPARSER_BUILD
-#       define DLL_ODDLPARSER_EXPORT TAG_DLL_EXPORT
-#   else
-#        define DLL_ODDLPARSER_EXPORT TAG_DLL_IMPORT
-#   endif // OPENDDLPARSER_BUILD
-#   pragma warning( disable : 4251 )
-#else
-#   define DLL_ODDLPARSER_EXPORT
-#endif // _WIN32
+BEGIN_ODDLPARSER_NS
 
-#define BEGIN_ODDLPARSER_NS namespace ODDLParser {
-#define END_ODDLPARSER_NS   }
-#define USE_ODDLPARSER_NS   using namespace ODDLParser;
+class ValueTest : public testing::Test {
+};
 
-typedef char  int8_t;
-typedef short int16_t;
-typedef int   int32_t;
-typedef long  int64_t;
+TEST_F( ValueTest, ValueDataAllocTest ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
+    EXPECT_NE( nullptr, data );
+    ValueAllocator::releasePrimData( &data );
+    EXPECT_EQ( nullptr, data );
+}
 
-#define ODDL_NO_COPYING( classname ) \
-private: \
-    classname( const classname & ); \
-    classname &operator = ( const classname & );
+TEST_F( ValueTest, ValueAccessBoolTest ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
+    EXPECT_NE( nullptr, data );
+    data->setBool( true );
+    EXPECT_EQ( true, data->getBool() );
+    data->setBool( false );
+    EXPECT_EQ( false, data->getBool() );
+    ValueAllocator::releasePrimData( &data );
+    EXPECT_EQ( nullptr, data );
+}
 
-#endif // OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
+TEST_F( ValueTest, ValueAccessNextTest ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
+    EXPECT_EQ( nullptr, data->getNext() );
 
+    Value *dataNext = ValueAllocator::allocPrimData( Value::ddl_bool );
+    EXPECT_EQ( nullptr, dataNext->getNext() );
+
+    data->setNext( dataNext );
+    EXPECT_EQ( dataNext, data->getNext() );
+
+}
+
+END_ODDLPARSER_NS
