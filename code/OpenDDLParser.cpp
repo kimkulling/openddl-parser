@@ -759,7 +759,7 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
     in = getNextToken( in, end );
     if( *in == '{' ) {
         in++;
-        Value *first( nullptr ), *prev( nullptr ), *current( nullptr );
+        Value *current( nullptr ), *prev( nullptr );
         while( '}' != *in ) {
             current = nullptr;
             in = getNextToken( in, end );
@@ -774,14 +774,13 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
             }
 
             if( nullptr != current ) {
-                *data = current;
-                if( nullptr == first ) {
-                    first = *data;
+                if( nullptr == *data ) {
+                    *data = current;
+                    prev = current;
+                } else {
+                    prev->setNext( current );
+                    prev = current;
                 }
-                if( nullptr != prev ) {
-                    prev->setNext( *data );
-                }
-                prev = *data;
             }
 
             in = getNextSeparator( in, end );
@@ -790,13 +789,13 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
             }
         }
         in++;
-        *data = first;
     }
 
     return in;
 }
 
 char *OpenDDLParser::parseDataArrayList( char *in, char *end, Value **data ) {
+    *data = nullptr;
     if( nullptr == in || in == end ) {
         return in;
     }
@@ -813,6 +812,7 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, Value **data ) {
                 } else {
                     if( nullptr != prev ) {
                         prev->setNext( current );
+                        prev = current;
                     }
                 }
             }
