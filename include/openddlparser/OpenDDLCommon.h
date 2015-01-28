@@ -44,10 +44,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define END_ODDLPARSER_NS   }
 #define USE_ODDLPARSER_NS   using namespace ODDLParser;
 
-typedef char  int8_t;
-typedef short int16_t;
-typedef int   int32_t;
-typedef long  int64_t;
+BEGIN_ODDLPARSER_NS
+
+typedef char  int8;
+typedef short int16;
+typedef int   int32;
+typedef long  int64;
+
+END_ODDLPARSER_NS
 
 #define ODDL_NO_COPYING( classname ) \
 private: \

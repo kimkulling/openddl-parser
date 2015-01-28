@@ -580,16 +580,16 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
         *integer = ValueAllocator::allocPrimData( integerType );
         switch( integerType ) {
             case Value::ddl_int8:
-                    ( *integer )->setInt8( (int8_t) value );
+                    ( *integer )->setInt8( (int8) value );
                     break;
             case Value::ddl_int16:
-                    ( *integer )->setInt16( ( int16_t ) value );
+                    ( *integer )->setInt16( ( int16 ) value );
                     break;
             case Value::ddl_int32:
-                    ( *integer )->setInt32( ( int32_t ) value );
+                    ( *integer )->setInt32( ( int32 ) value );
                     break;
             case Value::ddl_int64:
-                    ( *integer )->setInt64( ( int64_t ) value );
+                    ( *integer )->setInt64( ( int64 ) value );
                     break;
             default:
                 break;

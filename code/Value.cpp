@@ -48,43 +48,43 @@ bool Value::getBool() {
     return ( bool ) ( *m_data );
 }
 
-void Value::setInt8( int8_t value ) {
+void Value::setInt8( int8 value ) {
     assert( ddl_int8 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-int8_t Value::getInt8() {
+int8 Value::getInt8() {
     assert( ddl_int8 == m_type );
-    return ( int8_t ) ( *m_data );
+    return ( int8 ) ( *m_data );
 }
 
-void Value::setInt16( int16_t value ) {
+void Value::setInt16( int16 value ) {
     assert( ddl_int16 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-int16_t Value::getInt16() {
+int16 Value::getInt16() {
     assert( ddl_int16 == m_type );
-    return ( int16_t ) ( *m_data );
+    return ( int16 ) ( *m_data );
 }
 
-void Value::setInt32( int32_t value ) {
+void Value::setInt32( int32 value ) {
     assert( ddl_int32 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-int32_t Value::getInt32() {
+int32 Value::getInt32() {
     assert( ddl_int32 == m_type );
-    return ( int32_t ) ( *m_data );
+    return ( int32 ) ( *m_data );
 }
 
-void Value::setInt64( int64_t value ) {
+void Value::setInt64( int64 value ) {
     assert( ddl_int32 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
-int64_t Value::getInt64() {
-    return ( int64_t ) ( *m_data );
+int64 Value::getInt64() {
+    return ( int64 ) ( *m_data );
 }
 
 void Value::setFloat( float value ) {
