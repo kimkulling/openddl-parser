@@ -769,8 +769,6 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
                 in = parseFloatingLiteral( in, end, &current );
             } else if( isStringLiteral( *in ) ) {
                 in = parseStringLiteral( in, end, &current );
-            } else if( *in == '{' ) {
-                in = parseDataList( in, end, &current );
             }
 
             if( nullptr != current ) {
@@ -802,6 +800,7 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, Value **data ) {
 
     in = getNextToken( in, end );
     if( *in == '{' ) {
+        in++;
         Value *prev( nullptr ), *current( nullptr );
         do {
             in = parseDataList( in, end, &current );
@@ -816,7 +815,6 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, Value **data ) {
                     }
                 }
             }
-            in = getNextToken( in, end );
         } while( ',' == *in && in != end );
     }
 
