@@ -103,6 +103,19 @@ struct Property {
     }
 };
 
+struct DataArrayList {
+    size_t m_numItems;
+    Value *m_dataList;
+    DataArrayList *m_next;
+
+    DataArrayList()
+    : m_numItems( 0 )
+    , m_dataList( nullptr )
+    , m_next( nullptr ) {
+        // empty
+    }
+};
+
 enum LogSeverity {
     ddl_debug_msg = 0,
     ddl_info_msg,
@@ -146,7 +159,7 @@ public: // static parser helpers
     static char *parseHexaLiteral( char *in, char *end, Value **data );
     static char *parseProperty( char *in, char *end, Property **prop );
     static char *parseDataList( char *in, char *end, Value **data );
-    static char *parseDataArrayList( char *in, char *end, Value **data );
+    static char *parseDataArrayList( char *in, char *end, DataArrayList **dataList );
     static const char *getVersion();
 
 private:

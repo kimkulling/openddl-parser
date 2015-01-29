@@ -66,7 +66,7 @@ public:
         m_logs.clear();
     }
 
-    void registerPrimDataForDeletion( Value *data ) {
+    void registerValueForDeletion( Value *data ) {
         if( data ) {
             m_data.push_back( data );
         }
@@ -319,7 +319,7 @@ TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     ASSERT_NE( nullptr, data );
     EXPECT_EQ( Value::ddl_bool, data->m_type );
     EXPECT_EQ( true, data->getBool() );
-    registerPrimDataForDeletion( data );
+    registerValueForDeletion( data );
 
     size_t len2( 0 );
     char token2[] = "false", *end2( findEnd( token2, len2 ) );
@@ -327,7 +327,7 @@ TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     ASSERT_NE( nullptr, data );
     EXPECT_EQ( Value::ddl_bool, data->m_type );
     EXPECT_EQ( false, data->getBool() );
-    registerPrimDataForDeletion( data );
+    registerValueForDeletion( data );
 
     size_t len3( 0 );
     char token3[] = "fallse", *end3( findEnd( token3, len3 ) );
@@ -345,7 +345,7 @@ TEST_F( OpenDDLParserTest, parseIntegerLiteralTest ) {
     ASSERT_NE( nullptr, data );
     EXPECT_EQ( Value::ddl_int32, data->m_type );
     EXPECT_EQ( 1, data->getInt32() );
-    registerPrimDataForDeletion( data );
+    registerValueForDeletion( data );
 
     size_t len2( 0 );
     char token2[] = "aaa", *end2( findEnd( token2, len2 ) );
@@ -402,7 +402,7 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     Value *data( nullptr );
     char *in = OpenDDLParser::parseHexaLiteral( token1, end, &data );
     ASSERT_NE( nullptr, data );
-    registerPrimDataForDeletion( data );
+    registerValueForDeletion( data );
 
     int v( data->getInt32() );
     EXPECT_EQ( 1, data->getInt32() );
@@ -413,7 +413,7 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     ASSERT_NE( nullptr, data );
     v = data->getInt32();
     EXPECT_EQ( 255, data->getInt32() );
-    registerPrimDataForDeletion( data );
+    registerValueForDeletion( data );
 
     char token3[] = "0xFF";
     end = findEnd( token3, len );
@@ -421,7 +421,7 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     ASSERT_NE( nullptr, data );
     v = data->getInt32();
     EXPECT_EQ( 255, data->getInt32() );
-    registerPrimDataForDeletion( data );
+    registerValueForDeletion( data );
 }
 
 TEST_F( OpenDDLParserTest, parsePropertyTest ) {
@@ -457,11 +457,12 @@ TEST_F( OpenDDLParserTest, parseDataArrayListTest ) {
         "}\n";
     size_t len( 0 );
     char *end( findEnd( token, len ) );
-    Value *data( nullptr );
-    char *in = OpenDDLParser::parseDataArrayList( token, end, &data );
-    ASSERT_NE( nullptr, data );
-    const size_t numItems( countItems( data ) );
-    registerPrimDataForDeletion( data );
+    DataArrayList *dtArrayList( nullptr );
+
+    char *in = OpenDDLParser::parseDataArrayList( token, end, &dtArrayList );
+    ASSERT_NE( nullptr, dtArrayList );
+    const size_t numItems( countItems( dtArrayList->m_dataList ) );
+    // todo: fix leak!
     EXPECT_NE( token, in );
 }
 
@@ -479,7 +480,7 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     end = findEnd( token1, len1 );
     in = OpenDDLParser::parseDataList( token1, end, &data );
     ASSERT_NE( nullptr, data );
-    registerPrimDataForDeletion( data );
+    registerValueForDeletion( data );
 
     // check intrinsic list with integers
     EXPECT_EQ( 4, countItems( data ) );
@@ -489,7 +490,7 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     end = findEnd( token2, len2 );
     in = OpenDDLParser::parseDataList( token2, end, &data );
     ASSERT_NE( nullptr, data );
-    registerPrimDataForDeletion( data );
+    registerValueForDeletion( data );
 
     // check intrinsic list with strings
     EXPECT_EQ( 2, countItems( data ) );

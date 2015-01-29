@@ -290,11 +290,12 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         if( Value::ddl_none != type ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
+                DataArrayList *dtArrayList( nullptr );
                 Value *primData( nullptr );
                 if( 1 == arrayLen ) {
                     in = parseDataList( in, end, &primData );
                 } else if( arrayLen > 1 ) {
-                    in = parseDataArrayList( in, end, &primData  );
+                    in = parseDataArrayList( in, end, &dtArrayList );
                 } else {
                     std::cerr << "0 for array is invalid." << std::endl;
                 }
@@ -792,8 +793,8 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
     return in;
 }
 
-char *OpenDDLParser::parseDataArrayList( char *in, char *end, Value **data ) {
-    *data = nullptr;
+char *OpenDDLParser::parseDataArrayList( char *in, char *end, DataArrayList **dataList ) {
+    *dataList = nullptr;
     if( nullptr == in || in == end ) {
         return in;
     }
@@ -801,17 +802,20 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, Value **data ) {
     in = getNextToken( in, end );
     if( *in == '{' ) {
         in++;
-        Value *prev( nullptr ), *current( nullptr );
+        Value *current( nullptr );
+        DataArrayList *prev( nullptr ), *currentDataList( nullptr );
         do {
             in = parseDataList( in, end, &current );
             if( nullptr != current ) {
-                if( nullptr == *data ) {
-                    *data = current;
-                    prev = *data;
+                if( nullptr == prev ) {
+                    *dataList = new DataArrayList;
+                    (*dataList)->m_dataList = current;
+                    prev = *dataList;
                 } else {
+                    currentDataList = new DataArrayList;
                     if( nullptr != prev ) {
-                        prev->setNext( current );
-                        prev = current;
+                        prev->m_next = currentDataList;
+                        prev = currentDataList;
                     }
                 }
             }
