@@ -101,4 +101,22 @@ TEST_F( DDLNodeTest, accessPropertiesDDLNodeTest ) {
     EXPECT_EQ( first, myNode.getProperties() );
 }
 
+TEST_F( DDLNodeTest, accessValueTest ) {
+    DDLNode myNode( "test", "name" );
+    EXPECT_EQ( nullptr, myNode.getValue() );
+
+    Value *myValue( new Value );
+    myNode.setValue( myValue );
+    EXPECT_EQ( myValue, myNode.getValue() );
+}
+
+TEST_F( DDLNodeTest, accessDataArrayListTest ) {
+    DDLNode myNode( "test", "name" );
+    EXPECT_EQ( nullptr, myNode.getDataArrayList() );
+
+    DataArrayList *dtArrayList( new DataArrayList );
+    myNode.setDataArrayList( dtArrayList );
+    EXPECT_EQ( dtArrayList, myNode.getDataArrayList() );
+}
+
 END_ODDLPARSER_NS

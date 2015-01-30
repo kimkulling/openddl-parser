@@ -31,7 +31,9 @@ DDLNode::DDLNode( const std::string &type, const std::string &name, DDLNode *par
 , m_name( name )
 , m_parent( parent )
 , m_children()
-, m_properties( nullptr ) {
+, m_properties( nullptr )
+, m_value( nullptr )
+, m_dtArrayList( nullptr ) {
     if( m_parent ) {
         m_parent->m_children.push_back( this );
     }
@@ -92,6 +94,22 @@ void DDLNode::setProperties( Property *first ) {
 
 Property *DDLNode::getProperties() const {
     return m_properties;
+}
+
+void DDLNode::setValue( Value *val ) {
+    m_value = val;
+}
+
+Value *DDLNode::getValue() const {
+    return m_value;
+}
+
+void DDLNode::setDataArrayList( DataArrayList  *dtArrayList ) {
+    m_dtArrayList = dtArrayList;
+}
+
+DataArrayList *DDLNode::getDataArrayList() const {
+    return m_dtArrayList;
 }
 
 END_ODDLPARSER_NS

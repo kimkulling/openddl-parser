@@ -36,6 +36,7 @@ class Value;
 struct Identifier;
 struct Reference;
 struct Property;
+struct DataArrayList;
 
 class DLL_ODDLPARSER_EXPORT DDLNode {
 public:
@@ -54,6 +55,10 @@ public:
     const std::string &getName() const;
     void setProperties( Property *first );
     Property *getProperties() const;
+    void setValue( Value *val );
+    Value *getValue() const;
+    void setDataArrayList( DataArrayList  *dtArrayList );
+    DataArrayList *getDataArrayList() const;
 
 private:
     DDLNode();
@@ -66,6 +71,8 @@ private:
     DDLNode *m_parent;
     std::vector<DDLNode*> m_children;
     Property *m_properties;
+    Value *m_value;
+    DataArrayList *m_dtArrayList;
 };
 
 END_ODDLPARSER_NS

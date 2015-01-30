@@ -177,6 +177,29 @@ TEST_F( OpenDDLParserTest, accessBufferTest ) {
     EXPECT_EQ( nullptr, myParser.getBuffer() );
 }
 
+TEST_F( OpenDDLParserTest, clearTest ) {
+    OpenDDLParser myParser;
+    EXPECT_EQ( nullptr, myParser.getRoot() );
+
+    myParser.clear();
+
+    char token[] =
+        "GeometryNode $node1\n"
+        "{\n"
+        "    string\n"
+        "    {\n"
+        "        \"test\"\n"
+        "    }\n"
+        "}";
+
+    myParser.setBuffer(token, strlen( token ), true );
+    myParser.parse();
+    EXPECT_NE( nullptr, myParser.getRoot() );
+
+    myParser.clear();
+    EXPECT_EQ( nullptr, myParser.getRoot() );
+}
+
 TEST_F( OpenDDLParserTest, isDDLDataTypeTest ) {
 
 }

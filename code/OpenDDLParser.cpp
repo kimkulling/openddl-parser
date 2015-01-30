@@ -91,17 +91,13 @@ void logMessage( LogSeverity severity, const std::string &msg ) {
     std::string log;
     if( ddl_debug_msg == severity ) {
         log += "Debug:";
-    }
-    else if( ddl_info_msg == severity ) {
+    } else if( ddl_info_msg == severity ) {
         log += "Info :";
-    }
-    else if( ddl_warn_msg == severity ) {
+    } else if( ddl_warn_msg == severity ) {
         log += "Warn :";
-    }
-    else if( ddl_error_msg == severity ) {
+    } else if( ddl_error_msg == severity ) {
         log += "Error:";
-    }
-    else {
+    } else {
         log += "None :";
     }
 
@@ -291,11 +287,23 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
                 DataArrayList *dtArrayList( nullptr );
-                Value *primData( nullptr );
+                Value *values( nullptr );
                 if( 1 == arrayLen ) {
-                    in = parseDataList( in, end, &primData );
+                    in = parseDataList( in, end, &values );
+                    if( nullptr != values ){
+                        DDLNode *currentNode( top() );
+                        if( nullptr != currentNode ) {
+                            currentNode->setValue( values );
+                        }
+                    }
                 } else if( arrayLen > 1 ) {
                     in = parseDataArrayList( in, end, &dtArrayList );
+                    if( nullptr != dtArrayList ) {
+                        DDLNode *currentNode( top() );
+                        if( nullptr != currentNode ) {
+                            currentNode->setDataArrayList( dtArrayList );
+                        }
+                    }
                 } else {
                     std::cerr << "0 for array is invalid." << std::endl;
                 }
