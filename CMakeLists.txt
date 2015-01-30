@@ -84,7 +84,8 @@ SET( openddl_parser_unittest_src
     test/OpenDDLIntegrationTest.cpp
     test/ValueTest.cpp
 )
-SOURCE_GROUP( code            FILES ${openddl_parser_unittest_src} )
+SOURCE_GROUP( code  FILES ${openddl_parser_unittest_src} )
+SOURCE_GROUP( gtest FILES ${gtest_src} )
 
 ADD_EXECUTABLE( openddl_parser_unittest 
     ${gtest_src}
