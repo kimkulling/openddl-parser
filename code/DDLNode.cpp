@@ -21,12 +21,28 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/DDLNode.h>
+#include <openddlparser/OpenDDLParser.h>
 
 #include <algorithm>
 
 BEGIN_ODDLPARSER_NS
 
 DDLNode::DllNodeList DDLNode::s_allocatedNodes;
+
+template<class T>
+inline
+static void releaseDataType( T *ptr ) {
+    if( nullptr == ptr ) {
+        return;
+    }
+
+    T *current( nullptr );
+    while( ptr ) {
+        current = ptr;
+        ptr = ptr->m_next;
+        delete current;
+    }
+}
 
 DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, DDLNode *parent )
 : m_type( type )
@@ -43,6 +59,11 @@ DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, 
 }
 
 DDLNode::~DDLNode() {
+    releaseDataType<Property>( m_properties );
+    releaseDataType<Value>( m_value );
+
+    delete m_dtArrayList;
+    m_dtArrayList = nullptr;
     if( s_allocatedNodes[ m_idx ] == this ) {
         s_allocatedNodes[ m_idx ] = nullptr;
     }
