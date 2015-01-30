@@ -49,7 +49,10 @@ void DDLNode::attachParent( DDLNode *parent ) {
     }
 
     m_parent = parent;
-    m_parent->m_children.push_back( this );
+    if( nullptr != m_parent ) {
+        m_parent->m_children.push_back( this );
+    }
+}
 }
 
 void DDLNode::detachParent() {
