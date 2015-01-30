@@ -87,7 +87,7 @@ static DDLNode *createDDLNode( Identifier *id, Property *first, OpenDDLParser *p
     return node;
 }
 
-void logMessage( LogSeverity severity, const std::string &msg ) {
+static void logMessage( LogSeverity severity, const std::string &msg ) {
     std::string log;
     if( ddl_debug_msg == severity ) {
         log += "Debug:";
@@ -174,7 +174,7 @@ size_t OpenDDLParser::getBufferSize() const {
 
 void OpenDDLParser::clear() {
     if( m_ownsBuffer ) {
-        delete[] m_buffer;
+        delete [] m_buffer;
     }
     m_buffer = nullptr;
     m_len = 0;
@@ -188,7 +188,6 @@ bool OpenDDLParser::parse() {
         return false;
     }
     
-    // remove comments
     normalizeBuffer( m_buffer, m_len );
 
     m_root = new DDLNode( "root", "", nullptr );
@@ -208,7 +207,6 @@ char *OpenDDLParser::parseNextNode( char *in, char *end ) {
     in = parseStructure( in, end );
 
     return in;
-
 }
 
 char *OpenDDLParser::parseHeader( char *in, char *end ) {
