@@ -46,10 +46,85 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+class Value;
+
+struct Name;
+struct Identifier;
+struct Reference;
+struct Property;
+struct DataArrayList;
+
 typedef char  int8;
 typedef short int16;
 typedef int   int32;
 typedef long  int64;
+
+enum NameType {
+    GlobalName,
+    LocalName
+};
+
+struct Name {
+    NameType m_type;
+    Identifier *m_id;
+
+    Name( NameType type, Identifier *id )
+        : m_type( type )
+        , m_id( id ) {
+        // empty
+    }
+};
+
+struct Reference {
+    size_t m_numRefs;
+    Name **m_referencedName;
+
+    Reference( size_t numrefs, Name **names )
+        : m_numRefs( numrefs )
+        , m_referencedName( names ) {
+        // empty
+    }
+};
+
+struct Identifier {
+    size_t m_len;
+    char *m_buffer;
+
+    Identifier( size_t len, char *buffer )
+        : m_len( len )
+        , m_buffer( buffer ) {
+        // empty
+    }
+};
+
+struct Property {
+    Identifier *m_id;
+    Value *m_primData;
+    Reference *m_ref;
+    Property *m_next;
+
+    Property( Identifier *id )
+        : m_id( id )
+        , m_primData( nullptr )
+        , m_ref( nullptr )
+        , m_next( nullptr ) {
+        // empty
+    }
+};
+
+struct DataArrayList {
+    size_t m_numItems;
+    Value *m_dataList;
+    DataArrayList *m_next;
+
+    DataArrayList()
+        : m_numItems( 0 )
+        , m_dataList( nullptr )
+        , m_next( nullptr ) {
+        // empty
+    }
+};
+
 
 END_ODDLPARSER_NS
 
