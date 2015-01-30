@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BEGIN_ODDLPARSER_NS
 
 class Value;
+class OpenDDLParser;
 
 struct Identifier;
 struct Reference;
@@ -40,10 +41,11 @@ struct DataArrayList;
 
 class DLL_ODDLPARSER_EXPORT DDLNode {
 public:
+    friend class OpenDDLParser;
+
     typedef std::vector<DDLNode*> DllNodeList;
 
 public:
-    DDLNode( const std::string &type, const std::string &name, DDLNode *parent = nullptr );
     ~DDLNode();
     void attachParent( DDLNode *parent );
     void detachParent();
@@ -59,11 +61,14 @@ public:
     Value *getValue() const;
     void setDataArrayList( DataArrayList  *dtArrayList );
     DataArrayList *getDataArrayList() const;
+    static DDLNode *create( const std::string &type, const std::string &name, DDLNode *parent = nullptr );
 
 private:
+    DDLNode( const std::string &type, const std::string &name, size_t idx, DDLNode *parent = nullptr );
     DDLNode();
     DDLNode( const DDLNode & );
     DDLNode &operator = ( const DDLNode & );
+    static void releaseNodes();
 
 private:
     std::string m_type;
@@ -73,6 +78,8 @@ private:
     Property *m_properties;
     Value *m_value;
     DataArrayList *m_dtArrayList;
+    size_t m_idx;
+    static DllNodeList s_allocatedNodes;
 };
 
 END_ODDLPARSER_NS

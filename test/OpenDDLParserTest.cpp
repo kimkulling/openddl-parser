@@ -32,18 +32,10 @@ BEGIN_ODDLPARSER_NS
 
 class OpenDDLParserTest : public testing::Test {
     static OpenDDLParserTest *s_instance;
-    std::vector<DDLNode*> m_nodes;
     std::vector<Value*> m_data;
     std::vector<std::string> m_logs;
 
 public:
-    DDLNode *createNode( const std::string &type, const std::string &name, DDLNode *parent ) {
-        DDLNode *node = new DDLNode( type, name, parent );
-        m_nodes.push_back( node );
-
-        return node;
-    }
-
     static void setInstance( OpenDDLParserTest *instance ) {
         s_instance = instance;
     }
@@ -82,10 +74,6 @@ protected:
         }
         m_data.clear();
 
-        for( size_t i=0; i < m_nodes.size(); i++ ) {
-            delete m_nodes[ i ];
-        }
-        m_nodes.resize( 0 );
         clearTestLog();
         OpenDDLParserTest::setInstance( nullptr );
     }
@@ -524,7 +512,7 @@ TEST_F( OpenDDLParserTest, pushTest ) {
 
     DDLNode *current = theParser.top();
     EXPECT_EQ( nullptr, current );
-    DDLNode *node = createNode( "test", "", nullptr );
+    DDLNode *node = DDLNode::create( "test", "", nullptr );
     theParser.pushNode( node );
     current = theParser.top();
     EXPECT_EQ( node, current );
@@ -536,17 +524,17 @@ TEST_F( OpenDDLParserTest, popTest ) {
     DDLNode *current = theParser.top();
     EXPECT_EQ( nullptr, current );
 
-    DDLNode *node1 = createNode( "test1", "", nullptr );
+    DDLNode *node1 = DDLNode::create( "test1", "", nullptr );
     theParser.pushNode( node1 );
     current = theParser.top();
     EXPECT_EQ( node1, current );
 
-    DDLNode *node2 = createNode( "test2", "", nullptr );
+    DDLNode *node2 = DDLNode::create( "test2", "", nullptr );
     theParser.pushNode( node2 );
     current = theParser.top();
     EXPECT_EQ( node2, current );
 
-    DDLNode *node3 = createNode( "test3", "", nullptr );
+    DDLNode *node3 = DDLNode::create( "test3", "", nullptr );
     theParser.pushNode( node3 );
     current = theParser.top();
     EXPECT_EQ( node3, current );

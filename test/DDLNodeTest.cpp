@@ -33,56 +33,58 @@ class DDLNodeTest : public testing::Test {
 };
 
 TEST_F( DDLNodeTest, createDDLNodeTest ) {
+    DDLNode *myNode( nullptr );
     bool success( true );
     try {
-        DDLNode myNode( "test", "" );
-    }
-    catch( ... ) {
+        myNode = DDLNode::create( "test", "" );
+    } catch( ... ) {
+        myNode = nullptr;
         success = false;
     }
+    EXPECT_NE( nullptr, myNode );
     EXPECT_TRUE( success );
 }
 
 TEST_F( DDLNodeTest, accessTypeTest ) {
     static const std::string type1 = "type";
     static const std::string name1 = "test";
-    DDLNode myNode( type1, name1 );
-    EXPECT_EQ( type1, myNode.getType() );
-    EXPECT_EQ( name1, myNode.getName() );
+    DDLNode *myNode = DDLNode::create( type1, name1 );
+    EXPECT_EQ( type1, myNode->getType() );
+    EXPECT_EQ( name1, myNode->getName() );
 
     static const std::string type2 = "type2";
-    myNode.setType( type2 );
-    EXPECT_EQ( type2, myNode.getType() );
+    myNode->setType( type2 );
+    EXPECT_EQ( type2, myNode->getType() );
 }
 
 TEST_F( DDLNodeTest, accessNameTest ) {
     static const std::string type1 = "type";
     static const std::string name1 = "test";
-    DDLNode myNode( type1, name1 );
-    EXPECT_EQ( type1, myNode.getType() );
-    EXPECT_EQ( name1, myNode.getName() );
+    DDLNode *myNode = DDLNode::create( type1, name1 );
+    EXPECT_EQ( type1, myNode->getType() );
+    EXPECT_EQ( name1, myNode->getName() );
 
     static const std::string name2 = "test";
-    myNode.setName( name2 );
-    EXPECT_EQ( name2, myNode.getName() );
+    myNode->setName( name2 );
+    EXPECT_EQ( name2, myNode->getName() );
 }
 
 TEST_F( DDLNodeTest, accessParentTest ) {
     static const std::string parent = "test";
     static const std::string parentName = "testparent_name";
-    DDLNode parentNode( parent, "parentName" );
+    DDLNode *parentNode = DDLNode::create( parent, "parentName" );
     static const std::string name1 = "test1";
     static const std::string childType = "child";
-    DDLNode myNode( childType, name1, &parentNode );
-    EXPECT_EQ( &parentNode, myNode.getParent() );
-    EXPECT_EQ( 1, parentNode.getChildNodeList().size() );
+    DDLNode *myNode = DDLNode::create( childType, name1, parentNode );
+    EXPECT_EQ( parentNode, myNode->getParent() );
+    EXPECT_EQ( 1, parentNode->getChildNodeList().size() );
 
-    DDLNode myNodeWithoutParent( childType, name1 );
-    EXPECT_EQ( nullptr, myNodeWithoutParent.getParent() );
+    DDLNode *myNodeWithoutParent = DDLNode::create( childType, name1 );
+    EXPECT_EQ( nullptr, myNodeWithoutParent->getParent() );
 
-    myNodeWithoutParent.attachParent( &parentNode );
-    EXPECT_EQ( &parentNode, myNodeWithoutParent.getParent() );
-    DDLNode::DllNodeList myChilds = parentNode.getChildNodeList();
+    myNodeWithoutParent->attachParent( parentNode );
+    EXPECT_EQ( parentNode, myNodeWithoutParent->getParent() );
+    DDLNode::DllNodeList myChilds = parentNode->getChildNodeList();
     EXPECT_EQ( 2, myChilds.size() );
 
     // check if the child node is not the parent node ( bug )
@@ -92,31 +94,31 @@ TEST_F( DDLNodeTest, accessParentTest ) {
 
 TEST_F( DDLNodeTest, accessPropertiesDDLNodeTest ) {
     static const std::string name1 = "test";
-    DDLNode myNode( name1, "name" );
+    DDLNode *myNode = DDLNode::create( name1, "name" );
 
-    EXPECT_EQ( nullptr, myNode.getProperties() );
+    EXPECT_EQ( nullptr, myNode->getProperties() );
     Identifier *id = new Identifier( 4, "test" );
     Property *first = new Property( id );
-    myNode.setProperties( first );
-    EXPECT_EQ( first, myNode.getProperties() );
+    myNode->setProperties( first );
+    EXPECT_EQ( first, myNode->getProperties() );
 }
 
 TEST_F( DDLNodeTest, accessValueTest ) {
-    DDLNode myNode( "test", "name" );
-    EXPECT_EQ( nullptr, myNode.getValue() );
+    DDLNode *myNode = DDLNode::create( "test", "name" );
+    EXPECT_EQ( nullptr, myNode->getValue() );
 
     Value *myValue( new Value );
-    myNode.setValue( myValue );
-    EXPECT_EQ( myValue, myNode.getValue() );
+    myNode->setValue( myValue );
+    EXPECT_EQ( myValue, myNode->getValue() );
 }
 
 TEST_F( DDLNodeTest, accessDataArrayListTest ) {
-    DDLNode myNode( "test", "name" );
-    EXPECT_EQ( nullptr, myNode.getDataArrayList() );
+    DDLNode *myNode = DDLNode::create( "test", "name" );
+    EXPECT_EQ( nullptr, myNode->getDataArrayList() );
 
     DataArrayList *dtArrayList( new DataArrayList );
-    myNode.setDataArrayList( dtArrayList );
-    EXPECT_EQ( dtArrayList, myNode.getDataArrayList() );
+    myNode->setDataArrayList( dtArrayList );
+    EXPECT_EQ( dtArrayList, myNode->getDataArrayList() );
 }
 
 END_ODDLPARSER_NS

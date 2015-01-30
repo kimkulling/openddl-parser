@@ -26,13 +26,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-DDLNode::DDLNode( const std::string &type, const std::string &name, DDLNode *parent )
+DDLNode::DllNodeList DDLNode::s_allocatedNodes;
+
+DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, DDLNode *parent )
 : m_type( type )
 , m_name( name )
 , m_parent( parent )
 , m_children()
 , m_properties( nullptr )
 , m_value( nullptr )
+, m_idx( idx )
 , m_dtArrayList( nullptr ) {
     if( m_parent ) {
         m_parent->m_children.push_back( this );
@@ -40,7 +43,9 @@ DDLNode::DDLNode( const std::string &type, const std::string &name, DDLNode *par
 }
 
 DDLNode::~DDLNode() {
-    detachParent();
+    if( s_allocatedNodes[ m_idx ] == this ) {
+        s_allocatedNodes[ m_idx ] = nullptr;
+    }
 }
 
 void DDLNode::attachParent( DDLNode *parent ) {
@@ -52,7 +57,6 @@ void DDLNode::attachParent( DDLNode *parent ) {
     if( nullptr != m_parent ) {
         m_parent->m_children.push_back( this );
     }
-}
 }
 
 void DDLNode::detachParent() {
@@ -113,6 +117,25 @@ void DDLNode::setDataArrayList( DataArrayList  *dtArrayList ) {
 
 DataArrayList *DDLNode::getDataArrayList() const {
     return m_dtArrayList;
+}
+
+DDLNode *DDLNode::create( const std::string &type, const std::string &name, DDLNode *parent ) {
+    const size_t idx( s_allocatedNodes.size() );
+    DDLNode *node = new DDLNode( type, name, idx, parent );
+    s_allocatedNodes.push_back( node );
+    
+    return node;
+}
+
+void DDLNode::releaseNodes() {
+    if( s_allocatedNodes.size() > 0 ) {
+        for( DllNodeList::iterator it = s_allocatedNodes.begin(); it != s_allocatedNodes.end(); it++ ) {
+            if( *it ) {
+                delete *it;
+            }
+        }
+        s_allocatedNodes.clear();
+    }
 }
 
 END_ODDLPARSER_NS
