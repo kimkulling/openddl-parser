@@ -777,6 +777,8 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
                 in = parseFloatingLiteral( in, end, &current );
             } else if( isStringLiteral( *in ) ) {
                 in = parseStringLiteral( in, end, &current );
+            } else if( isHexLiteral( in, end ) ) {
+                in = parseHexaLiteral( in, end, &current );
             }
 
             if( nullptr != current ) {
