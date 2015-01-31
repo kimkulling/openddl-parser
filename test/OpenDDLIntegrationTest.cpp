@@ -42,12 +42,15 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     DDLNode *myNode = theParser.getRoot();
     ASSERT_NE( nullptr, myNode );
 
+    Context *ctx = theParser.getContext();
+    ASSERT_NE( nullptr, ctx );
+
     DDLNode::DllNodeList myList = myNode->getChildNodeList();
     EXPECT_EQ( 1, myList.size() );
     DDLNode *child = myList[ 0 ];
     ASSERT_NE( nullptr, child );
     EXPECT_EQ( "Metric", child->getType() );
-    Property *prop = child->getProperties();
+    Property *prop = ctx->getProperties();
     ASSERT_NE( nullptr, prop );
 
     const char *data = ( const char *) prop->m_primData->m_data;

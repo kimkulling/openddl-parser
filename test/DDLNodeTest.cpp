@@ -93,14 +93,15 @@ TEST_F( DDLNodeTest, accessParentTest ) {
 }
 
 TEST_F( DDLNodeTest, accessPropertiesDDLNodeTest ) {
-    static const std::string name1 = "test";
-    DDLNode *myNode = DDLNode::create( name1, "name" );
-
-    EXPECT_EQ( nullptr, myNode->getProperties() );
+    Context *ctx = new Context;
+    
+    EXPECT_EQ( nullptr, ctx->getProperties() );
     Identifier *id = new Identifier( 4, "test" );
     Property *first = new Property( id );
-    myNode->setProperties( first );
-    EXPECT_EQ( first, myNode->getProperties() );
+    ctx->setProperties( first );
+    EXPECT_EQ( first, ctx->getProperties() );
+    
+    delete ctx;
 }
 
 TEST_F( DDLNodeTest, accessValueTest ) {
