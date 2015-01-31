@@ -79,6 +79,7 @@ public:
     DDLNode *popNode();
     DDLNode *top();
     DDLNode *getRoot() const;
+    Context *getContext() const;
 
 public: // static parser helpers
     static void normalizeBuffer( char *buffer, size_t len );
@@ -105,9 +106,10 @@ private:
     bool m_ownsBuffer;
     char *m_buffer;
     size_t m_len;
-    DDLNode *m_root;
+    //DDLNode *m_root;
     typedef std::vector<DDLNode*> DDLNodeStack;
     DDLNodeStack m_stack;
+    Context *m_context;
 };
 
 END_ODDLPARSER_NS

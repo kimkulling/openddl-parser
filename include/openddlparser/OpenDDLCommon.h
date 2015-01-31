@@ -46,6 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+class DDLNode;
 class Value;
 
 struct Name;
@@ -125,6 +126,16 @@ struct DataArrayList {
     }
 };
 
+struct Context {
+    Property *m_properties;
+    DDLNode *m_root;
+
+    Context()
+    : m_properties( nullptr )
+    , m_root( nullptr ) {
+        // empty
+    }
+};
 
 END_ODDLPARSER_NS
 

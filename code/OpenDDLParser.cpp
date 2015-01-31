@@ -110,8 +110,8 @@ OpenDDLParser::OpenDDLParser()
 , m_ownsBuffer( false )
 ,m_buffer( nullptr )
 , m_len( 0 )
-, m_root( nullptr )
-, m_stack() {
+, m_stack()
+, m_context( nullptr ) {
     // empty
 }
 
@@ -119,8 +119,8 @@ OpenDDLParser::OpenDDLParser( char *buffer, size_t len, bool ownsIt )
 : m_logCallback( &logMessage )
 , m_ownsBuffer( false )
 , m_buffer( nullptr )
-, m_len( 0 )
-, m_root( nullptr ) {
+, m_len( 0 ) 
+, m_context( nullptr ) {
     if( 0 != m_len ) {
         setBuffer( buffer, len, ownsIt );
     }
@@ -178,8 +178,10 @@ void OpenDDLParser::clear() {
     }
     m_buffer = nullptr;
     m_len = 0;
-    
-    m_root = nullptr;
+
+    if( m_context ) {
+        m_context->m_root = nullptr;
+    }
 
     DDLNode::releaseNodes();
 }
@@ -191,8 +193,9 @@ bool OpenDDLParser::parse() {
     
     normalizeBuffer( m_buffer, m_len );
 
-    m_root = DDLNode::create( "root", "", nullptr );
-    pushNode( m_root );
+    m_context = new Context;
+    m_context->m_root = DDLNode::create( "root", "", nullptr );
+    pushNode( m_context->m_root );
 
     // do the main parsing
     char *current( &m_buffer[ 0 ] );
@@ -357,7 +360,15 @@ DDLNode *OpenDDLParser::top() {
 }
 
 DDLNode *OpenDDLParser::getRoot() const {
-    return m_root;
+    if( nullptr == m_context ) {
+        return nullptr;
+    }
+
+    return m_context->m_root;
+}
+
+Context *OpenDDLParser::getContext() const {
+    return m_context;
 }
 
 void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {
