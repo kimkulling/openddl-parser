@@ -14,7 +14,7 @@ endif()
 
 add_definitions( -DOPENDDLPARSER_BUILD )
 add_definitions( -D_VARIADIC_MAX=10 )
-add_definitions( -Dgtest_disable_pthreads )
+add_definitions( -DGTEST_HAS_PTHREAD=0 )
 
 INCLUDE_DIRECTORIES(
     ./
