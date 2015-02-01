@@ -507,6 +507,18 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     EXPECT_EQ( 2, countItems( data ) );
 }
 
+TEST_F( OpenDDLParserTest, accessPropertiesDDLNodeTest ) {
+    Context *ctx = new Context;
+
+    EXPECT_EQ( nullptr, ctx->getProperties() );
+    Identifier *id = new Identifier( 4, "test" );
+    Property *first = new Property( id );
+    ctx->setProperties( first );
+    EXPECT_EQ( first, ctx->getProperties() );
+
+    delete ctx;
+}
+
 TEST_F( OpenDDLParserTest, pushTest ) {
     OpenDDLParser theParser;
 
