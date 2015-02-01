@@ -50,7 +50,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     DDLNode *child = myList[ 0 ];
     ASSERT_NE( nullptr, child );
     EXPECT_EQ( "Metric", child->getType() );
-    Property *prop = ctx->getProperties();
+    Property *prop = myNode->getProperties();
     ASSERT_NE( nullptr, prop );
 
     const char *data = ( const char *) prop->m_primData->m_data;

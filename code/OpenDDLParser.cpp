@@ -254,13 +254,9 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
         // set the properties
         if( ddl_nullptr != first ) {
             std::cout << id->m_buffer << std::endl;
-            if( 0 == strncmp( "Metric", id->m_buffer, id->m_len ) ) {
-                m_context->setProperties( first );
-            } else {
-                DDLNode *current( top() );
-                if( current ) {
-                    current->setProperties( first );
-                }
+            DDLNode *current( top() );
+            if( current ) {
+                current->setProperties( first );
             }
         }
 

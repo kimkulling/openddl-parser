@@ -133,29 +133,13 @@ struct DataArrayList {
 };
 
 struct Context {
-    Property *m_properties;
     DDLNode *m_root;
 
     Context()
-        : m_properties( ddl_nullptr )
-        , m_root( ddl_nullptr ) {
+        : m_root( ddl_nullptr ) {
         // empty
     }
-
-    void setProperties( Property *first );
-    Property *getProperties() const;
 };
-
-
-inline
-void Context::setProperties( Property *first ) {
-    m_properties = first;
-}
-
-inline
-Property *Context::getProperties() const {
-    return m_properties;
-}
 
 END_ODDLPARSER_NS
 
