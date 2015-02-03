@@ -63,7 +63,7 @@ bool testValues( Value::ValueType expValue, Value *inData, const std::list<T> &e
         return false;
     }
 
-    std::list<T>::const_iterator it( expData.begin() );
+    typename std::list<T>::const_iterator it( expData.begin() );
     Value *tmp( inData );
     bool equal( true );
     while( nullptr != tmp ) {
