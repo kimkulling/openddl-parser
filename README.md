@@ -96,17 +96,17 @@ theParser.setBuffer( buffer, size );
 const bool result( theParser.parse() );
 if ( result ) {
     DDLNode *root = theParser.getRoot();
-    Context *ctx = theParser.getContext();
-    Property *prop = ctx->getProperty(); // to get properties
-
     DDLNode::DllNodeList childs = root->getChildNodeList();
     for ( size_t i=0; i<childs.size(); i++ ) {
         DDLNode *child = childs[ i ];
-        std:.string type = child->getType();   // to get the node type
-        Value *values = child->getValue();     // to get the data;
+        Property *prop   = child->getProperty(); // to get properties
+        std::string type = child->getType();     // to get the node type
+        Value *values    = child->getValue();    // to get the data;
     }
 }
 
 ```
 
-The instance called root contains the data.
+The node instance called root contains the data.
+
+All data lists are organized as intrinsic linked lists.
