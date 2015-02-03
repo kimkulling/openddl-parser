@@ -50,11 +50,12 @@ T *getNextToken( T *in, T *end ) {
     return in;
 }
 
+///	@brief  Defines the log severity.
 enum LogSeverity {
-    ddl_debug_msg = 0,
-    ddl_info_msg,
-    ddl_warn_msg,
-    ddl_error_msg,
+    ddl_debug_msg = 0,  ///< Debug message, for debugging
+    ddl_info_msg,       ///< Info messages, normal mode
+    ddl_warn_msg,       ///< Parser warnings
+    ddl_error_msg       ///< Parser errors
 };
 
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {
