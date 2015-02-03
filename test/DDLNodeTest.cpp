@@ -25,9 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <openddlparser/DDLNode.h>
 #include <openddlparser/OpenDDLParser.h>
 
+#include "UnitTestCommon.h"
+
 BEGIN_ODDLPARSER_NS
 
-#include "UnitTestCommon.h"
 
 class DDLNodeTest : public testing::Test {
 };

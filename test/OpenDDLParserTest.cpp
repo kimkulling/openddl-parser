@@ -491,10 +491,16 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     end = findEnd( token1, len1 );
     in = OpenDDLParser::parseDataList( token1, end, &data );
     ASSERT_NE( nullptr, data );
-    registerValueForDeletion( data );
 
     // check intrinsic list with integers
+    std::list<int> expValues;
+    expValues.push_back( 1 );
+    expValues.push_back( 2 );
+    expValues.push_back( 3 );
+    expValues.push_back( 4 );
     EXPECT_EQ( 4, countItems( data ) );
+    EXPECT_TRUE( testValues( Value::ddl_int32, data, expValues ) );
+    registerValueForDeletion( data );
 
     size_t len2( 0 );
     char token2[] = "{ \"string1\",\"string2\"}";
@@ -505,6 +511,17 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
 
     // check intrinsic list with strings
     EXPECT_EQ( 2, countItems( data ) );
+    std::string expStrings[ 2 ] = {
+        "string1",
+        "string2"
+    };
+    size_t i( 0 );
+    while( nullptr != data ) {
+        const int res( strncmp( expStrings[ i ].c_str(), (char*) data->m_data, data->m_size ) );
+        EXPECT_EQ( 0, res );
+        data = data->m_next;
+        i++;
+    }
 }
 
 TEST_F( OpenDDLParserTest, pushTest ) {

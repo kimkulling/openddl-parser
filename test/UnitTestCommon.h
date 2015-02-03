@@ -27,9 +27,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <openddlparser/OpenDDLCommon.h>
 #include <openddlparser/OpenDDLParser.h>
 
+#include <list>
+
 BEGIN_ODDLPARSER_NS
 
-inline 
+inline
 char *findEnd( char *in, size_t &len ) {
     len = strlen( in );
     char *end( &in[ len ] );
@@ -48,6 +50,32 @@ size_t countItems( Value *data ) {
         data = data->getNext();
     }
     return numItems;
+}
+
+template<class T>
+inline
+bool testValues( Value::ValueType expValue, Value *inData, const std::list<T> &expData ) {
+    if( nullptr == inData ) {
+        return false;
+    }
+
+    if( expValue != inData->m_type ) {
+        return false;
+    }
+
+    std::list<T>::const_iterator it( expData.begin() );
+    Value *tmp( inData );
+    bool equal( true );
+    while( nullptr != tmp ) {
+        if( 0 != ::memcmp( (void*) tmp->m_data, &(*it), tmp->m_size ) ) {
+            equal = false;
+            break;
+        }
+        tmp = tmp->getNext();
+        it++;
+    }
+
+    return equal;
 }
 
 END_ODDLPARSER_NS

@@ -55,7 +55,6 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
 
     const char *data = ( const char *) prop->m_primData->m_data;
     const int res( ::strncmp( "distance", data, strlen( "distance" ) ) );
-    
     EXPECT_EQ( Value::ddl_string, prop->m_primData->m_type );
     EXPECT_EQ( 0, res );
 }
