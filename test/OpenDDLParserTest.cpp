@@ -484,11 +484,11 @@ TEST_F( OpenDDLParserTest, getVersionTest ) {
 
 TEST_F( OpenDDLParserTest, parseDataListTest ) {
     Value *data( nullptr );
-    size_t len1( 0 );
+    size_t len( 0 );
     
     char *in( nullptr ), *end( nullptr );
     char token1[] = "{1,2,3,4}";
-    end = findEnd( token1, len1 );
+    end = findEnd( token1, len );
     in = OpenDDLParser::parseDataList( token1, end, &data );
     ASSERT_NE( nullptr, data );
 
@@ -502,9 +502,8 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     EXPECT_TRUE( testValues( Value::ddl_int32, data, expValues ) );
     registerValueForDeletion( data );
 
-    size_t len2( 0 );
     char token2[] = "{ \"string1\",\"string2\"}";
-    end = findEnd( token2, len2 );
+    end = findEnd( token2, len );
     in = OpenDDLParser::parseDataList( token2, end, &data );
     ASSERT_NE( nullptr, data );
     registerValueForDeletion( data );
