@@ -523,6 +523,26 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     }
 }
 
+TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
+    char token[] = 
+        "float[ 16 ]\n"
+        "{\n"
+        "    {0x3F800000, 0x00000000, 0x00000000, 0x00000000,		// {1, 0, 0, 0\n"
+        "     0x00000000, 0x3F800000, 0x00000000, 0x00000000,		//  0, 1, 0, 0\n"
+        "     0x00000000, 0x00000000, 0x3F800000, 0x00000000,		//  0, 0, 1, 0\n"
+        "     0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
+        "}\n";
+    size_t len( 0 );
+    char *end = findEnd( token, len );
+    Value *data( nullptr );
+    DataArrayList *dataList( nullptr );
+    Value::ValueType type;
+    char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, len );
+    in = OpenDDLParser::parseDataArrayList( in, end, &dataList );
+    ASSERT_NE( nullptr, dataList );
+    ASSERT_NE( nullptr, dataList->m_dataList );
+}
+
 TEST_F( OpenDDLParserTest, pushTest ) {
     OpenDDLParser theParser;
 
