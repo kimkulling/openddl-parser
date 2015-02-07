@@ -379,29 +379,24 @@ void OpenDDLParser::normalizeBuffer( std::vector<char> &buffer) {
         return;
     }
 
+    std::vector<char> newBuffer;
     const size_t len( buffer.size() );
-    size_t writeIdx( 0 );
     char *end( &buffer[ len-1 ] + 1 );
     for( size_t readIdx = 0; readIdx<len; ++readIdx ) {
         char *c( &buffer[readIdx] );
         // check for a comment
         if( !isComment<char>( c, end ) ) {
-            buffer[ writeIdx ] = buffer[ readIdx ];
-            writeIdx++;
+            newBuffer.push_back( buffer[ readIdx ] );
         } else {
             readIdx++;
             // skip the comment and the rest of the line
             while( !isEndofLine( buffer[ readIdx ] ) ) {
                 readIdx++;
             }
-            buffer[writeIdx] = '\n';
-            writeIdx++;
+            newBuffer.push_back( '\n' );
         }
     }
-
-    if( writeIdx < len ) {
-        buffer[ writeIdx ] = '\0';
-    }
+    buffer = newBuffer;
 }
 
 char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {

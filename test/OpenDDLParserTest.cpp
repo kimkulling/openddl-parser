@@ -216,6 +216,9 @@ TEST_F( OpenDDLParserTest, normalizeBufferTest ) {
     buffer.resize( len );
     ::memcpy( &buffer[ 0 ], token, len );
     OpenDDLParser::normalizeBuffer( buffer );
+
+    size_t newLen = buffer.size();
+    EXPECT_LT( newLen, len );
 }
 
 TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
