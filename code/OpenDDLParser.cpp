@@ -150,7 +150,7 @@ void OpenDDLParser::setBuffer( char *buffer, size_t len ) {
 void OpenDDLParser::setBuffer( const std::vector<char> &buffer ) {
     clear();
     m_buffer.resize( buffer.size() );
-    std::copy(buffer.begin(), buffer.end(), m_buffer.begin() );
+    std::copy( buffer.begin(), buffer.end(), m_buffer.begin() );
 }
 
 const char *OpenDDLParser::getBuffer() const {
@@ -188,8 +188,10 @@ bool OpenDDLParser::parse() {
     // do the main parsing
     char *current( &m_buffer[ 0 ] );
     char *end( &m_buffer[ m_buffer.size() - 1 ] + 1 );
-    while( current != end ) {
+    size_t pos( current - &m_buffer[ 0 ] );
+    while( pos < m_buffer.size() ) {
         current = parseNextNode( current, end );
+        pos = current - &m_buffer[ 0 ];
     }
     return true;
 }
@@ -210,7 +212,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
     in = OpenDDLParser::parseIdentifier( in, end, &id );
 
 #ifdef DEBUG_HEADER_NAME    
-    if( id ) {
+    if( ddl_nullptr != id ) {
         std::cout << id->m_buffer << std::endl;
     }
 #endif // DEBUG_HEADER_NAME
