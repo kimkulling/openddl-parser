@@ -35,7 +35,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     char token[] = "Metric( key = \"distance\" ) { float{ 1 } }";
     bool result( false );
     OpenDDLParser theParser;
-    theParser.setBuffer( token, strlen( token ), false );
+    theParser.setBuffer( token, strlen( token ) );
     result = theParser.parse();
     EXPECT_TRUE( result );
 
@@ -71,7 +71,7 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureTest ) {
 
     bool result( false );
     OpenDDLParser theParser;
-    theParser.setBuffer( token, strlen( token ), false );
+    theParser.setBuffer( token, strlen( token ) );
     result = theParser.parse();
     EXPECT_TRUE( result );
 
@@ -100,7 +100,7 @@ TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
         //"}\n";
     bool result( false );
     OpenDDLParser theParser;
-    theParser.setBuffer( token, strlen( token ), false );
+    theParser.setBuffer( token, strlen( token ) );
     result = theParser.parse();
     EXPECT_TRUE( result );
 }

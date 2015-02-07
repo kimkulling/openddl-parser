@@ -149,7 +149,19 @@ TEST_F( OpenDDLParserTest, accessBufferTest ) {
     OpenDDLParser myParser;
     myParser.setBuffer( buffer, len );
     EXPECT_EQ( len, myParser.getBufferSize() );
-    EXPECT_EQ( buffer, myParser.getBuffer() );
+    bool equal( true );
+    const char *parserBuffer( myParser.getBuffer() );
+    for( size_t i = 0; i < myParser.getBufferSize(); i++ ) {
+        if( i > len ) {
+            equal = false;
+            break;
+        }
+        if( buffer[ i ] != parserBuffer[ i ] ) {
+            equal = false;
+            break;
+        }
+    }
+    EXPECT_TRUE( equal );
 
     try {
         myParser.clear();
@@ -159,7 +171,7 @@ TEST_F( OpenDDLParserTest, accessBufferTest ) {
     }
     EXPECT_TRUE( success );
 
-    myParser.setBuffer( buffer, len, true );
+    myParser.setBuffer( buffer, len );
     myParser.clear();
     EXPECT_EQ( 0, myParser.getBufferSize() );
     EXPECT_EQ( nullptr, myParser.getBuffer() );
@@ -180,7 +192,7 @@ TEST_F( OpenDDLParserTest, clearTest ) {
         "    }\n"
         "}";
 
-    myParser.setBuffer(token, strlen( token ), true );
+    myParser.setBuffer(token, strlen( token ) );
     myParser.parse();
     EXPECT_NE( nullptr, myParser.getRoot() );
 
@@ -193,14 +205,17 @@ TEST_F( OpenDDLParserTest, isDDLDataTypeTest ) {
 }
 
 TEST_F( OpenDDLParserTest, normalizeBufferTest ) {
-    char buffer[] = {
+    char token[] = {
         "line 1 // comment\n"
         "line 2\n"
         "//comment\n"
         "line 4"
     };
-
-    OpenDDLParser::normalizeBuffer( buffer, strlen( buffer ) );
+    std::vector<char> buffer;
+    const size_t len( strlen( token ) );
+    buffer.resize( len );
+    ::memcpy( &buffer[ 0 ], token, len );
+    OpenDDLParser::normalizeBuffer( buffer );
 }
 
 TEST_F( OpenDDLParserTest, parseIdentifierTest ) {

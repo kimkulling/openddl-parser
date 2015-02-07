@@ -64,12 +64,13 @@ public:
 
 public:
     OpenDDLParser();
-    OpenDDLParser( char *buffer, size_t len, bool ownsIt = false );
+    OpenDDLParser( char *buffer, size_t len );
     ~OpenDDLParser();
     void setLogCallback( logCallback callback );
     logCallback getLogCallback() const;
-    void setBuffer( char *buffer, size_t len, bool ownsIt = false );
-    char *getBuffer() const;
+    void setBuffer( char *buffer, size_t len );
+    void setBuffer( const std::vector<char> &buffer );
+    const char *getBuffer() const;
     size_t getBufferSize() const;
     void clear();
     bool parse();
@@ -83,7 +84,7 @@ public:
     Context *getContext() const;
 
 public: // static parser helpers
-    static void normalizeBuffer( char *buffer, size_t len );
+    static void normalizeBuffer( std::vector<char> &buffer );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
     static char *parsePrimitiveDataType( char *in, char *end, Value::ValueType &type, size_t &len );
@@ -104,9 +105,8 @@ private:
 
 private:
     logCallback m_logCallback;
-    bool m_ownsBuffer;
-    char *m_buffer;
-    size_t m_len;
+    std::vector<char> m_buffer;
+
     typedef std::vector<DDLNode*> DDLNodeStack;
     DDLNodeStack m_stack;
     Context *m_context;

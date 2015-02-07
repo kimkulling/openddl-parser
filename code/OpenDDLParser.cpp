@@ -104,22 +104,18 @@ static void logMessage( LogSeverity severity, const std::string &msg ) {
 
 OpenDDLParser::OpenDDLParser()
 : m_logCallback( logMessage )
-, m_ownsBuffer( false )
-, m_buffer( ddl_nullptr )
-, m_len( 0 )
+, m_buffer()
 , m_stack()
 , m_context( ddl_nullptr ) {
     // empty
 }
 
-OpenDDLParser::OpenDDLParser( char *buffer, size_t len, bool ownsIt )
+OpenDDLParser::OpenDDLParser( char *buffer, size_t len )
 : m_logCallback( &logMessage )
-, m_ownsBuffer( false )
-, m_buffer( ddl_nullptr )
-, m_len( 0 ) 
+, m_buffer()
 , m_context( ddl_nullptr ) {
-    if( 0 != m_len ) {
-        setBuffer( buffer, len, ownsIt );
+    if( 0 != len ) {
+        setBuffer( buffer, len );
     }
 }
 
@@ -141,41 +137,36 @@ OpenDDLParser::logCallback OpenDDLParser::getLogCallback() const {
     return m_logCallback;
 }
 
-void OpenDDLParser::setBuffer( char *buffer, size_t len, bool ownsIt ) {
-    if( m_buffer && m_ownsBuffer ) {
-        delete[] m_buffer;
-        m_buffer = ddl_nullptr;
-        m_len = 0;
+void OpenDDLParser::setBuffer( char *buffer, size_t len ) {
+    clear();
+    if( 0 == len ) {
+        return;
     }
 
-    m_ownsBuffer = ownsIt;
-    if( m_ownsBuffer ) {
-        // when we are owning the buffer we will do a deep copy
-        m_buffer = new char[ len ];
-        m_len = len;
-        ::memcpy( m_buffer, buffer, len );
-    } else {
-        // when we are not owning the buffer, we just do a shallow copy
-        m_buffer = buffer;
-        m_len = len;
-    }
+    m_buffer.resize( len );
+    ::memcpy(&m_buffer[ 0 ], buffer, len );
 }
 
-char *OpenDDLParser::getBuffer() const {
-    return m_buffer;
+void OpenDDLParser::setBuffer( const std::vector<char> &buffer ) {
+    clear();
+    m_buffer.resize( buffer.size() );
+    std::copy(buffer.begin(), buffer.end(), m_buffer.begin() );
+}
+
+const char *OpenDDLParser::getBuffer() const {
+    if( m_buffer.empty() ) {
+        return ddl_nullptr;
+    }
+
+    return &m_buffer[ 0 ];
 }
 
 size_t OpenDDLParser::getBufferSize() const {
-    return m_len;
+    return m_buffer.size();
 }
 
 void OpenDDLParser::clear() {
-    if( m_ownsBuffer ) {
-        delete [] m_buffer;
-    }
-    m_buffer = ddl_nullptr;
-    m_len = 0;
-
+    m_buffer.resize( 0 );
     if( m_context ) {
         m_context->m_root = ddl_nullptr;
     }
@@ -184,11 +175,11 @@ void OpenDDLParser::clear() {
 }
 
 bool OpenDDLParser::parse() {
-    if( 0 == m_len ) {
+    if( m_buffer.empty() ) {
         return false;
     }
     
-    normalizeBuffer( m_buffer, m_len );
+    normalizeBuffer( m_buffer );
 
     m_context = new Context;
     m_context->m_root = DDLNode::create( "root", "", ddl_nullptr );
@@ -196,7 +187,7 @@ bool OpenDDLParser::parse() {
 
     // do the main parsing
     char *current( &m_buffer[ 0 ] );
-    char *end( &m_buffer[ m_len - 1 ] + 1 );
+    char *end( &m_buffer[ m_buffer.size() - 1 ] + 1 );
     while( current != end ) {
         current = parseNextNode( current, end );
     }
@@ -377,13 +368,14 @@ Context *OpenDDLParser::getContext() const {
     return m_context;
 }
 
-void OpenDDLParser::normalizeBuffer( char *buffer, size_t len ) {
-    if( nullptr == buffer || 0 == len ) {
+void OpenDDLParser::normalizeBuffer( std::vector<char> &buffer) {
+    if( buffer.empty() ) {
         return;
     }
 
+    const size_t len( buffer.size() );
     size_t writeIdx( 0 );
-    char *end( &buffer[ len ] + 1 );
+    char *end( &buffer[ len-1 ] + 1 );
     for( size_t readIdx = 0; readIdx<len; ++readIdx ) {
         char *c( &buffer[readIdx] );
         // check for a comment

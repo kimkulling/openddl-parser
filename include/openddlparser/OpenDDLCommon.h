@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
 
 #include <cstddef>
+#include <vector>
+
 #include <string.h>
 
 #ifdef _WIN32
@@ -137,6 +139,17 @@ struct Context {
 
     Context()
         : m_root( ddl_nullptr ) {
+        // empty
+    }
+};
+
+struct BufferIt {
+    std::vector<char> m_buffer;
+    size_t m_idx;
+
+    BufferIt( const std::vector<char> &buffer )
+        : m_buffer( buffer )
+        , m_idx( 0 ) {
         // empty
     }
 };
