@@ -314,6 +314,9 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
             if( *in != '}' ) {
                 logInvalidTokenError( in, "}", m_logCallback );
             }
+            else {
+                in++;
+            }
         } else {
             in = parseHeader( in, end );
             in = parseStructure( in, end );
@@ -324,6 +327,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         return in;
 
     }
+    in = getNextToken( in, end );
 
     in++;
 
