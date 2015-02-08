@@ -1,7 +1,7 @@
 The OpenDDL-Parser
 ==================
 
-A simple and fast OpenDDL Parser
+OpenDDl-Parser is a small and easy to use library for DDL-file-parsing. 
 Current build status: [![Build Status](https://travis-ci.org/kimkulling/openddl-parser.png)](https://travis-ci.org/kimkulling/openddl-parser)
 
 Get the source code
