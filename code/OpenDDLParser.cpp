@@ -273,6 +273,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         return in;
     }
 
+    bool error( false );
     in = getNextToken( in, end );
     if( *in == '{' ) {
         in++;
@@ -303,6 +304,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
                     }
                 } else {
                     std::cerr << "0 for array is invalid." << std::endl;
+                    error = true;
                 }
             }
 
@@ -320,12 +322,16 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
     } else {
         in++;
         logInvalidTokenError( in, "{", m_logCallback );
+        error = true;
         return in;
 
     }
     in = getNextToken( in, end );
-
-    in++;
+    
+    // pop node from stack after successful parsing
+    if( !error ) {
+        popNode();
+    }
 
     return in;
 }
