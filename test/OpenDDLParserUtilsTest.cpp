@@ -214,6 +214,10 @@ TEST_F( OpenDDLParserUtilsTest, isNewLineTest ) {
     result = isNewLine( val );
     EXPECT_TRUE( result );
 
+    val = '\r';
+    result = isNewLine( val );
+    EXPECT_TRUE( result );
+
     val = ' ';
     result = isNewLine( val );
     EXPECT_FALSE( result );
