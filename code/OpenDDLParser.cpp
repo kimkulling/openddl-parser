@@ -244,21 +244,17 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
             in++;
         }
 
-        // set the properties
-        if( ddl_nullptr != first ) {
-            std::cout << id->m_buffer << std::endl;
-            DDLNode *current( top() );
-            if( current ) {
-                current->setProperties( first );
-            }
-        }
-
         // store the node
         DDLNode *node( createDDLNode( id, this ) );
         if( nullptr != node ) {
             pushNode( node );
         } else {
             std::cerr << "nullptr returned by creating DDLNode." << std::endl;
+        }
+
+        // set the properties
+        if( ddl_nullptr != first ) {
+            node->setProperties( first );
         }
 
         Name *name( ddl_nullptr );
