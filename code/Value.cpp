@@ -109,6 +109,15 @@ double Value::getDouble() const {
     return v;
 }
 
+void Value::setString( const std::string &str ) {
+    assert( ddl_string == m_type );
+    ::memcpy( m_data, str.c_str(), str.size() );
+    m_data[ str.size() ] = '\0';
+}
+const char *Value::getString() const {
+    return (const char*) m_data;
+}
+
 void Value::dump() {
     switch( m_type ) {
     case ddl_none:
@@ -223,7 +232,11 @@ Value *ValueAllocator::allocPrimData( Value::ValueType type, size_t len ) {
     }
 
     if( data->m_size ) {
-        data->m_size *= len;
+        size_t len1( len );
+        if( Value::ddl_string == type ) {
+            len1++;
+        }
+        data->m_size *= len1;
         data->m_data = new unsigned char[ data->m_size ];
     }
 

@@ -38,13 +38,23 @@ TEST_F( ValueTest, ValueDataAllocTest ) {
 
 TEST_F( ValueTest, ValueAccessBoolTest ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    EXPECT_NE( nullptr, data );
+    ASSERT_NE( nullptr, data );
     data->setBool( true );
     EXPECT_EQ( true, data->getBool() );
     data->setBool( false );
     EXPECT_EQ( false, data->getBool() );
     ValueAllocator::releasePrimData( &data );
     EXPECT_EQ( nullptr, data );
+}
+
+TEST_F( ValueTest, ValueAccessStringTest ) {
+    std::string text = "hallo";
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_string, text.size() );
+    ASSERT_NE( nullptr, data );
+
+    data->setString( text );
+    int res = ::strncmp( text.c_str(), data->getString(), text.size() );
+    EXPECT_EQ( 0, res );
 }
 
 TEST_F( ValueTest, ValueAccessNextTest ) {
