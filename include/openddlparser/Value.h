@@ -26,6 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <openddlparser/OpenDDLCommon.h>
 
+#include <string>
+
 BEGIN_ODDLPARSER_NS
 
 ///------------------------------------------------------------------------------------------------
