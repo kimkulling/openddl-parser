@@ -88,7 +88,7 @@ int main( int argc, char *argv[] ) {
 
 How to access the imported data
 ===============================
-The data is organized as a tree. You can get the root tree with the following code:
+The data is organized as a tree. You can get the root-node of the tree with the following code:
 
 ```cpp
 OpenDDLParser theParser;
@@ -102,6 +102,12 @@ if ( result ) {
         Property *prop   = child->getProperty(); // to get properties
         std::string type = child->getType();     // to get the node type
         Value *values    = child->getValue();    // to get the data;
+        
+        // to loop through all values
+        while ( values != ddl_nullptr ) {
+            int current = values->getInt32();
+            values = value->getNext();
+        }
     }
 }
 
@@ -109,4 +115,4 @@ if ( result ) {
 
 The node instance called root contains the data.
 
-All data lists are organized as intrinsic linked lists.
+All data lists are organized as linked lists.
