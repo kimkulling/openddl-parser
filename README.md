@@ -90,7 +90,7 @@ How to access the imported data
 ===============================
 The data is organized as a tree. You can get the root tree with the following code:
 
-```
+```cpp
 OpenDDLParser theParser;
 theParser.setBuffer( buffer, size );
 const bool result( theParser.parse() );
