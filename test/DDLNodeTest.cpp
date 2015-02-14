@@ -121,4 +121,14 @@ TEST_F( DDLNodeTest, accessDataArrayListTest ) {
     EXPECT_EQ( dtArrayList, myNode->getDataArrayList() );
 }
 
+TEST_F( DDLNodeTest, accesReferencesTest ) {
+    DDLNode *myNode = DDLNode::create( "test", "name" );
+    EXPECT_EQ( nullptr, myNode->getReferences() );
+
+    Reference *ref = new Reference;
+    myNode->setReferences( ref );
+    EXPECT_EQ( ref, myNode->getReferences() );
+    delete ref;
+}
+
 END_ODDLPARSER_NS
