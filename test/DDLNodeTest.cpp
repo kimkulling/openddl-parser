@@ -121,7 +121,7 @@ TEST_F( DDLNodeTest, accessDataArrayListTest ) {
     EXPECT_EQ( dtArrayList, myNode->getDataArrayList() );
 }
 
-TEST_F( DDLNodeTest, accesReferencesTest ) {
+TEST_F( DDLNodeTest, accessReferencesTest ) {
     DDLNode *myNode = DDLNode::create( "test", "name" );
     EXPECT_EQ( nullptr, myNode->getReferences() );
 

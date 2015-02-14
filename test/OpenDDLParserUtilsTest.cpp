@@ -191,6 +191,20 @@ TEST_F( OpenDDLParserUtilsTest, isHexLiteralTest ) {
     EXPECT_FALSE( result );
 }
 
+TEST_F( OpenDDLParserUtilsTest, isReferenceTest ) {
+    size_t len( 0 );
+    char token1[] = "ref";
+    char *end = findEnd( token1, len );
+    bool result = isReference( token1, end );
+    EXPECT_TRUE( result );
+
+    char token2[] = "rf";
+    end = findEnd( token2, len );
+    result = isReference( token2, end );
+    EXPECT_FALSE( result );
+
+}
+
 TEST_F( OpenDDLParserUtilsTest, isSpaceTest ) {
     bool result( false );
     char val;
