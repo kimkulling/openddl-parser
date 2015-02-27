@@ -89,14 +89,27 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureTest ) {
     ASSERT_NE( nullptr, root );
 }
 
+TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
+    char token[] =
+        "GeometryNode $node1\n"
+        "{\n"
+        "    Name{ string{ \"Box001\" } }\n"
+        "    ObjectRef{ ref{ $geometry1 } }\n"
+        "    MaterialRef{ ref{ $material1 } }\n"
+        "}";
+
+    bool result( false );
+    OpenDDLParser theParser;
+    theParser.setBuffer( token, strlen( token ) );
+    result = theParser.parse();
+    EXPECT_TRUE( result );
+
+    DDLNode *root( theParser.getRoot() );
+    ASSERT_NE( nullptr, root );
+}
+
 TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
     char token[] =
-        //"GeometryNode $node1\n"
-        //"{\n"
-        //"    Name{ string{ \"Box001\" } }\n"
-        //"    ObjectRef{ ref{ $geometry1 } }\n"
-        //"    MaterialRef{ ref{ $material1 } }\n"
-        //"\n"
         "    Transform\n"
         "    {\n"
         "        float[ 16 ]\n"
@@ -107,7 +120,6 @@ TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
         "             0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
         "        }\n"
         "    }\n";
-        //"}\n";
     bool result( false );
     OpenDDLParser theParser;
     theParser.setBuffer( token, strlen( token ) );
