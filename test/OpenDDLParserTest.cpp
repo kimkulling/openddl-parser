@@ -317,7 +317,7 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
 
 TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     size_t len1( 0 );
-    char token1[] = "ref { $name1, %name2 }", *end( findEnd( token1, len1 ) );
+    char token1[] = "{ $name1, %name2 }", *end( findEnd( token1, len1 ) );
 
     std::vector<Name*> names;
     char *in = OpenDDLParser::parseReference( token1, end, names );

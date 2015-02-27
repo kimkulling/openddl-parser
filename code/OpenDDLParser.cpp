@@ -513,12 +513,12 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
         return in;
     }
 
-    if( 0 != strncmp( in, RefToken, strlen( RefToken ) ) ) {
+/*    if( 0 != strncmp( in, RefToken, strlen( RefToken ) ) ) {
         return in;
     } else {
         const size_t refTokenLen( strlen( RefToken ) );
         in += refTokenLen;
-    }
+    }*/
 
     in = getNextToken( in, end );
     if( '{' != *in ) {
@@ -791,6 +791,12 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
                 in = parseStringLiteral( in, end, &current );
             } else if( isHexLiteral( in, end ) ) {
                 in = parseHexaLiteral( in, end, &current );
+            } else {                          // reference data
+                std::vector<Name*> names;
+                in = parseReference( in, end, names );
+                if( !names.empty() ) {
+                    Reference *ref = new Reference( names.size(), &names[ 0 ] );
+                }
             }
 
             if( ddl_nullptr != current ) {
