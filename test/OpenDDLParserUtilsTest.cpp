@@ -202,7 +202,6 @@ TEST_F( OpenDDLParserUtilsTest, isReferenceTest ) {
     end = findEnd( token2, len );
     result = isReference( token2, end );
     EXPECT_FALSE( result );
-
 }
 
 TEST_F( OpenDDLParserUtilsTest, isSpaceTest ) {

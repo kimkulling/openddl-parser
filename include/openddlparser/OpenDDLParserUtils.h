@@ -200,10 +200,8 @@ template<class T>
 inline
 bool isReference( T *in, T *end ) {
     if( *in == 'r' ) {
-        in++;
-        if( *in == 'e' ) {
-            in++;
-            if( *in == 'f' ) {
+        if( *(in+1) == 'e' ) {
+            if( *(in+2) == 'f' ) {
                 return true;
             }
         }
