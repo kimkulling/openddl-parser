@@ -37,6 +37,11 @@ BEGIN_ODDLPARSER_NS
 
 static const char *Version = "0.1.0";
 
+namespace Grammar {
+    static const char OpenBracketToken[]  = "{";
+    static const char CloseBracketToken[] = "}";
+}
+
 static const char* PrimitiveTypeToken[ Value::ddl_types_max ] = {
     "bool",
     "int8",
@@ -65,7 +70,8 @@ static void logInvalidTokenError( char *in, char *exp, OpenDDLParser::logCallbac
 }
 
 static bool isIntegerType( Value::ValueType integerType ) {
-    if( integerType != Value::ddl_int8 && integerType != Value::ddl_int16 && integerType != Value::ddl_int32 && integerType != Value::ddl_int64 ) {
+    if( integerType != Value::ddl_int8 && integerType != Value::ddl_int16 && 
+            integerType != Value::ddl_int32 && integerType != Value::ddl_int64 ) {
         return false;
     }
 
@@ -224,13 +230,14 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
             in++;
             Property *prop( ddl_nullptr ), *prev( ddl_nullptr );
             while( *in != ')' && in != end ) {
-                in = parseProperty( in, end, &prop );
+                in = OpenDDLParser::parseProperty( in, end, &prop );
                 in = getNextToken( in, end );
 
                 if( *in != ',' && *in != ')' ) {
                     logInvalidTokenError( in, ")", m_logCallback );
                     return in;
                 }
+                
                 if( ddl_nullptr != prop && *in != ',' ) {
                     if( ddl_nullptr == first ) {
                         first = prop;
@@ -268,6 +275,22 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
     return in;
 }
 
+static void setNodeValues( DDLNode *currentNode, Value *values ) {
+    if( ddl_nullptr != values ){
+        if( ddl_nullptr != currentNode ) {
+            currentNode->setValue( values );
+        }
+    }
+}
+
+static void setNodeReferences( DDLNode *currentNode, Reference *refs ) {
+    if( ddl_nullptr != refs ) {
+        if( ddl_nullptr != currentNode ) {
+            currentNode->setReferences( refs );
+        }
+    }
+}
+
 char *OpenDDLParser::parseStructure( char *in, char *end ) {
     if( nullptr == in || in == end ) {
         return in;
@@ -289,12 +312,8 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
                 Value *values( ddl_nullptr );
                 if( 1 == arrayLen ) {
                     in = parseDataList( in, end, &values, &refs );
-                    if( ddl_nullptr != values ){
-                        DDLNode *currentNode( top() );
-                        if( ddl_nullptr != currentNode ) {
-                            currentNode->setValue( values );
-                        }
-                    }
+                    setNodeValues( top(), values );
+                    setNodeReferences( top(), refs );
                 } else if( arrayLen > 1 ) {
                     in = parseDataArrayList( in, end, &dtArrayList );
                     if( ddl_nullptr != dtArrayList ) {
@@ -317,8 +336,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
                 in++;
             }
         } else {
-            in = parseHeader( in, end );
-            in = parseStructure( in, end );
+            in = parseNextNode( in, end );
         }
     } else {
         in++;
