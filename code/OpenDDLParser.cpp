@@ -284,10 +284,11 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         if( Value::ddl_none != type ) {
             in = getNextToken( in, end );
             if( *in == '{' ) {
+                Reference *refs( ddl_nullptr );
                 DataArrayList *dtArrayList( ddl_nullptr );
                 Value *values( ddl_nullptr );
                 if( 1 == arrayLen ) {
-                    in = parseDataList( in, end, &values );
+                    in = parseDataList( in, end, &values, &refs );
                     if( ddl_nullptr != values ){
                         DDLNode *currentNode( top() );
                         if( ddl_nullptr != currentNode ) {
@@ -513,27 +514,12 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
         return in;
     }
 
-/*    if( 0 != strncmp( in, RefToken, strlen( RefToken ) ) ) {
-        return in;
-    } else {
-        const size_t refTokenLen( strlen( RefToken ) );
-        in += refTokenLen;
-    }*/
-
-    in = getNextToken( in, end );
-    if( '{' != *in ) {
-        return in;
-    } else {
-        in++;
-    }
-
-    in = getNextToken( in, end );
     Name *nextName( ddl_nullptr );
     in = parseName( in, end, &nextName );
     if( nextName ) {
         names.push_back( nextName );
     }
-    while( '}' != *in ) {
+    while( ',' == *in ) {
         in = getNextSeparator( in, end );
         if( ',' == *in ) {
             in = parseName( in, end, &nextName );
@@ -770,7 +756,7 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
     return in;
 }
 
-char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
+char *OpenDDLParser::parseDataList( char *in, char *end, Value **data, Reference **refs ) {
     *data = ddl_nullptr;
     if( ddl_nullptr == in || in == end ) {
         return in;
@@ -796,6 +782,7 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data ) {
                 in = parseReference( in, end, names );
                 if( !names.empty() ) {
                     Reference *ref = new Reference( names.size(), &names[ 0 ] );
+                    *refs = ref;
                 }
             }
 
@@ -830,9 +817,10 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, DataArrayList **da
     if( *in == '{' ) {
         in++;
         Value *current( ddl_nullptr );
+        Reference *refs( nullptr );
         DataArrayList *prev( ddl_nullptr ), *currentDataList( ddl_nullptr );
         do {
-            in = parseDataList( in, end, &current );
+            in = parseDataList( in, end, &current, &refs );
             if( ddl_nullptr != current ) {
                 if( ddl_nullptr == prev ) {
                     *dataList = new DataArrayList;

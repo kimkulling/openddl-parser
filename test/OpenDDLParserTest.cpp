@@ -300,7 +300,8 @@ TEST_F( OpenDDLParserTest, parsePrimitiveArrayHexTest ) {
         "{0x01,0x02,0x03}\n";
     char *end( findEnd( token, len ) );
     Value *data( nullptr );
-    char *in = OpenDDLParser::parseDataList( token, end, &data );
+    Reference *refs( ddl_nullptr );
+    char *in = OpenDDLParser::parseDataList( token, end, &data, &refs );
     EXPECT_NE( in, token );
 }
 
@@ -317,7 +318,7 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest ) {
 
 TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     size_t len1( 0 );
-    char token1[] = "{ $name1, %name2 }", *end( findEnd( token1, len1 ) );
+    char token1[] = "$name1, %name2", *end( findEnd( token1, len1 ) );
 
     std::vector<Name*> names;
     char *in = OpenDDLParser::parseReference( token1, end, names );
@@ -507,7 +508,8 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     char *in( nullptr ), *end( nullptr );
     char token1[] = "{1,2,3,4}";
     end = findEnd( token1, len );
-    in = OpenDDLParser::parseDataList( token1, end, &data );
+    Reference *refs( ddl_nullptr );
+    in = OpenDDLParser::parseDataList( token1, end, &data, &refs );
     ASSERT_NE( nullptr, data );
 
     // check intrinsic list with integers
@@ -522,7 +524,7 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
 
     char token2[] = "{ \"string1\",\"string2\"}";
     end = findEnd( token2, len );
-    in = OpenDDLParser::parseDataList( token2, end, &data );
+    in = OpenDDLParser::parseDataList( token2, end, &data, &refs );
     ASSERT_NE( nullptr, data );
     registerValueForDeletion( data );
 
