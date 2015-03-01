@@ -62,7 +62,7 @@ namespace Grammar {
         "string",
         "ref"
     };
-}
+} // Namespace Grammar
 
 
 static void logInvalidTokenError( char *in, char *exp, OpenDDLParser::logCallback callback ) {
@@ -297,6 +297,14 @@ static void setNodeReferences( DDLNode *currentNode, Reference *refs ) {
     }
 }
 
+static void setNodeDataArrayList( DDLNode *currentNode, DataArrayList *dtArrayList ) {
+    if( ddl_nullptr != dtArrayList ) {
+        if( ddl_nullptr != currentNode ) {
+            currentNode->setDataArrayList( dtArrayList );
+        }
+    }
+}
+
 char *OpenDDLParser::parseStructure( char *in, char *end ) {
     if( nullptr == in || in == end ) {
         return in;
@@ -305,45 +313,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
     bool error( false );
     in = getNextToken( in, end );
     if( *in == '{' ) {
-        in++;
-        in = getNextToken( in, end );
-        Value::ValueType type( Value::ddl_none );
-        size_t arrayLen( 0 );
-        in = OpenDDLParser::parsePrimitiveDataType( in, end, type, arrayLen );
-        if( Value::ddl_none != type ) {
-            in = getNextToken( in, end );
-            if( *in == '{' ) {
-                Reference *refs( ddl_nullptr );
-                DataArrayList *dtArrayList( ddl_nullptr );
-                Value *values( ddl_nullptr );
-                if( 1 == arrayLen ) {
-                    in = parseDataList( in, end, &values, &refs );
-                    setNodeValues( top(), values );
-                    setNodeReferences( top(), refs );
-                } else if( arrayLen > 1 ) {
-                    in = parseDataArrayList( in, end, &dtArrayList );
-                    if( ddl_nullptr != dtArrayList ) {
-                        DDLNode *currentNode( top() );
-                        if( ddl_nullptr != currentNode ) {
-                            currentNode->setDataArrayList( dtArrayList );
-                        }
-                    }
-                } else {
-                    std::cerr << "0 for array is invalid." << std::endl;
-                    error = true;
-                }
-            }
-
-            in = getNextToken( in, end );
-            if( *in != '}' ) {
-                logInvalidTokenError( in, "}", m_logCallback );
-            }
-            else {
-                in++;
-            }
-        } else {
-            in = parseNextNode( in, end );
-        }
+        in = parseStructureBody( in, end, error );
     } else {
         in++;
         logInvalidTokenError( in, "{", m_logCallback );
@@ -355,6 +325,50 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
     // pop node from stack after successful parsing
     if( !error ) {
         popNode();
+    }
+
+    return in;
+}
+
+char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
+    in++;
+    in = getNextToken( in, end );
+    Value::ValueType type( Value::ddl_none );
+    size_t arrayLen( 0 );
+    in = OpenDDLParser::parsePrimitiveDataType( in, end, type, arrayLen );
+    if( Value::ddl_none != type ) {
+        in = getNextToken( in, end );
+        if( *in == '{' ) {
+            Reference *refs( ddl_nullptr );
+            DataArrayList *dtArrayList( ddl_nullptr );
+            Value *values( ddl_nullptr );
+            if( 1 == arrayLen ) {
+                in = parseDataList( in, end, &values, &refs );
+                setNodeValues( top(), values );
+                setNodeReferences( top(), refs );
+            } else if( arrayLen > 1 ) {
+                in = parseDataArrayList( in, end, &dtArrayList );
+                setNodeDataArrayList( top(), dtArrayList );
+                /*if( ddl_nullptr != dtArrayList ) {
+                    DDLNode *currentNode( top() );
+                    if( ddl_nullptr != currentNode ) {
+                        currentNode->setDataArrayList( dtArrayList );
+                    }
+                }*/
+            } else {
+                std::cerr << "0 for array is invalid." << std::endl;
+                error = true;
+            }
+        }
+
+        in = getNextToken( in, end );
+        if( *in != '}' ) {
+            logInvalidTokenError( in, "}", m_logCallback );
+        } else {
+            in++;
+        }
+    } else {
+        in = parseNextNode( in, end );
     }
 
     return in;

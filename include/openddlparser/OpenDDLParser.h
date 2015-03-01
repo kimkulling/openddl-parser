@@ -77,6 +77,7 @@ public:
     char *parseNextNode( char *current, char *end );
     char *parseHeader( char *in, char *end );
     char *parseStructure( char *in, char *end );
+    char *parseStructureBody( char *in, char *end, bool &error );
     void pushNode( DDLNode *node );
     DDLNode *popNode();
     DDLNode *top();
