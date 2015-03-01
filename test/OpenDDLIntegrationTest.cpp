@@ -108,7 +108,10 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
     ASSERT_NE( nullptr, root );
 
     DDLNode::DllNodeList childs = root->getChildNodeList();
-    EXPECT_EQ(1, childs.size() );
+    ASSERT_EQ( 1, childs.size() );
+
+    DDLNode::DllNodeList childChilds = childs[ 0 ]->getChildNodeList();
+    ASSERT_EQ( 3, childs.size() );
 }
 
 TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
