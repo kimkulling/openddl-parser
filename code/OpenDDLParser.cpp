@@ -281,6 +281,36 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
     return in;
 }
 
+char *OpenDDLParser::parseStructure( char *in, char *end ) {
+    if( nullptr == in || in == end ) {
+        return in;
+    }
+
+    bool error( false );
+    in = getNextToken( in, end );
+    if( *in == '{' ) {
+        do {
+            // loop over all childs ( data and nodes )
+            in = parseStructureBody( in, end, error );
+        } while ( *in != '}' );
+        in++;
+    }
+    else {
+        in++;
+        logInvalidTokenError( in, "{", m_logCallback );
+        error = true;
+        return in;
+    }
+    in = getNextToken( in, end );
+    
+    // pop node from stack after successful parsing
+    if( !error ) {
+        popNode();
+    }
+
+    return in;
+}
+
 static void setNodeValues( DDLNode *currentNode, Value *values ) {
     if( ddl_nullptr != values ){
         if( ddl_nullptr != currentNode ) {
@@ -305,31 +335,6 @@ static void setNodeDataArrayList( DDLNode *currentNode, DataArrayList *dtArrayLi
     }
 }
 
-char *OpenDDLParser::parseStructure( char *in, char *end ) {
-    if( nullptr == in || in == end ) {
-        return in;
-    }
-
-    bool error( false );
-    in = getNextToken( in, end );
-    if( *in == '{' ) {
-        in = parseStructureBody( in, end, error );
-    } else {
-        in++;
-        logInvalidTokenError( in, "{", m_logCallback );
-        error = true;
-        return in;
-    }
-    in = getNextToken( in, end );
-    
-    // pop node from stack after successful parsing
-    if( !error ) {
-        popNode();
-    }
-
-    return in;
-}
-
 char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
     in++;
     in = getNextToken( in, end );
@@ -349,12 +354,6 @@ char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
             } else if( arrayLen > 1 ) {
                 in = parseDataArrayList( in, end, &dtArrayList );
                 setNodeDataArrayList( top(), dtArrayList );
-                /*if( ddl_nullptr != dtArrayList ) {
-                    DDLNode *currentNode( top() );
-                    if( ddl_nullptr != currentNode ) {
-                        currentNode->setDataArrayList( dtArrayList );
-                    }
-                }*/
             } else {
                 std::cerr << "0 for array is invalid." << std::endl;
                 error = true;
@@ -365,7 +364,7 @@ char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
         if( *in != '}' ) {
             logInvalidTokenError( in, "}", m_logCallback );
         } else {
-            in++;
+            //in++;
         }
     } else {
         in = parseNextNode( in, end );
