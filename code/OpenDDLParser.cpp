@@ -38,30 +38,32 @@ BEGIN_ODDLPARSER_NS
 static const char *Version = "0.1.0";
 
 namespace Grammar {
-    static const char OpenBracketToken[]  = "{";
-    static const char CloseBracketToken[] = "}";
+    static const char *OpenBracketToken   = "{";
+    static const char *CloseBracketToken  = "}";
+    static const char *OpenPropertyToken  = "(";
+    static const char *ClosePropertyToken = ")";
+    static const char *BoolTrue           = "true";
+    static const char *BoolFalse          = "false";
+    static const char *RefToken           = "ref";
+
+    static const char* PrimitiveTypeToken[ Value::ddl_types_max ] = {
+        "bool",
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "unsigned_int8",
+        "unsigned_int16",
+        "unsigned_int32",
+        "unsigned_int64",
+        "half",
+        "float",
+        "double",
+        "string",
+        "ref"
+    };
 }
 
-static const char* PrimitiveTypeToken[ Value::ddl_types_max ] = {
-    "bool",
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "unsigned_int8",
-    "unsigned_int16",
-    "unsigned_int32",
-    "unsigned_int64",
-    "half",
-    "float",
-    "double",
-    "string",
-    "ref"
-};
-
-static const char *BoolTrue  = "true";
-static const char *BoolFalse = "false";
-static const char *RefToken  = "ref";
 
 static void logInvalidTokenError( char *in, char *exp, OpenDDLParser::logCallback callback ) {
     std::stringstream stream;
@@ -209,6 +211,12 @@ char *OpenDDLParser::parseNextNode( char *in, char *end ) {
     return in;
 }
 
+static void dumpId( Identifier *id ) {
+    if( ddl_nullptr != id ) {
+        std::cout << id->m_buffer << std::endl;
+    }
+}
+
 char *OpenDDLParser::parseHeader( char *in, char *end ) {
     if( nullptr == in || in == end ) {
         return in;
@@ -218,9 +226,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
     in = OpenDDLParser::parseIdentifier( in, end, &id );
 
 #ifdef DEBUG_HEADER_NAME    
-    if( ddl_nullptr != id ) {
-        std::cout << id->m_buffer << std::endl;
-    }
+    dumpId( id );
 #endif // DEBUG_HEADER_NAME
 
     in = getNextToken( in, end );
@@ -343,7 +349,6 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         logInvalidTokenError( in, "{", m_logCallback );
         error = true;
         return in;
-
     }
     in = getNextToken( in, end );
     
@@ -488,9 +493,10 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, Value::ValueTy
         return in;
     }
 
+    size_t prim_len( 0 );
     for( unsigned int i = 0; i < Value::ddl_types_max; i++ ) {
-        const size_t prim_len( strlen( PrimitiveTypeToken[ i ] ) );
-        if( 0 == strncmp( in, PrimitiveTypeToken[ i ], prim_len ) ) {
+        prim_len = strlen( Grammar::PrimitiveTypeToken[ i ] );
+        if( 0 == strncmp( in, Grammar::PrimitiveTypeToken[ i ], prim_len ) ) {
             type = ( Value::ValueType ) i;
             break;
         }
@@ -500,7 +506,7 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, Value::ValueTy
         in = getNextToken( in, end );
         return in;
     } else {
-        in += strlen( PrimitiveTypeToken[ type ] );
+        in += prim_len;
     }
 
     bool ok( true );
@@ -566,9 +572,9 @@ char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, Value **boolean )
         len++;
     }
     len++;
-    int res = ::strncmp( BoolTrue, start, strlen( BoolTrue ) );
+    int res = ::strncmp( Grammar::BoolTrue, start, strlen( Grammar::BoolTrue ) );
     if( 0 != res ) {
-        res = ::strncmp( BoolFalse, start, strlen( BoolFalse ) );
+        res = ::strncmp( Grammar::BoolFalse, start, strlen( Grammar::BoolFalse ) );
         if( 0 != res ) {
             *boolean = ddl_nullptr;
             return in;
