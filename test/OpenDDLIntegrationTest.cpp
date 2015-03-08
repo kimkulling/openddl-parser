@@ -112,6 +112,9 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
 
     DDLNode::DllNodeList childChilds = childs[ 0 ]->getChildNodeList();
     ASSERT_EQ( 3, childChilds.size() );
+    EXPECT_EQ( "Name", childChilds[ 0 ]->getType() );
+    EXPECT_EQ( "ObjectRef", childChilds[ 1 ]->getType() );
+    EXPECT_EQ( "MaterialRef", childChilds[ 2 ]->getType() );
 }
 
 TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {

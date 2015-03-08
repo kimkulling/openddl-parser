@@ -336,7 +336,10 @@ static void setNodeDataArrayList( DDLNode *currentNode, DataArrayList *dtArrayLi
 }
 
 char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
-    in++;
+    if( !isNumeric( *in ) && !isCharacter( *in ) ) {
+        in++;
+    }
+
     in = getNextToken( in, end );
     Value::ValueType type( Value::ddl_none );
     size_t arrayLen( 0 );
