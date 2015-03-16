@@ -96,8 +96,12 @@ struct Reference {
      
     Reference( size_t numrefs, Name **names )
     : m_numRefs( numrefs )
-    , m_referencedName( names ) {
-        // empty
+    , m_referencedName( ddl_nullptr ) {
+        m_referencedName = new Name *[ numrefs ];
+        for( size_t i = 0; i < numrefs; i++ ) {
+            Name *name = new Name( names[ i ]->m_type, names[ i ]->m_id );
+            m_referencedName[ i ] = name;
+        }
     }
 };
 

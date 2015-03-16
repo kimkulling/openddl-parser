@@ -325,7 +325,7 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     ASSERT_EQ( 2, names.size() );
     EXPECT_NE( in, token1 );
 
-    int res( 0 );
+    int res( -1 );
     Name *name( nullptr );
     name = names[ 0 ];
     EXPECT_NE( nullptr, name );
@@ -334,6 +334,37 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     EXPECT_EQ( 0, res );
 
     name = names[ 1 ];
+    EXPECT_NE( nullptr, name );
+    EXPECT_EQ( LocalName, name->m_type );
+    res = strncmp( name->m_id->m_buffer, "%name2", strlen( "%name2" ) );
+    EXPECT_EQ( 0, res );
+}
+
+TEST_F( OpenDDLParserTest, copyReferenceTest ) {
+    size_t len1( 0 );
+    char token1[] = "$name1, %name2", *end( findEnd( token1, len1 ) );
+
+    Reference *ref( nullptr );
+    {
+        std::vector<Name*> names;
+        char *in = OpenDDLParser::parseReference( token1, end, names );
+        ASSERT_EQ( 2, names.size() );
+        EXPECT_NE( in, token1 );
+        ref = new Reference( names.size(), &names[ 0 ] );
+    }
+
+    ASSERT_NE( nullptr, ref );
+    EXPECT_EQ( 2, ref->m_numRefs );
+
+    int res( -1 );
+    Name *name( nullptr );
+    name = ref->m_referencedName[ 0 ];
+    EXPECT_NE( nullptr, name );
+    EXPECT_EQ( GlobalName, name->m_type );
+    res = strncmp( name->m_id->m_buffer, "$name1", strlen( "$name1" ) );
+    EXPECT_EQ( 0, res );
+
+    name = ref->m_referencedName[ 1 ];
     EXPECT_NE( nullptr, name );
     EXPECT_EQ( LocalName, name->m_type );
     res = strncmp( name->m_id->m_buffer, "%name2", strlen( "%name2" ) );
