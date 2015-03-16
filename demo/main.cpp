@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cassert>
 #include <openddlparser/OpenDDLParser.h>
 
-USE_ODDLPARSER_NS;
+USE_ODDLPARSER_NS
 
 static const char *FileOption = "--file";
 static const char *DumpOption = "--dump";
@@ -98,7 +98,9 @@ int main( int argc, char *argv[] ) {
             std::cerr << "Error while parsing file " << filename << "." << std::endl;
         } else {
             DDLNode *root = theParser.getRoot();
-            dumpDDLNodeTree(root);
+            if ( dump ) {
+                dumpDDLNodeTree(root);
+            }
         }
     }
 

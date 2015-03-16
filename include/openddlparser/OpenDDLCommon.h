@@ -109,7 +109,7 @@ struct Identifier {
     size_t m_len;
     char *m_buffer;
 
-    Identifier( size_t len, char *buffer )
+    Identifier( size_t len, char buffer[] )
         : m_len( len )
         , m_buffer( buffer ) {
         // empty

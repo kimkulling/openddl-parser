@@ -51,9 +51,9 @@ DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, 
 , m_children()
 , m_properties( ddl_nullptr )
 , m_value( ddl_nullptr )
-, m_idx( idx )
 , m_dtArrayList( ddl_nullptr )
-, m_references( ddl_nullptr ) {
+, m_references( ddl_nullptr )
+, m_idx( idx ) {
     if( m_parent ) {
         m_parent->m_children.push_back( this );
     }
