@@ -44,6 +44,18 @@ static void releaseDataType( T *ptr ) {
     }
 }
 
+static void releaseReferencedNames( Reference *ref ) {
+    if( ddl_nullptr == ref ) {
+        return;
+    }
+
+    if( ref->m_referencedName ) {
+        for( size_t i = 0; i < ref->m_numRefs; i++ ) {
+            delete ref->m_referencedName;
+        }
+    }
+}
+
 DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, DDLNode *parent )
 : m_type( type )
 , m_name( name )
@@ -62,6 +74,7 @@ DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, 
 DDLNode::~DDLNode() {
     releaseDataType<Property>( m_properties );
     releaseDataType<Value>( m_value );
+    releaseReferencedNames( m_references );
 
     delete m_dtArrayList;
     m_dtArrayList = ddl_nullptr;
