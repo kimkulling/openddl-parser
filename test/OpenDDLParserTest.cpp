@@ -81,7 +81,6 @@ protected:
 
 OpenDDLParserTest *OpenDDLParserTest::s_instance = nullptr;
 
-
 TEST_F( OpenDDLParserTest, getNextSeparatorTest ) {
     char tokenlist[] = "abc, \na";
     char *in( &tokenlist[ 0 ] );
@@ -256,7 +255,7 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
     Value::ValueType type;
     size_t len( 0 );
     char *in = OpenDDLParser::parsePrimitiveDataType( nullptr, nullptr, type, len );
-    ASSERT_NE( ddl_nullptr, in );
+    ASSERT_EQ( ddl_nullptr, in );
     EXPECT_EQ( Value::ddl_none, type );
     EXPECT_EQ( 0, len );
 
