@@ -241,6 +241,19 @@ TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
     EXPECT_EQ( 0, res );
 }
 
+TEST_F( OpenDDLParserTest, parseIdentifierWithLineBreakTest ) {
+    int res( 0 );
+    size_t len1( 0 );
+    char name_with_line_end[] = "testname\r\n", *end1( findEnd( name_with_line_end, len1 ) );
+    Identifier *id( nullptr );
+    char *in = OpenDDLParser::parseIdentifier( name_with_line_end, end1, &id );
+    ASSERT_NE( ddl_nullptr, in );
+    ASSERT_TRUE( id != nullptr );
+    char name[] = "testname";
+    res = strncmp( id->m_buffer, name, strlen( name ) );
+    EXPECT_EQ( 0, res );
+}
+
 TEST_F( OpenDDLParserTest, parseNameTest ) {
     size_t len1( 0 );
     char name1[] = "$testname", *end1( findEnd( name1, len1 ) );
