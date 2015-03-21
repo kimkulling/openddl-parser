@@ -608,6 +608,8 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
     DataArrayList *dataList( nullptr );
     Value::ValueType type;
     char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, len );
+    ASSERT_EQ( Value::ddl_float, type );
+
     in = OpenDDLParser::parseDataArrayList( in, end, &dataList );
     ASSERT_NE( nullptr, dataList );
     ASSERT_NE( nullptr, dataList->m_dataList );
