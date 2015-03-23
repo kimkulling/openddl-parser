@@ -315,7 +315,8 @@ TEST_F( OpenDDLParserTest, parsePrimitiveArrayHexTest ) {
     char *end( findEnd( token, len ) );
     Value *data( nullptr );
     Reference *refs( ddl_nullptr );
-    char *in = OpenDDLParser::parseDataList( token, end, &data, &refs );
+    size_t numRefs(0), numValues( 0 );
+    char *in = OpenDDLParser::parseDataList( token, end, &data, numValues, &refs, numRefs );
     EXPECT_NE( in, token );
 }
 
@@ -559,7 +560,8 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     char token1[] = "{1,2,3,4}";
     end = findEnd( token1, len );
     Reference *refs( ddl_nullptr );
-    in = OpenDDLParser::parseDataList( token1, end, &data, &refs );
+    size_t numRefs( 0 ), numValues( 0 );
+    in = OpenDDLParser::parseDataList( token1, end, &data, numValues, &refs, numRefs );
     ASSERT_NE( nullptr, in );
     ASSERT_NE( nullptr, data );
 
@@ -575,7 +577,7 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
 
     char token2[] = "{ \"string1\",\"string2\"}";
     end = findEnd( token2, len );
-    in = OpenDDLParser::parseDataList( token2, end, &data, &refs );
+    in = OpenDDLParser::parseDataList( token2, end, &data, numValues, &refs, numRefs );
     ASSERT_NE( nullptr, data );
     registerValueForDeletion( data );
 
@@ -598,21 +600,24 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
     char token[] = 
         "float[ 16 ]\n"
         "{\n"
-        "    {0x3F800000, 0x00000000, 0x00000000, 0x00000000,		// {1, 0, 0, 0\n"
-        "     0x00000000, 0x3F800000, 0x00000000, 0x00000000,		//  0, 1, 0, 0\n"
-        "     0x00000000, 0x00000000, 0x3F800000, 0x00000000,		//  0, 0, 1, 0\n"
-        "     0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
+        "    {0x3F800000, 0x00000000, 0x00000000, 0x00000000,\n"
+        "     0x00000000, 0x3F800000, 0x00000000, 0x00000000,\n"
+        "     0x00000000, 0x00000000, 0x3F800000, 0x00000000,\n"
+        "     0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}\n"
         "}\n";
     size_t len( 0 );
     char *end = findEnd( token, len );
-    DataArrayList *dataList( nullptr );
+    DataArrayList *dataArrayList( nullptr );
     Value::ValueType type;
+
     char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, len );
     ASSERT_EQ( Value::ddl_float, type );
+    ASSERT_EQ( 16, len );
 
-    in = OpenDDLParser::parseDataArrayList( in, end, &dataList );
-    ASSERT_NE( nullptr, dataList );
-    ASSERT_NE( nullptr, dataList->m_dataList );
+    in = OpenDDLParser::parseDataArrayList( in, end, &dataArrayList );
+    ASSERT_NE( nullptr, dataArrayList );
+    ASSERT_NE( nullptr, dataArrayList->m_dataList );
+    EXPECT_EQ( 16, dataArrayList->m_numItems );
 }
 
 TEST_F( OpenDDLParserTest, pushTest ) {
