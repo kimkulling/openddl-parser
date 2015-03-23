@@ -1,7 +1,8 @@
 The OpenDDL-Parser
 ==================
 
-OpenDDl-Parser is a small and easy to use library for DDL-file-parsing. 
+OpenDDL-Parser is a small and easy to use library for DDL-file-parsing. OpenDDL stands for Open Data Description Language, which was introduced by Eric Lengyel
+Check http://openddl.org/ to learn more about it.
 Current build status: [![Build Status](https://travis-ci.org/kimkulling/openddl-parser.png)](https://travis-ci.org/kimkulling/openddl-parser)
 
 Get the source code
@@ -12,7 +13,7 @@ You can get the code from our git repository, which is located at GitHub. You ca
 
 Build from repo
 ===============
-To build the library you need to install cmake first ( see http://www.cmake.org/ for more information ). Make also sure that a compiler toolchain is installed on your machine.
+To build the library you need to install cmake first ( see http://www.cmake.org/ for more information ). Make also sure that a compiler tool-chain is installed on your machine.
 After installing it you can open a console and type:
 
 > cmake CMakeLists.txt
