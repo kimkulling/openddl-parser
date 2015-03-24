@@ -190,6 +190,8 @@ bool OpenDDLParser::parse() {
     
     normalizeBuffer( m_buffer );
 
+    std::cout << &m_buffer[0] << std::endl;
+
     m_context = new Context;
     m_context->m_root = DDLNode::create( "root", "", ddl_nullptr );
     pushNode( m_context->m_root );
@@ -295,8 +297,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
             in = parseStructureBody( in, end, error );
         } while ( *in != '}' );
         in++;
-    }
-    else {
+    } else {
         in++;
         logInvalidTokenError( in, std::string( Grammar::OpenBracketToken ), m_logCallback );
         error = true;
@@ -346,6 +347,7 @@ char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
     size_t arrayLen( 0 );
     in = OpenDDLParser::parsePrimitiveDataType( in, end, type, arrayLen );
     if( Value::ddl_none != type ) {
+        // parse a primitive data type
         in = getNextToken( in, end );
         if( *in == '{' ) {
             Reference *refs( ddl_nullptr );
@@ -372,6 +374,7 @@ char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
             //in++;
         }
     } else {
+        // parse a complex data type
         in = parseNextNode( in, end );
     }
 
@@ -429,15 +432,17 @@ void OpenDDLParser::normalizeBuffer( std::vector<char> &buffer) {
     for( size_t readIdx = 0; readIdx<len; ++readIdx ) {
         char *c( &buffer[readIdx] );
         // check for a comment
-        if( !isComment<char>( c, end ) ) {
+        if( !isComment<char>( c, end ) && !isNewLine( *c ) ) {
             newBuffer.push_back( buffer[ readIdx ] );
         } else {
-            readIdx++;
-            // skip the comment and the rest of the line
-            while( !isEndofLine( buffer[ readIdx ] ) ) {
+            if( isComment<char>( c, end ) ) {
                 readIdx++;
+                // skip the comment and the rest of the line
+                while( !isEndofLine( buffer[ readIdx ] ) ) {
+                    readIdx++;
+                }
+                //newBuffer.push_back( '\n' );
             }
-            newBuffer.push_back( '\n' );
         }
     }
     buffer = newBuffer;

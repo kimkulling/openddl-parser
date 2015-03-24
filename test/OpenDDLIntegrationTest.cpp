@@ -47,7 +47,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     ASSERT_NE( nullptr, ctx );
 
     DDLNode::DllNodeList myList = myNode->getChildNodeList();
-    EXPECT_EQ( 2, myList.size() );
+    ASSERT_EQ( 2, myList.size() );
     DDLNode *child = myList[ 0 ];
     ASSERT_NE( nullptr, child );
     EXPECT_EQ( "Metric", child->getType() );
@@ -117,7 +117,7 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
     EXPECT_EQ( "MaterialRef", childChilds[ 2 ]->getType() );
 }
 
-TEST_F( OpenDDLIntegrationTest, parseOpenGEXTest ) {
+TEST_F( OpenDDLIntegrationTest, parseTransformDataTest ) {
     char token[] =
         "    Transform\n"
         "    {\n"
