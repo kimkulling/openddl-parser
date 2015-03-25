@@ -441,7 +441,6 @@ void OpenDDLParser::normalizeBuffer( std::vector<char> &buffer) {
                 while( !isEndofLine( buffer[ readIdx ] ) ) {
                     readIdx++;
                 }
-                //newBuffer.push_back( '\n' );
             }
         }
     }
