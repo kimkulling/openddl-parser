@@ -886,6 +886,8 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, DataArrayList **da
                 }
             }
         } while( ',' == *in && in != end );
+        in = lookForNextToken( in, end );
+        in++;
     }
 
     return in;

@@ -618,6 +618,8 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
     ASSERT_NE( nullptr, dataArrayList );
     ASSERT_NE( nullptr, dataArrayList->m_dataList );
     EXPECT_EQ( 16, dataArrayList->m_numItems );
+
+    EXPECT_NE('}', *in );
 }
 
 TEST_F( OpenDDLParserTest, pushTest ) {
