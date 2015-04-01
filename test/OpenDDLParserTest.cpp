@@ -483,15 +483,16 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     ASSERT_NE( nullptr, data );
     registerValueForDeletion( data );
 
-    int v( data->getInt32() );
-    EXPECT_EQ( 1, v );
+    float v( data->getFloat() );
+    EXPECT_FLOAT_EQ( 1.0f, v );
 
     char token2[] = "0xff";
     end = findEnd( token2, len );
     in = OpenDDLParser::parseHexaLiteral( token2, end, &data );
     ASSERT_NE( nullptr, data );
-    v = data->getInt32();
-    EXPECT_EQ( 255, v );
+    v = data->getFloat();
+    
+    EXPECT_FLOAT_EQ( 255.0f, v );
     registerValueForDeletion( data );
 
     char token3[] = "0xFF";
@@ -499,8 +500,8 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     in = OpenDDLParser::parseHexaLiteral( token3, end, &data );
     ASSERT_NE( nullptr, in );
     ASSERT_NE( nullptr, data );
-    v = data->getInt32();
-    EXPECT_EQ( 255, v );
+    v = data->getFloat();
+    EXPECT_FLOAT_EQ( 255.0f, v );
     registerValueForDeletion( data );
 }
 
@@ -622,6 +623,17 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
     EXPECT_NE('}', *in );
 }
 
+static void validateDataArray( Value *value, size_t expectedNumItems  ) {
+    std::cout << "validateDataArray" << std::endl;
+    size_t countedItems( 0 );
+    while( ddl_nullptr != value ) {
+        std::cout << "value = " << value->getFloat() << std::endl;
+        countedItems++;
+        value = value->m_next;
+    }
+    EXPECT_EQ( expectedNumItems, countedItems );
+}
+
 TEST_F( OpenDDLParserTest, parseDataArrayListWithMultibleArrayTest ) {
     char token[] =
         "float[ 3 ]\n"
@@ -643,6 +655,24 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithMultibleArrayTest ) {
 
     in = OpenDDLParser::parseDataArrayList( in, end, &dataArrayList );
     ASSERT_NE( nullptr, dataArrayList );
+
+    size_t numLists( 0 );
+    DataArrayList *nextDataArrayList( dataArrayList );
+    while( ddl_nullptr != nextDataArrayList ) {
+        nextDataArrayList = nextDataArrayList->m_next;
+        numLists++;
+    }
+    ASSERT_EQ( 4, numLists );
+
+    Value *nextValue( dataArrayList->m_dataList );
+    nextDataArrayList = dataArrayList;
+    while( ddl_nullptr != nextDataArrayList ) {
+        nextDataArrayList = nextDataArrayList->m_next;
+        validateDataArray( nextValue, len );
+        if( ddl_nullptr != nextDataArrayList ) {
+            nextValue = nextDataArrayList->m_dataList;
+        }
+    }
 }
 
 TEST_F( OpenDDLParserTest, pushTest ) {
