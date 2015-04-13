@@ -483,16 +483,16 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     ASSERT_NE( nullptr, data );
     registerValueForDeletion( data );
 
-    float v( data->getFloat() );
-    EXPECT_FLOAT_EQ( 1.0f, v );
+    uint64 v( data->getUnsignedInt64() );
+    EXPECT_FLOAT_EQ( 1, v );
 
     char token2[] = "0xff";
     end = findEnd( token2, len );
     in = OpenDDLParser::parseHexaLiteral( token2, end, &data );
     ASSERT_NE( nullptr, data );
-    v = data->getFloat();
+    v = data->getUnsignedInt64();
     
-    EXPECT_FLOAT_EQ( 255.0f, v );
+    EXPECT_EQ( 255, v );
     registerValueForDeletion( data );
 
     char token3[] = "0xFF";
@@ -500,8 +500,8 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     in = OpenDDLParser::parseHexaLiteral( token3, end, &data );
     ASSERT_NE( nullptr, in );
     ASSERT_NE( nullptr, data );
-    v = data->getFloat();
-    EXPECT_FLOAT_EQ( 255.0f, v );
+    v = data->getUnsignedInt64();
+    EXPECT_FLOAT_EQ( 255, v );
     registerValueForDeletion( data );
 }
 
@@ -717,5 +717,16 @@ TEST_F( OpenDDLParserTest, popTest ) {
     current = theParser.top();
     EXPECT_EQ( nullptr, current );
 }
+
+TEST_F( OpenDDLParserTest, parseHexValueLiteralTest ) {
+    char token[] = "0x3F800000";
+    size_t len1( 0 );
+    char *end = findEnd( token, len1 );
+
+    Value *data( ddl_nullptr );
+    char *next = OpenDDLParser::parseHexaLiteral( token, end, &data );
+    uint64 v( data->getUnsignedInt64() );
+}
+
 
 END_ODDLPARSER_NS

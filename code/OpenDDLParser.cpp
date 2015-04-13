@@ -46,6 +46,7 @@ namespace Grammar {
     static const char *BoolTrue           = "true";
     static const char *BoolFalse          = "false";
     static const char *RefToken           = "ref";
+    static const char *CommaSeparator     = ",";
 
     static const char* PrimitiveTypeToken[ Value::ddl_types_max ] = {
         "bool",
@@ -750,15 +751,17 @@ char *OpenDDLParser::parseHexaLiteral( char *in, char *end, Value **data ) {
         return in;
     }
 
-    int value( 0 );
+    unsigned int value( 0 );
     while( pos > 0 ) {
         pos--;
-        value += hex2Decimal( *start ) * static_cast<int>( pow( 16.0, pos ) );
+        value += hex2Decimal( *start ) * static_cast<unsigned int>( pow( 16.0, pos ) );
         start++;
     }
 
-    *data = ValueAllocator::allocPrimData( Value::ddl_int32 );
-    (*data)->setInt32( value );
+    *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
+    if( ddl_nullptr != *data ) {
+        ( *data )->setUnsignedInt64( value );
+    }
 
     return in;
 }
@@ -856,7 +859,7 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data, size_t &n
     return in;
 }
 
-DataArrayList *createDataArrayList( Value *currentValue, size_t numValues ) {
+static DataArrayList *createDataArrayList( Value *currentValue, size_t numValues ) {
     DataArrayList *dataList = new DataArrayList;
     dataList->m_dataList = currentValue;
     dataList->m_numItems = numValues;
@@ -892,7 +895,7 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, DataArrayList **da
                     }
                 }
             }
-        } while( ',' == *in && in != end );
+        } while( Grammar::CommaSeparator[ 0 ] == *in && in != end );
         in = lookForNextToken( in, end );
         in++;
     }

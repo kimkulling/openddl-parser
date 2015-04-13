@@ -29,6 +29,10 @@ BEGIN_ODDLPARSER_NS
 class OpenDDLCommonTest : public testing::Test {
 };
 
+TEST_F( OpenDDLCommonTest, tokenTest ) {
+
+}
+
 TEST_F( OpenDDLCommonTest, createNameTest ) {
     bool ok( true );
     Name *name( nullptr );
