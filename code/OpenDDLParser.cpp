@@ -751,10 +751,11 @@ char *OpenDDLParser::parseHexaLiteral( char *in, char *end, Value **data ) {
         return in;
     }
 
-    unsigned int value( 0 );
+    int value( 0 );
     while( pos > 0 ) {
+        int v = hex2Decimal( *start );
         pos--;
-        value += hex2Decimal( *start ) * static_cast<unsigned int>( pow( 16.0, pos ) );
+        value = ( value << 4 ) | v;
         start++;
     }
 

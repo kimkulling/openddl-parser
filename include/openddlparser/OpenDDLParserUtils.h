@@ -227,10 +227,10 @@ static T *getNextSeparator( T *in, T *end ) {
     return in;
 }
 
-static const unsigned int ErrorHex2Decimal = 9999999;
+static const int ErrorHex2Decimal = 9999999;
 
 inline
-unsigned int hex2Decimal( char in ) {
+int hex2Decimal( char in ) {
     if( isNumeric( in ) ) {
         return ( in - 48 );
     }

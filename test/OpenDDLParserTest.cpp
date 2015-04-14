@@ -725,7 +725,8 @@ TEST_F( OpenDDLParserTest, parseHexValueLiteralTest ) {
 
     Value *data( ddl_nullptr );
     char *next = OpenDDLParser::parseHexaLiteral( token, end, &data );
-    uint64 v( data->getUnsignedInt64() );
+    const float val = data->getFloat();
+    EXPECT_FLOAT_EQ( 1.0f, val );
 }
 
 
