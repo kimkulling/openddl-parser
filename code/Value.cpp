@@ -126,7 +126,7 @@ void Value::setUnsignedInt64( uint64 value ) {
 
 uint64 Value::getUnsignedInt64() const {
     assert( ddl_unsigned_int64 == m_type );
-    return ( uint8 ) ( *m_data );
+    return ( uint64 ) ( *m_data );
 }
 
 void Value::setFloat( float value ) {
