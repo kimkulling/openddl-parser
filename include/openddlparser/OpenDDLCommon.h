@@ -113,6 +113,7 @@ private:
     const char *m_token;
     size_t m_size;
 };
+
 struct Name {
     NameType    m_type;
     Identifier *m_id;
@@ -122,6 +123,10 @@ struct Name {
         , m_id( id ) {
         // empty
     }
+
+private:
+    Name( const Name & );
+    Name &operator = ( const Name& );
 };
 
 struct Reference {
@@ -143,6 +148,10 @@ struct Reference {
             m_referencedName[ i ] = name;
         }
     }
+
+private:
+    Reference( const Reference & );
+    Reference &operator = ( const Reference & );
 };
 
 struct Identifier {
@@ -154,6 +163,10 @@ struct Identifier {
         , m_buffer( buffer ) {
         // empty
     }
+
+private:
+    Identifier( const Identifier & );
+    Identifier &operator = ( const Identifier & );
 };
 
 struct Property {
@@ -169,6 +182,10 @@ struct Property {
         , m_next( ddl_nullptr ) {
         // empty
     }
+
+private:
+    Property( const Property & );
+    Property &operator = ( const Property & );
 };
 
 struct DataArrayList {
@@ -182,6 +199,11 @@ struct DataArrayList {
         , m_next( ddl_nullptr ) {
         // empty
     }
+
+private:
+    DataArrayList( const DataArrayList & ); 
+    DataArrayList &operator = ( const DataArrayList & );
+
 };
 
 struct Context {
@@ -191,6 +213,10 @@ struct Context {
         : m_root( ddl_nullptr ) {
         // empty
     }
+
+private:
+    Context( const Context & );
+    Context &operator = ( const Context & );
 };
 
 struct BufferIt {
