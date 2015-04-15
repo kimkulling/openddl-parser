@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------------------------
 The MIT License (MIT)
 
-Copyright (c) 2014 Kim Kulling
+Copyright (c) 2014-2015 Kim Kulling
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -43,7 +43,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif // _WIN32
 
 #define BEGIN_ODDLPARSER_NS namespace ODDLParser {
-#define END_ODDLPARSER_NS   }
+#define END_ODDLPARSER_NS   } // namespace ODDLParser
 #define USE_ODDLPARSER_NS   using namespace ODDLParser;
 
 BEGIN_ODDLPARSER_NS
@@ -63,10 +63,10 @@ struct Reference;
 struct Property;
 struct DataArrayList;
 
-typedef char  int8;
-typedef short int16;
-typedef int   int32;
-typedef long  int64;
+typedef char           int8;
+typedef short          int16;
+typedef int            int32;
+typedef long           int64;
 typedef unsigned char  uint8;
 typedef unsigned short uint16;
 typedef unsigned int   uint32;
