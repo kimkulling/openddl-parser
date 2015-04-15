@@ -57,6 +57,7 @@ public:
     const std::string &getName() const;
     void setProperties( Property *prop );
     Property *getProperties() const;
+    bool hasProperty( const std::string &name );
     void setValue( Value *val );
     Value *getValue() const;
     void setDataArrayList( DataArrayList  *dtArrayList );

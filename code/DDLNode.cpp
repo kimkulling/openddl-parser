@@ -138,6 +138,27 @@ Property *DDLNode::getProperties() const {
     return m_properties;
 }
 
+bool DDLNode::hasProperty( const std::string &name ) {
+    if( name.empty() ) {
+        return false;
+    }
+
+    if( ddl_nullptr == m_properties ) {
+        return false;
+    }
+
+    Property *current( m_properties );
+    while( ddl_nullptr != current ) {
+        int res = strncmp( current->m_id->m_buffer, name.c_str(), name.size() );
+        if( 0 == res ) {
+            return true;
+        }
+        current = current->m_next;
+    }
+
+    return false;
+}
+
 void DDLNode::setValue( Value *val ) {
     m_value = val;
 }
