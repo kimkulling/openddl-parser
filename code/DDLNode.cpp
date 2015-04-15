@@ -139,6 +139,11 @@ Property *DDLNode::getProperties() const {
 }
 
 bool DDLNode::hasProperty( const std::string &name ) {
+    const Property *prop( findPropertyByName( name ) );
+    return ( ddl_nullptr != prop );
+}
+
+Property *DDLNode::findPropertyByName( const std::string &name ) {
     if( name.empty() ) {
         return false;
     }
@@ -146,17 +151,16 @@ bool DDLNode::hasProperty( const std::string &name ) {
     if( ddl_nullptr == m_properties ) {
         return false;
     }
-
     Property *current( m_properties );
     while( ddl_nullptr != current ) {
         int res = strncmp( current->m_id->m_buffer, name.c_str(), name.size() );
         if( 0 == res ) {
-            return true;
+            return current;
         }
         current = current->m_next;
     }
 
-    return false;
+    return ddl_nullptr;
 }
 
 void DDLNode::setValue( Value *val ) {
