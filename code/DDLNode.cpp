@@ -145,11 +145,11 @@ bool DDLNode::hasProperty( const std::string &name ) {
 
 Property *DDLNode::findPropertyByName( const std::string &name ) {
     if( name.empty() ) {
-        return false;
+        return ddl_nullptr;
     }
 
     if( ddl_nullptr == m_properties ) {
-        return false;
+        return ddl_nullptr;
     }
     Property *current( m_properties );
     while( ddl_nullptr != current ) {
