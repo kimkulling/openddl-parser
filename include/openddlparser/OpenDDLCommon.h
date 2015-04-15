@@ -219,17 +219,6 @@ private:
     Context &operator = ( const Context & );
 };
 
-struct BufferIt {
-    std::vector<char> m_buffer;
-    size_t m_idx;
-
-    BufferIt( const std::vector<char> &buffer )
-        : m_buffer( buffer )
-        , m_idx( 0 ) {
-        // empty
-    }
-};
-
 END_ODDLPARSER_NS
 
 #endif // OPENDDLPARSER_OPENDDLPARSERCOMMON_H_INC
