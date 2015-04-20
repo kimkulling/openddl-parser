@@ -484,7 +484,7 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     registerValueForDeletion( data );
 
     uint64 v( data->getUnsignedInt64() );
-    EXPECT_FLOAT_EQ( 1, v );
+    EXPECT_EQ( 1, v );
 
     char token2[] = "0xff";
     end = findEnd( token2, len );
@@ -501,7 +501,7 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     ASSERT_NE( nullptr, in );
     ASSERT_NE( nullptr, data );
     v = data->getUnsignedInt64();
-    EXPECT_FLOAT_EQ( 255, v );
+    EXPECT_EQ( 255, v );
     registerValueForDeletion( data );
 }
 
@@ -513,20 +513,20 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
     in = OpenDDLParser::parseProperty( prop1, end1, &prop );
     ASSERT_NE( nullptr, in );
     ASSERT_NE( nullptr, prop );
-    ASSERT_NE( nullptr, prop->m_id );
-    int res = strncmp( "lod", prop->m_id->m_buffer, prop->m_id->m_len );
+    ASSERT_NE( nullptr, prop->m_key );
+    int res = strncmp( "lod", prop->m_key->m_buffer, prop->m_key->m_len );
     EXPECT_EQ( 0, res ); 
         
     char prop2[] = "key = \"angle\"", *end2( findEnd( prop2, len ) );
     in = OpenDDLParser::parseProperty( prop2, end2, &prop );
     ASSERT_NE( nullptr, prop );
-    ASSERT_NE( nullptr, prop->m_id );
-    res = strncmp( "key", prop->m_id->m_buffer, prop->m_id->m_len );
+    ASSERT_NE( nullptr, prop->m_key );
+    res = strncmp( "key", prop->m_key->m_buffer, prop->m_key->m_len );
     EXPECT_EQ( 0, res );
 
-    EXPECT_EQ( Value::ddl_string, prop->m_primData->m_type );
-    EXPECT_NE( nullptr, prop->m_primData->m_data );
-    res = strncmp( "angle", (char*) prop->m_primData->m_data, prop->m_primData->m_size );
+    EXPECT_EQ( Value::ddl_string, prop->m_value->m_type );
+    EXPECT_NE( nullptr, prop->m_value->m_data );
+    res = strncmp( "angle", ( char* ) prop->m_value->m_data, prop->m_value->m_size );
     EXPECT_EQ( 0, res );
 }
 

@@ -77,43 +77,6 @@ enum NameType {
     LocalName
 };
 
-struct Token {
-public:
-    Token( const char *token )
-    : m_token( token )
-    , m_size( 0 ){
-        if( ddl_nullptr != token ) {
-            m_size = strlen( m_token );
-        }
-    }
-    
-    ~Token() {
-        // empty
-    }
-
-    size_t length() const {
-        return m_size;
-    }
-
-    bool operator == ( const Token &rhs ) const {
-        if( m_size != rhs.m_size ) {
-            return false;
-        }
-
-        const int res( strncmp( m_token, rhs.m_token, m_size ) );
-        return ( res == 0 );
-    }
-
-private:
-    Token();
-    Token( const Token  & );
-    Token &operator = ( const Token & );
-
-private:
-    const char *m_token;
-    size_t m_size;
-};
-
 struct Name {
     NameType    m_type;
     Identifier *m_id;
@@ -164,20 +127,34 @@ struct Identifier {
         // empty
     }
 
+    bool operator == ( const Identifier &rhs ) const {
+        if( rhs.m_len != m_len ) {
+            return false;
+        }
+
+        for( size_t i = 0; i < m_len; ++i ) {
+            if( m_buffer[ i ] != rhs.m_buffer[ i ] ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 private:
     Identifier( const Identifier & );
     Identifier &operator = ( const Identifier & );
 };
 
 struct Property {
-    Identifier *m_id;
-    Value *m_primData;
+    Identifier *m_key;
+    Value *m_value;
     Reference *m_ref;
     Property *m_next;
 
     Property( Identifier *id )
-        : m_id( id )
-        , m_primData( ddl_nullptr )
+        : m_key( id )
+        , m_value( ddl_nullptr )
         , m_ref( ddl_nullptr )
         , m_next( ddl_nullptr ) {
         // empty

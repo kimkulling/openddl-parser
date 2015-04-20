@@ -714,7 +714,7 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, Value **stringData
 static void createPropertyWithData( Identifier *id, Value *primData, Property **prop ) {
     if( ddl_nullptr != primData ) {
         ( *prop ) = new Property( id );
-        ( *prop )->m_primData = primData;
+        ( *prop )->m_value = primData;
     }
 }
 
