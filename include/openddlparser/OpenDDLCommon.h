@@ -77,6 +77,35 @@ enum NameType {
     LocalName
 };
 
+struct Identifier {
+    size_t m_len;
+    char *m_buffer;
+
+    Identifier( size_t len, char buffer[] )
+        : m_len( len )
+        , m_buffer( buffer ) {
+        // empty
+    }
+
+    bool operator == ( const Identifier &rhs ) const {
+        if( rhs.m_len != m_len ) {
+            return false;
+        }
+
+        for( size_t i = 0; i < m_len; ++i ) {
+            if( m_buffer[ i ] != rhs.m_buffer[ i ] ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+private:
+    Identifier( const Identifier & );
+    Identifier &operator = ( const Identifier & );
+};
+
 struct Name {
     NameType    m_type;
     Identifier *m_id;
@@ -115,35 +144,6 @@ struct Reference {
 private:
     Reference( const Reference & );
     Reference &operator = ( const Reference & );
-};
-
-struct Identifier {
-    size_t m_len;
-    char *m_buffer;
-
-    Identifier( size_t len, char buffer[] )
-        : m_len( len )
-        , m_buffer( buffer ) {
-        // empty
-    }
-
-    bool operator == ( const Identifier &rhs ) const {
-        if( rhs.m_len != m_len ) {
-            return false;
-        }
-
-        for( size_t i = 0; i < m_len; ++i ) {
-            if( m_buffer[ i ] != rhs.m_buffer[ i ] ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-private:
-    Identifier( const Identifier & );
-    Identifier &operator = ( const Identifier & );
 };
 
 struct Property {
