@@ -491,7 +491,8 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     ASSERT_NE( nullptr, data );
     v = data->getUnsignedInt64();
     
-    EXPECT_EQ( 255, v );
+    static const unsigned int ExpValue = 255;
+    EXPECT_EQ( ExpValue, v );
     registerValueForDeletion( data );
 
     char token3[] = "0xFF";
@@ -500,7 +501,7 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     ASSERT_NE( nullptr, in );
     ASSERT_NE( nullptr, data );
     v = data->getUnsignedInt64();
-    EXPECT_EQ( 255, v );
+    EXPECT_EQ( ExpValue, v );
     registerValueForDeletion( data );
 }
 

@@ -191,8 +191,6 @@ bool OpenDDLParser::parse() {
     
     normalizeBuffer( m_buffer );
 
-    std::cout << &m_buffer[0] << std::endl;
-
     m_context = new Context;
     m_context->m_root = DDLNode::create( "root", "", ddl_nullptr );
     pushNode( m_context->m_root );
