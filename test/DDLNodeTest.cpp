@@ -97,7 +97,7 @@ TEST_F( DDLNodeTest, accessPropertiesDDLNodeTest ) {
     DDLNode *node = DDLNode::create( "test", "testName" );
     
     EXPECT_EQ( nullptr, node->getProperties() );
-    Identifier *id = new Identifier( 4, "test" );
+    Identifier *id = new Identifier( "test", 4 );
     Property *first = new Property( id );
     node->setProperties( first );
     EXPECT_EQ( first, node->getProperties() );
@@ -109,7 +109,7 @@ TEST_F( DDLNodeTest, hasPropertyTest ) {
     found = node->hasProperty( "test" );
     EXPECT_FALSE( found );
 
-    Identifier *id = new Identifier( 4, "test" );
+    Identifier *id = new Identifier( "test", 4 );
     Property *first = new Property( id );
     node->setProperties( first );
     found = node->hasProperty( "test" );
@@ -122,7 +122,7 @@ TEST_F( DDLNodeTest, findPropertyByNameTest ) {
     prop = node->findPropertyByName( "test" );
     EXPECT_EQ( ddl_nullptr, prop );
 
-    Identifier *id = new Identifier( 4, "test" );
+    Identifier *id = new Identifier( "test", 4 );
     Property *first = new Property( id );
     node->setProperties( first );
     prop = node->findPropertyByName( "test" );

@@ -106,7 +106,7 @@ TEST_F( OpenDDLCommonTest, setTextTest ) {
 }
 
 TEST_F( OpenDDLCommonTest, CompareIdentifierTest ) {
-    Identifier id1( 5, "test" ), id2( 5, "test" );
+    Identifier id1( "test" ), id2( "test" );
     bool equal( id1 == id2 );
     EXPECT_TRUE( equal );
 }

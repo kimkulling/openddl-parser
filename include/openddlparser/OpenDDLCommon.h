@@ -111,33 +111,35 @@ struct Text {
         }
     }
 
+    bool operator == ( const Text &rhs ) const {
+        if( m_len != rhs.m_len ) {
+            return false;
+        }
+
+        const int res ( strncmp( m_buffer, rhs.m_buffer, m_len ) );
+        return ( 0 == res );
+    }
+
 private:
     Text( const Text & );
     Text &operator = ( const Text & );
 };
 
 struct Identifier {
-    size_t m_len;
-    char *m_buffer;
+    Text m_text;
 
-    Identifier( size_t len, char buffer[] )
-    : m_len( len )
-    , m_buffer( buffer ) {
+    Identifier( char buffer[], size_t len )
+        : m_text( buffer, len ) {
+        // empty
+    }
+
+    Identifier( char buffer[] )
+    : m_text( buffer, strlen( buffer ) ) {
         // empty
     }
 
     bool operator == ( const Identifier &rhs ) const {
-        if( rhs.m_len != m_len ) {
-            return false;
-        }
-
-        for( size_t i = 0; i < m_len; ++i ) {
-            if( m_buffer[ i ] != rhs.m_buffer[ i ] ) {
-                return false;
-            }
-        }
-
-        return true;
+        return m_text == rhs.m_text;
     }
 
 private:
