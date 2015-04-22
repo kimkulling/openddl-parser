@@ -77,13 +77,52 @@ enum NameType {
     LocalName
 };
 
+struct Text {
+    size_t m_capacity;
+    size_t m_len;
+    char *m_buffer;
+
+    Text( const char *buffer, size_t numChars )
+    : m_capacity( 0 )
+    , m_len( 0 )
+    , m_buffer( ddl_nullptr ) {
+        set( buffer, numChars );
+    }
+
+    ~Text() {
+        clear();
+    }
+
+    void clear() {
+        delete[] m_buffer;
+        m_buffer = ddl_nullptr;
+        m_capacity = 0;
+        m_len = 0;
+    }
+
+    void set( const char *buffer, size_t numChars ) {
+        clear();
+        if( numChars > 0 ) {
+            m_len = numChars;
+            m_capacity = m_len + 1;
+            m_buffer = new char[ m_capacity ];
+            strncpy( m_buffer, buffer, numChars );
+            m_buffer[ numChars ] = '\0';
+        }
+    }
+
+private:
+    Text( const Text & );
+    Text &operator = ( const Text & );
+};
+
 struct Identifier {
     size_t m_len;
     char *m_buffer;
 
     Identifier( size_t len, char buffer[] )
-        : m_len( len )
-        , m_buffer( buffer ) {
+    : m_len( len )
+    , m_buffer( buffer ) {
         // empty
     }
 

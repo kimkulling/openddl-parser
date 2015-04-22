@@ -26,7 +26,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+static const char TestText[] = "hello";
+
 class OpenDDLCommonTest : public testing::Test {
+    Text *m_text;
+public:
+    virtual void SetUp() {
+        m_text = ddl_nullptr;
+    }
+
+    virtual void TearDown() {
+        delete m_text;
+        m_text = ddl_nullptr;
+    }
+
+    const char *getTestText() const {
+        return &TestText[ 0 ];
+    }
+
+    size_t getTestTextLen() {
+        return strlen( TestText );
+    }
+
+    Text *createTestText() {
+        m_text = new Text( getTestText(), getTestTextLen() );
+        return m_text;
+    }
 };
 
 TEST_F( OpenDDLCommonTest, createNameTest ) {
@@ -38,6 +63,46 @@ TEST_F( OpenDDLCommonTest, createNameTest ) {
         ok = false;
     }
     EXPECT_TRUE( ok );
+}
+
+TEST_F( OpenDDLCommonTest, createTextTest ) {
+    bool ok( true );
+    try {
+        static_cast<void>( createTestText() );
+    } catch( ... ) {
+        ok = false;
+    }
+    EXPECT_TRUE( ok );
+}
+
+TEST_F( OpenDDLCommonTest, accessTextTest ) {
+    Text *theText = createTestText();
+    ASSERT_NE( ddl_nullptr, theText );
+
+    EXPECT_EQ( getTestTextLen(), theText->m_len );
+    int res( strncmp( getTestText(), theText->m_buffer, getTestTextLen() ) );
+    EXPECT_EQ( 0, res );
+}
+
+TEST_F( OpenDDLCommonTest, clearTextTest ) {
+    Text *theText = createTestText();
+    ASSERT_NE( ddl_nullptr, theText );
+
+    theText->clear();
+    EXPECT_EQ( 0, theText->m_len );
+    EXPECT_EQ( ddl_nullptr, theText->m_buffer );
+}
+
+TEST_F( OpenDDLCommonTest, setTextTest ) {
+    Text *theText = createTestText();
+    ASSERT_NE( ddl_nullptr, theText );
+
+    static const std::string test2 = "Hello, World!";
+    theText->set( test2.c_str(), test2.size() );
+    
+    EXPECT_EQ( test2.size(), theText->m_len );
+    int res( strncmp( test2.c_str(), theText->m_buffer, test2.size() ) );
+    EXPECT_EQ( 0, res );
 }
 
 TEST_F( OpenDDLCommonTest, CompareIdentifierTest ) {

@@ -544,8 +544,10 @@ TEST_F( OpenDDLParserTest, parseDataArrayListTest ) {
     char *in = OpenDDLParser::parseDataArrayList( token, end, &dtArrayList );
     ASSERT_NE( nullptr, dtArrayList );
     const size_t numItems( countItems( dtArrayList->m_dataList ) );
-    // todo: fix leak!
     EXPECT_NE( token, in );
+    EXPECT_EQ( 3, numItems );
+
+    // todo: fix leak!
 }
 
 TEST_F( OpenDDLParserTest, getVersionTest ) {
@@ -725,6 +727,7 @@ TEST_F( OpenDDLParserTest, parseHexValueLiteralTest ) {
 
     Value *data( ddl_nullptr );
     char *next = OpenDDLParser::parseHexaLiteral( token, end, &data );
+    EXPECT_NE( &token[ 0 ], next );
     const float val = data->getFloat();
     EXPECT_FLOAT_EQ( 1.0f, val );
 }
