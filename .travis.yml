@@ -1,13 +1,17 @@
 install:
   - sudo apt-get install cmake
+  - sudo apt-get install gcov
 env:
   - TRAVIS_NO_EXPORT=YES
   - TRAVIS_NO_EXPORT=NO
+    matrix:
+    - CHECK_CODE_COVERAGE=ON
+    - CHECK_CODE_COVERAGE=OFF
 language: cpp
 compiler:
   - gcc
   - clang
-script: cmake -G "Unix Makefiles" && make
+script: cmake -DDDL_CHECK_CODE_COVERAGE=$CHECK_CODE_COVERAGE -G "Unix Makefiles" && make
 
 
 
