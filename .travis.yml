@@ -2,9 +2,10 @@ install:
   - sudo apt-get install cmake
   - sudo apt-get install gcov
 env:
-  - TRAVIS_NO_EXPORT=YES
-  - TRAVIS_NO_EXPORT=NO
-    matrix:
+  global:
+    - TRAVIS_NO_EXPORT=YES
+    - TRAVIS_NO_EXPORT=NO
+  matrix:
       - CHECK_CODE_COVERAGE=ON
       - CHECK_CODE_COVERAGE=OFF
 language: cpp
