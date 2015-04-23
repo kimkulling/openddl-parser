@@ -1,6 +1,6 @@
 install:
   - sudo apt-get install cmake
-  - sudo apt-get install gcov
+#  - sudo apt-get install gcov
 env:
   global:
     - TRAVIS_NO_EXPORT=YES
