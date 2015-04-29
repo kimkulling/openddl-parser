@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstddef>
 #include <vector>
+#include <string>
 
 #include <string.h>
 
@@ -109,6 +110,15 @@ struct Text {
             strncpy( m_buffer, buffer, numChars );
             m_buffer[ numChars ] = '\0';
         }
+    }
+
+    bool operator == ( const std::string &name ) const {
+        if( m_len != name.size() ) {
+            return false;
+        }
+        const int res( strncmp( m_buffer, name.c_str(), name.size() ) );
+        return ( 0 == res );
+
     }
 
     bool operator == ( const Text &rhs ) const {
