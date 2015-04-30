@@ -12,7 +12,14 @@ language: cpp
 compiler:
   - gcc
   - clang
-script: cmake -DDDL_CHECK_CODE_COVERAGE=$CHECK_CODE_COVERAGE -G "Unix Makefiles" && make
+script: 
+    - cmake -DDDL_CHECK_CODE_COVERAGE=$CHECK_CODE_COVERAGE -G "Unix Makefiles";
+      make;
+      sudo make install;
+      cd bin;
+      chmod 755 openddl_parser_unittest;
+      ./openddl_parser_unittest;
+      fi
 
 
 
