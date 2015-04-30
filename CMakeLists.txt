@@ -91,6 +91,7 @@ SET( openddl_parser_unittest_src
     test/OpenDDLParserUtilsTest.cpp
     test/OpenDDLIntegrationTest.cpp
     test/ValueTest.cpp
+    test/OpenDDLDefectsTest.cpp
 )
 
 SOURCE_GROUP( code  FILES ${openddl_parser_unittest_src} )

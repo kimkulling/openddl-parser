@@ -159,7 +159,7 @@ bool isFloat( T *in, T *end ) {
     }
 
     // check for 1.<0>f
-    while( !isSpace( *in ) && in != end && *in != ',' ) {
+    while( !isSpace( *in ) && in != end && *in != ',' && *in != '}' ) {
         result = isNumeric( *in );
         if( !result ) {
             return false;
