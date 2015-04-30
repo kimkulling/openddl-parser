@@ -19,4 +19,3 @@ script:
       cd bin ;
       chmod 755 openddl_parser_unittest ;
       ./openddl_parser_unittest ;
-      fi
