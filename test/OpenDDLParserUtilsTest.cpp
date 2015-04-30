@@ -147,6 +147,21 @@ TEST_F( OpenDDLParserUtilsTest, isFloatTest ) {
     end = findEnd( val3, len );
     result = isFloat( val3, end );
     EXPECT_FALSE( result );
+
+}
+
+TEST_F( OpenDDLParserUtilsTest, isFloatWithSeparatorTest ) {
+    bool result( false );
+    size_t len( 0 );
+    char val1[] = "-12.0}";
+    char*end = findEnd( val1, len );
+    result = isFloat( val1, end );
+    EXPECT_TRUE( result );
+
+    char val2[] = "-12.0,";
+    end = findEnd( val2, len );
+    result = isFloat( val2, end );
+    EXPECT_TRUE( result );
 }
 
 TEST_F( OpenDDLParserUtilsTest, isCharacterTest ) {
