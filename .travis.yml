@@ -16,7 +16,6 @@ script:
     - cmake -DDDL_CHECK_CODE_COVERAGE=$CHECK_CODE_COVERAGE -G "Unix Makefiles" ;
       make ;
       ls ;
-      ls bin;
       cd bin ;
       chmod 755 openddl_parser_unittest ;
       ./openddl_parser_unittest ;
