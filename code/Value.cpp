@@ -135,9 +135,16 @@ void Value::setFloat( float value ) {
 }
 
 float Value::getFloat() const {
-    float v;
-    ::memcpy( &v, m_data, m_size );
-    return v;
+    if( m_type == ddl_float ) {
+        float v;
+        ::memcpy( &v, m_data, m_size );
+        return ( float ) v;
+
+    } else {
+        float tmp;
+        ::memcpy( &tmp, m_data, 4 );
+        return ( float ) tmp;
+    }
 }
 
 void Value::setDouble( double value ) {
@@ -241,7 +248,7 @@ Value *ValueAllocator::allocPrimData( Value::ValueType type, size_t len ) {
             data->m_size = sizeof( int );
             break;
         case Value::ddl_int64:
-            data->m_size = sizeof( long );
+            data->m_size = sizeof( int64 );
             break;
         case Value::ddl_unsigned_int8:
             data->m_size = sizeof( unsigned char );
@@ -250,7 +257,7 @@ Value *ValueAllocator::allocPrimData( Value::ValueType type, size_t len ) {
             data->m_size = sizeof( unsigned int );
             break;
         case Value::ddl_unsigned_int64:
-            data->m_size = sizeof( unsigned long );
+            data->m_size = sizeof( uint64 );
             break;
         case Value::ddl_half:
             data->m_size = sizeof( short );

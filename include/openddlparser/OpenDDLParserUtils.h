@@ -124,7 +124,6 @@ bool isInteger( T *in, T *end ) {
 
     bool result( false );
     while( isNotEndOfToken( in, end ) ) {
-        //while( '}' != *in && ',' != *in && !isSpace( *in ) && in != end ) {
         result = isNumeric( *in );
         if( !result ) {
             break;
@@ -147,8 +146,6 @@ bool isFloat( T *in, T *end ) {
     // check for <1>.0f
     bool result( false );
     while( isNotEndOfToken( in, end ) ) {
-
-//    while( !isSpace( *in ) && in != end ) {
         if( *in == '.' ) {
             result = true;
             break;
@@ -169,8 +166,6 @@ bool isFloat( T *in, T *end ) {
 
     // check for 1.<0>f
     while( isNotEndOfToken( in, end ) ) {
-
-//    while( !isSpace( *in ) && in != end && *in != ',' && *in != '}' ) {
         result = isNumeric( *in );
         if( !result ) {
             return false;
