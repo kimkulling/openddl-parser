@@ -17,7 +17,7 @@ script:
       make ;
       ls ;
       ls bin;
-      #cd bin ;
-      #chmod 755 openddl_parser_unittest ;
-      #./openddl_parser_unittest ;
+      cd bin ;
+      chmod 755 openddl_parser_unittest ;
+      ./openddl_parser_unittest ;
       fi
