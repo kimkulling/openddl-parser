@@ -117,3 +117,7 @@ if ( result ) {
 The node instance called root contains the data.
 
 All data lists are organized as linked lists.
+
+Projects using OpenDDL-Parser
+=============================
+- Asset Importer Lib: https://github.com/assimp/assimp .

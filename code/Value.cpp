@@ -101,12 +101,11 @@ uint8 Value::getUnsignedInt8() const {
 void Value::setUnsignedInt16( uint16 value ) {
     assert( ddl_unsigned_int16 == m_type );
     ::memcpy( m_data, &value, m_size );
-
 }
+
 uint16 Value::getUnsignedInt16() const {
     assert( ddl_unsigned_int16 == m_type );
     return ( uint8 ) ( *m_data );
-
 }
 
 void Value::setUnsignedInt32( uint32 value ) {
@@ -139,7 +138,6 @@ float Value::getFloat() const {
         float v;
         ::memcpy( &v, m_data, m_size );
         return ( float ) v;
-
     } else {
         float tmp;
         ::memcpy( &tmp, m_data, 4 );
