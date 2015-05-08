@@ -38,7 +38,7 @@ struct ValueAllocator;
 /// Values can be single items or lists of items. They are implemented as linked lists.
 ///------------------------------------------------------------------------------------------------
 class DLL_ODDLPARSER_EXPORT Value {
-    friend ValueAllocator;
+    friend struct ValueAllocator;
 
 public:
     ///	@brief  This enum describes the data type stored in the value.

@@ -133,7 +133,7 @@ TEST_F( DDLNodeTest, accessValueTest ) {
     DDLNode *myNode = DDLNode::create( "test", "name" );
     EXPECT_EQ( nullptr, myNode->getValue() );
 
-    Value *myValue( new Value );
+    Value *myValue( new Value( Value::ddl_bool ) );
     myNode->setValue( myValue );
     EXPECT_EQ( myValue, myNode->getValue() );
 }
