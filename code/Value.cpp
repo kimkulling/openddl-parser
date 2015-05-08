@@ -27,8 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-Value::Value()
-: m_type( ddl_none )
+Value::Value( ValueType type )
+: m_type( type )
 , m_size( 0 )
 , m_data( ddl_nullptr )
 , m_next( ddl_nullptr ) {
@@ -230,7 +230,7 @@ Value *ValueAllocator::allocPrimData( Value::ValueType type, size_t len ) {
         return ddl_nullptr;
     }
 
-    Value *data = new Value;
+    Value *data = new Value( type );
     data->m_type = type;
     switch( type ) {
         case Value::ddl_bool:

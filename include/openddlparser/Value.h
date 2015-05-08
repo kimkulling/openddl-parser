@@ -28,6 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+struct ValueAllocator;
+
 ///------------------------------------------------------------------------------------------------
 ///	@brief  This class implements a value.
 ///
@@ -36,6 +38,8 @@ BEGIN_ODDLPARSER_NS
 /// Values can be single items or lists of items. They are implemented as linked lists.
 ///------------------------------------------------------------------------------------------------
 class DLL_ODDLPARSER_EXPORT Value {
+    friend ValueAllocator;
+
 public:
     ///	@brief  This enum describes the data type stored in the value.
     enum ValueType {
@@ -57,7 +61,7 @@ public:
         ddl_types_max
     };
 
-    Value();
+    Value( ValueType type );
     ~Value();
     void setBool( bool value );
     bool getBool();
