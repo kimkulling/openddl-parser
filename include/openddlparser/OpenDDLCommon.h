@@ -70,7 +70,7 @@ struct Property;
 struct DataArrayList;
 
 #ifdef _WIN32
-typedef __int64           int64_impl;
+typedef signed __int64    int64_impl;
 typedef unsigned __int64  uint64_impl;
 #else
 typedef int64_t           int64_impl;
@@ -78,14 +78,14 @@ typedef uint64_t          uint64_impl;
 #endif
 
 // OpenDDL-specific data typedefs
-typedef char           int8;    ///< Signed integer, 1 byte
-typedef short          int16;   ///< Signed integer, 2 byte
-typedef int            int32;   ///< Signed integer, 4 byte
-typedef int64_impl     int64;   ///< Signed integer, 8 byte
-typedef unsigned char  uint8;   ///< Unsigned integer, 1 byte
-typedef unsigned short uint16;  ///< Unsigned integer, 2 byte
-typedef unsigned int   uint32;  ///< Unsigned integer, 4 byte
-typedef uint64_impl    uint64;  ///< Unsigned integer, 8 byte
+typedef signed char       int8;    ///< Signed integer, 1 byte
+typedef signed short      int16;   ///< Signed integer, 2 byte
+typedef signed int        int32;   ///< Signed integer, 4 byte
+typedef int64_impl        int64;   ///< Signed integer, 8 byte
+typedef unsigned char     uint8;   ///< Unsigned integer, 1 byte
+typedef unsigned short    uint16;  ///< Unsigned integer, 2 byte
+typedef unsigned int      uint32;  ///< Unsigned integer, 4 byte
+typedef uint64_impl       uint64;  ///< Unsigned integer, 8 byte
 
 ///	@brief  Description of the type of a name.
 enum NameType {
@@ -191,7 +191,7 @@ private:
     Name &operator = ( const Name& );
 };
 
-///	@brief  Stores a bundel of references.
+///	@brief  Stores a bundle of references.
 struct Reference {
     size_t   m_numRefs;
     Name   **m_referencedName;
@@ -212,6 +212,10 @@ struct Reference {
         }
     }
 
+    ~Reference() {
+
+    }
+
 private:
     Reference( const Reference & );
     Reference &operator = ( const Reference & );
@@ -230,6 +234,13 @@ struct Property {
     , m_ref( ddl_nullptr )
     , m_next( ddl_nullptr ) {
         // empty
+    }
+
+    ~Property() {
+        m_key = ddl_nullptr;
+        m_value = ddl_nullptr;
+        m_ref = ddl_nullptr;;
+        m_next = ddl_nullptr;;
     }
 
 private:
