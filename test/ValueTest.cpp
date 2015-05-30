@@ -27,6 +27,34 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BEGIN_ODDLPARSER_NS
 
 class ValueTest : public testing::Test {
+protected:
+    Value *m_start;
+
+    virtual void SetUp() {
+        m_start = ddl_nullptr;
+    }
+
+    virtual void TearDown() {
+        Value *current( m_start ), *tmp( ddl_nullptr );
+        while( ddl_nullptr != current ) {
+            tmp = current;
+            current = current->m_next;
+            delete tmp;
+        }
+    }
+
+    Value *createValueList() {
+        Value *current( ValueAllocator::allocPrimData( Value::ddl_bool ) );
+        m_start = current;
+        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
+        current = current->m_next;
+        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
+        current = current->m_next;
+        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
+        current = current->m_next;
+
+        return m_start; 
+    }
 };
 
 TEST_F( ValueTest, ValueDataAllocTest ) {
@@ -67,6 +95,25 @@ TEST_F( ValueTest, ValueAccessNextTest ) {
     data->setNext( dataNext );
     EXPECT_EQ( dataNext, data->getNext() );
 
+}
+
+TEST_F( ValueTest, InitIteratorTest ) {
+    Value::Iterator it1;
+    EXPECT_FALSE(it1.hasNext() );
+    Value::Iterator it2( m_start );
+    EXPECT_FALSE( it2.hasNext() );
+}
+
+TEST_F( ValueTest, IterateTest ) {
+    Value *val( createValueList() );
+    Value::Iterator it( val );
+    EXPECT_TRUE( it.hasNext() );
+
+    Value *v( ddl_nullptr );
+    while( it.hasNext() ) {
+        v = it.getNext();
+        EXPECT_NE( ddl_nullptr, v );
+    }
 }
 
 END_ODDLPARSER_NS

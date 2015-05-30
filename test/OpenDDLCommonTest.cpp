@@ -30,6 +30,7 @@ static const char TestText[] = "hello";
 
 class OpenDDLCommonTest : public testing::Test {
     Text *m_text;
+
 public:
     virtual void SetUp() {
         m_text = ddl_nullptr;

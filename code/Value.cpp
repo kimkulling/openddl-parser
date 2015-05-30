@@ -27,6 +27,40 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+Value::Iterator::Iterator()
+: m_start( ddl_nullptr )
+, m_current( ddl_nullptr ) {
+    // empty
+}
+
+Value::Iterator::Iterator( Value *start )
+: m_start( start )
+, m_current( start ) {
+    // empty
+}
+
+Value::Iterator::~Iterator() {
+    // empty
+}
+
+bool Value::Iterator::hasNext() const {
+    if( ddl_nullptr == m_current ) {
+        return false;
+    }
+    return ( ddl_nullptr != m_current->getNext() );
+}
+
+Value *Value::Iterator::getNext() {
+    if( !hasNext() ) {
+        return ddl_nullptr;
+    }
+
+    Value *v( m_current->getNext() );
+    m_current = v;
+
+    return v;
+}
+
 Value::Value( ValueType type )
 : m_type( type )
 , m_size( 0 )
