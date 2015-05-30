@@ -213,7 +213,11 @@ struct Reference {
     }
 
     ~Reference() {
-
+        for( size_t i = 0; i < m_numRefs; i++ ) {
+            delete m_referencedName[ i ];
+        }
+        m_numRefs = 0;
+        m_referencedName = ddl_nullptr;
     }
 
 private:
