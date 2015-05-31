@@ -283,6 +283,11 @@ struct Context {
         m_root = ddl_nullptr;
     }
 
+    void clear() {
+        delete m_root;
+        m_root = ddl_nullptr;
+    }
+
 private:
     Context( const Context & );
     Context &operator = ( const Context & );

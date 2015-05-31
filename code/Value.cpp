@@ -61,6 +61,23 @@ Value *Value::Iterator::getNext() {
     return v;
 }
 
+const Value::Iterator &Value::Iterator::operator++( int ) {
+    m_current = m_current->getNext();
+    Iterator inst( m_current );
+
+    return inst;
+}
+
+Value::Iterator &Value::Iterator::operator++( ) {
+    m_current = m_current->getNext();
+
+    return *this;
+}
+
+bool Value::Iterator::operator == ( const Iterator &rhs ) const {
+    return ( m_current == rhs.m_current );
+}
+
 Value::Value( ValueType type )
 : m_type( type )
 , m_size( 0 )

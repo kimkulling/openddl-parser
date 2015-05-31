@@ -71,6 +71,15 @@ public:
         ///	@brief  Returns the next item and moves the iterator to it.
         ///	@return The next value, is ddl_nullptr in case of being the last item.
         Value *getNext();
+        
+        ///	@brief  The post-increment operator.
+        const Iterator &operator++( int );
+        
+        ///	@brief  The pre-increment operator.
+        Iterator &operator++( );
+
+        ///	@brief
+        bool operator == ( const Iterator &rhs ) const;
 
     private:
         Value *m_start;

@@ -116,4 +116,20 @@ TEST_F( ValueTest, IterateTest ) {
     }
 }
 
+TEST_F( ValueTest, IteratePreIncTest ) {
+    Value *val( createValueList() );
+    Value::Iterator it( val );
+    while( it.hasNext() ) {
+        ++it;
+    }
+}
+
+TEST_F( ValueTest, IteratePostIncTest ) {
+    Value *val( createValueList() );
+    Value::Iterator it( val );
+    while( it.hasNext() ) {
+        it++;
+    }
+}
+
 END_ODDLPARSER_NS
