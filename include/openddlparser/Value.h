@@ -78,8 +78,14 @@ public:
         ///	@brief  The pre-increment operator.
         Iterator &operator++( );
 
-        ///	@brief
+        ///	@brief  The compare operator.
+        /// @param  rhs [in] The instance to compare.
+        /// @return true if equal.
         bool operator == ( const Iterator &rhs ) const;
+
+        /// @brief  The * operator.
+        /// @return Th einstance or ddl_nullptr if end of list.
+        Value *operator->( ) const;
 
     private:
         Value *m_start;

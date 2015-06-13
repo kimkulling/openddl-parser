@@ -78,6 +78,13 @@ bool Value::Iterator::operator == ( const Iterator &rhs ) const {
     return ( m_current == rhs.m_current );
 }
 
+Value *Value::Iterator::operator->( ) const {
+    if( nullptr == m_current ) {
+        return ddl_nullptr;
+    }
+    return m_current;
+}
+
 Value::Value( ValueType type )
 : m_type( type )
 , m_size( 0 )
