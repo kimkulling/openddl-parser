@@ -84,7 +84,7 @@ public:
         bool operator == ( const Iterator &rhs ) const;
 
         /// @brief  The * operator.
-        /// @return Th einstance or ddl_nullptr if end of list.
+        /// @return The instance or ddl_nullptr if end of list is reached.
         Value *operator->( ) const;
 
     private:
