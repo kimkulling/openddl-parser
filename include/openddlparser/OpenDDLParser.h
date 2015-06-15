@@ -39,6 +39,11 @@ struct Identifier;
 struct Reference;
 struct Property;
 
+///	@brief  Utility function to search for the next token or the end of the buffer.
+/// @param  in      [in] The start position in the buffer.
+/// @param  end     [in] The end position in the buffer.
+///	@return Pointer showing to the next token or the end of the buffer.
+///	@detail Will not increase buffer when already a valid buffer was found.
 template<class T>
 inline
 T *lookForNextToken( T *in, T *end ) {
@@ -48,13 +53,19 @@ T *lookForNextToken( T *in, T *end ) {
     return in;
 }
 
+///	@brief  Utility function to go for the next token or the end of the buffer.
+/// @param  in      [in] The start position in the buffer.
+/// @param  end     [in] The end position in the buffer.
+///	@return Pointer showing to the next token or the end of the buffer.
+///	@detail Will  increase buffer by a minimum of one.
 template<class T>
 inline
 T *getNextToken( T *in, T *end ) {
     T *tmp( in );
-    while( ( isSpace( *in ) || isNewLine( *in ) || ',' == *in ) && ( in != end ) ) {
+    in = lookForNextToken( in, end );
+    /*while( ( isSpace( *in ) || isNewLine( *in ) || ',' == *in ) && ( in != end ) ) {
         in++;
-    }
+    }*/
     if( tmp == in ) {
         in++;
     }
