@@ -80,22 +80,65 @@ enum LogSeverity {
     ddl_error_msg       ///< Parser errors
 };
 
+//-------------------------------------------------------------------------------------------------
+///	@class		OpenDDLParser
+///	@ingroup	OpenDDLParser
+
+///
+///	@brief  This is the main API for the OpenDDL-parser.
+///
+/// Use instances of this class to manage the parsing and handling of your parser contexts.
+//-------------------------------------------------------------------------------------------------
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {
 public:
+    ///	@brief  The log callback function pointer.
     typedef void( *logCallback )( LogSeverity severity, const std::string &msg );
 
 public:
+    ///	@brief  The default class constructor.
     OpenDDLParser();
+
+    ///	@brief  The class constructor.
+    ///	@param  buffer      [in] The buffer
+    ///	@param  len         [in] Size of the buffer
     OpenDDLParser( char *buffer, size_t len );
+
+    ///	@brief  The class destructor.
     ~OpenDDLParser();
+
+    ///	@brief  Setter for an own log callback function.
+    /// @param  callback    [in] The own callback.
     void setLogCallback( logCallback callback );
+
+    ///	@brief  Getter for the log callback.
+    /// @return The current log callback.
     logCallback getLogCallback() const;
+
+    ///	@brief  Assigns a new buffer to parse.
+    ///	@param  buffer      [in] The buffer
+    ///	@param  len         [in] Size of the buffer
     void setBuffer( char *buffer, size_t len );
+
+    ///	@brief  Assigns a new buffer to parse.
+    /// @param  buffer      [in] The buffer as a std::vector.
     void setBuffer( const std::vector<char> &buffer );
+
+    ///	@brief  Returns the buffer pointer.
+    /// @return The buffer pointer.
     const char *getBuffer() const;
+    
+    /// @brief  Returns the size of the buffer.
+    /// @return The buffer size.
     size_t getBufferSize() const;
+    
+    ///	@brief  Clears all parser data, including buffer and active context.
     void clear();
+
+    ///	@brief  Starts the parsing of the OpenDDL-file.
+    /// @return True in case of success, false in case of an error.
+    /// @remark In case of errors check log.
     bool parse();
+
     char *parseNextNode( char *current, char *end );
     char *parseHeader( char *in, char *end );
     char *parseStructure( char *in, char *end );
