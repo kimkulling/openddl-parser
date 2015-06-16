@@ -139,6 +139,15 @@ public:
     /// @remark In case of errors check log.
     bool parse();
 
+    ///	@brief  Returns the root node.
+    /// @return The root node.
+    DDLNode *getRoot() const;
+
+    ///	@brief  Returns the parser context, only available in case of a succeeded parsing.
+    /// @return Pointer to the active context or ddl_nullptr.
+    Context *getContext() const;
+
+public: // parser helpers
     char *parseNextNode( char *current, char *end );
     char *parseHeader( char *in, char *end );
     char *parseStructure( char *in, char *end );
@@ -146,10 +155,6 @@ public:
     void pushNode( DDLNode *node );
     DDLNode *popNode();
     DDLNode *top();
-    DDLNode *getRoot() const;
-    Context *getContext() const;
-
-public: // static parser helpers
     static void normalizeBuffer( std::vector<char> &buffer );
     static char *parseName( char *in, char *end, Name **name );
     static char *parseIdentifier( char *in, char *end, Identifier **id );
