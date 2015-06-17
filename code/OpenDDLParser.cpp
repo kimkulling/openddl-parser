@@ -846,7 +846,7 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value **data, size_t &n
             }
 
             in = getNextSeparator( in, end );
-            if( ',' != *in && '}' != *in && !isSpace( *in ) ) {
+            if( ',' != *in && Grammar::CloseBracketToken[ 0 ] != *in && !isSpace( *in ) ) {
                 break;
             }
         }
