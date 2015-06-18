@@ -93,12 +93,18 @@ enum NameType {
     LocalName   ///< Name is local.
 };
 
-///	@brief  Stores a text
+///	@brief  Stores a text.
+///
+/// A text is stored in a simple character buffer. Texts buffer can be 
+/// greater than the number of stored characters in them.
 struct Text {
-    size_t m_capacity;
-    size_t m_len;
-    char *m_buffer;
+    size_t m_capacity;  ///< The capacity of the text.
+    size_t m_len;       ///< The length of the text.
+    char *m_buffer;     ///< The buffer with the text.
 
+    ///	@brief  The constructor with a given text buffer.
+    /// @param  buffer      [in] The buffer.
+    /// @param  numChars    [in] The number of characters in the buffer.
     Text( const char *buffer, size_t numChars )
     : m_capacity( 0 )
     , m_len( 0 )
@@ -106,17 +112,22 @@ struct Text {
         set( buffer, numChars );
     }
 
+    ///	@brief  The destructor.
     ~Text() {
         clear();
     }
 
+    ///	@brief  Clears the text.
     void clear() {
-        delete[] m_buffer;
+        delete [] m_buffer;
         m_buffer = ddl_nullptr;
         m_capacity = 0;
         m_len = 0;
     }
 
+    ///	@brief  Set a new text.
+    /// @param  buffer      [in] The buffer.
+    /// @param  numChars    [in] The number of characters in the buffer.
     void set( const char *buffer, size_t numChars ) {
         clear();
         if( numChars > 0 ) {
@@ -128,6 +139,7 @@ struct Text {
         }
     }
 
+    ///	@brief  The compare operator for std::strings.
     bool operator == ( const std::string &name ) const {
         if( m_len != name.size() ) {
             return false;
@@ -137,6 +149,7 @@ struct Text {
         return ( 0 == res );
     }
 
+    ///	@brief  The compare operator for Texts.
     bool operator == ( const Text &rhs ) const {
         if( m_len != rhs.m_len ) {
             return false;
@@ -156,16 +169,28 @@ private:
 struct Identifier {
     Text m_text;
 
+    ///	@brief  The constructor with a sized buffer full of characters.
+    ///	@param  buffer  [in] The identifier buffer.
+    ///	@param  len     [in] The length of the buffer
     Identifier( char buffer[], size_t len )
         : m_text( buffer, len ) {
         // empty
     }
 
+    ///	@brief  The constructor with a buffer full of characters.
+    ///	@param  buffer  [in] The identifier buffer.
+    /// @remark Buffer must be null-terminated.
     Identifier( char buffer[] )
     : m_text( buffer, strlen( buffer ) ) {
         // empty
     }
 
+    ///	@brief  The destructor.
+    ~Identifier() {
+        // empty
+    }
+    
+    ///	@brief  The compare operator.
     bool operator == ( const Identifier &rhs ) const {
         return m_text == rhs.m_text;
     }
@@ -180,10 +205,18 @@ struct Name {
     NameType    m_type;
     Identifier *m_id;
 
+    ///	@brief  The constructor with the type and the id.
+    ///	@param  type    [in] The name type.
+    ///	@param  id      [in] The id.
     Name( NameType type, Identifier *id )
         : m_type( type )
         , m_id( id ) {
         // empty
+    }
+
+    ///	@brief  The destructor.
+    ~Name() {
+        m_id = ddl_nullptr;
     }
 
 private:
@@ -196,12 +229,16 @@ struct Reference {
     size_t   m_numRefs;
     Name   **m_referencedName;
 
+    ///	@brief  The default constructor.
     Reference()
     : m_numRefs( 0 )
     , m_referencedName( ddl_nullptr ) {
         // empty
     }
      
+    ///	@brief  The constructor with an array of ref names.
+    /// @param  numrefs     [in] The number of ref names.
+    /// @param  names       [in] The ref names.
     Reference( size_t numrefs, Name **names )
     : m_numRefs( numrefs )
     , m_referencedName( ddl_nullptr ) {
@@ -212,6 +249,7 @@ struct Reference {
         }
     }
 
+    ///	@brief  The destructor.
     ~Reference() {
         for( size_t i = 0; i < m_numRefs; i++ ) {
             delete m_referencedName[ i ];
@@ -232,6 +270,7 @@ struct Property {
     Reference *m_ref;
     Property *m_next;
 
+    ///	@brief  Constructor for initialization.
     Property( Identifier *id )
     : m_key( id )
     , m_value( ddl_nullptr )
@@ -240,6 +279,7 @@ struct Property {
         // empty
     }
 
+    ///	@brief  Destructor.
     ~Property() {
         m_key = ddl_nullptr;
         m_value = ddl_nullptr;
@@ -258,10 +298,16 @@ struct DataArrayList {
     Value *m_dataList;
     DataArrayList *m_next;
 
+    ///	@brief  Constructor for initialization.
     DataArrayList()
         : m_numItems( 0 )
         , m_dataList( ddl_nullptr )
         , m_next( ddl_nullptr ) {
+        // empty
+    }
+
+    ///	@brief  The destructor.
+    ~DataArrayList() {
         // empty
     }
 
@@ -272,17 +318,20 @@ private:
 
 ///	@brief  Stores the context of a parsed OpenDDL declaration.
 struct Context {
-    DDLNode *m_root;
+    DDLNode *m_root;    ///< The root node of the OpenDDL node tree.
 
+    ///	@brief  Constructor for initialization.
     Context()
         : m_root( ddl_nullptr ) {
         // empty
     }
 
+    ///	@brief  Destructor.
     ~Context() {
         m_root = ddl_nullptr;
     }
 
+    ///	@brief  Clears the whole node tree.
     void clear() {
         delete m_root;
         m_root = ddl_nullptr;
