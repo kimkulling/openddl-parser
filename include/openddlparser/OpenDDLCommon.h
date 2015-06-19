@@ -56,7 +56,7 @@ BEGIN_ODDLPARSER_NS
     // All C++11 constructs
 #   define ddl_nullptr nullptr
 #else
-    // Fallback for older compilers
+    // Fall-back for older compilers
 #   define ddl_nullptr NULL
 #endif // OPENDDL_NO_USE_CPP11
 
@@ -105,60 +105,24 @@ struct Text {
     ///	@brief  The constructor with a given text buffer.
     /// @param  buffer      [in] The buffer.
     /// @param  numChars    [in] The number of characters in the buffer.
-    Text( const char *buffer, size_t numChars )
-    : m_capacity( 0 )
-    , m_len( 0 )
-    , m_buffer( ddl_nullptr ) {
-        set( buffer, numChars );
-    }
+    Text( const char *buffer, size_t numChars );
 
     ///	@brief  The destructor.
-    ~Text() {
-        clear();
-    }
+    ~Text();
 
     ///	@brief  Clears the text.
-    void clear() {
-        delete [] m_buffer;
-        m_buffer = ddl_nullptr;
-        m_capacity = 0;
-        m_len = 0;
-    }
+    void clear();
 
     ///	@brief  Set a new text.
     /// @param  buffer      [in] The buffer.
     /// @param  numChars    [in] The number of characters in the buffer.
-    void set( const char *buffer, size_t numChars ) {
-        clear();
-        if( numChars > 0 ) {
-            m_len = numChars;
-            m_capacity = m_len + 1;
-            m_buffer = new char[ m_capacity ];
-            strncpy( m_buffer, buffer, numChars );
-            m_buffer[ numChars ] = '\0';
-        }
-    }
+    void set( const char *buffer, size_t numChars );
 
     ///	@brief  The compare operator for std::strings.
-    bool operator == ( const std::string &name ) const {
-        if( m_len != name.size() ) {
-            return false;
-        }
-        const int res( strncmp( m_buffer, name.c_str(), name.size() ) );
-        
-        return ( 0 == res );
-    }
+    bool operator == ( const std::string &name ) const;
 
     ///	@brief  The compare operator for Texts.
-    bool operator == ( const Text &rhs ) const {
-        if( m_len != rhs.m_len ) {
-            return false;
-        }
-
-        const int res( strncmp( m_buffer, rhs.m_buffer, m_len ) );
-        
-        return ( 0 == res );
-    }
+    bool operator == ( const Text &rhs ) const;
 
 private:
     Text( const Text & );
@@ -172,28 +136,18 @@ struct Identifier {
     ///	@brief  The constructor with a sized buffer full of characters.
     ///	@param  buffer  [in] The identifier buffer.
     ///	@param  len     [in] The length of the buffer
-    Identifier( char buffer[], size_t len )
-        : m_text( buffer, len ) {
-        // empty
-    }
+    Identifier( char buffer[], size_t len );
 
     ///	@brief  The constructor with a buffer full of characters.
     ///	@param  buffer  [in] The identifier buffer.
     /// @remark Buffer must be null-terminated.
-    Identifier( char buffer[] )
-    : m_text( buffer, strlen( buffer ) ) {
-        // empty
-    }
+    Identifier( char buffer[] );
 
     ///	@brief  The destructor.
-    ~Identifier() {
-        // empty
-    }
+    ~Identifier();
     
     ///	@brief  The compare operator.
-    bool operator == ( const Identifier &rhs ) const {
-        return m_text == rhs.m_text;
-    }
+    bool operator == ( const Identifier &rhs ) const;
 
 private:
     Identifier( const Identifier & );
@@ -208,16 +162,10 @@ struct Name {
     ///	@brief  The constructor with the type and the id.
     ///	@param  type    [in] The name type.
     ///	@param  id      [in] The id.
-    Name( NameType type, Identifier *id )
-        : m_type( type )
-        , m_id( id ) {
-        // empty
-    }
+    Name( NameType type, Identifier *id );
 
     ///	@brief  The destructor.
-    ~Name() {
-        m_id = ddl_nullptr;
-    }
+    ~Name();
 
 private:
     Name( const Name & );
@@ -230,33 +178,15 @@ struct Reference {
     Name   **m_referencedName;
 
     ///	@brief  The default constructor.
-    Reference()
-    : m_numRefs( 0 )
-    , m_referencedName( ddl_nullptr ) {
-        // empty
-    }
+    Reference();
      
     ///	@brief  The constructor with an array of ref names.
     /// @param  numrefs     [in] The number of ref names.
     /// @param  names       [in] The ref names.
-    Reference( size_t numrefs, Name **names )
-    : m_numRefs( numrefs )
-    , m_referencedName( ddl_nullptr ) {
-        m_referencedName = new Name *[ numrefs ];
-        for( size_t i = 0; i < numrefs; i++ ) {
-            Name *name = new Name( names[ i ]->m_type, names[ i ]->m_id );
-            m_referencedName[ i ] = name;
-        }
-    }
+    Reference( size_t numrefs, Name **names );
 
     ///	@brief  The destructor.
-    ~Reference() {
-        for( size_t i = 0; i < m_numRefs; i++ ) {
-            delete m_referencedName[ i ];
-        }
-        m_numRefs = 0;
-        m_referencedName = ddl_nullptr;
-    }
+    ~Reference();
 
 private:
     Reference( const Reference & );
@@ -271,21 +201,10 @@ struct Property {
     Property *m_next;
 
     ///	@brief  Constructor for initialization.
-    Property( Identifier *id )
-    : m_key( id )
-    , m_value( ddl_nullptr )
-    , m_ref( ddl_nullptr )
-    , m_next( ddl_nullptr ) {
-        // empty
-    }
+    Property( Identifier *id );
 
     ///	@brief  Destructor.
-    ~Property() {
-        m_key = ddl_nullptr;
-        m_value = ddl_nullptr;
-        m_ref = ddl_nullptr;;
-        m_next = ddl_nullptr;;
-    }
+    ~Property();
 
 private:
     Property( const Property & );
@@ -299,17 +218,10 @@ struct DataArrayList {
     DataArrayList *m_next;
 
     ///	@brief  Constructor for initialization.
-    DataArrayList()
-        : m_numItems( 0 )
-        , m_dataList( ddl_nullptr )
-        , m_next( ddl_nullptr ) {
-        // empty
-    }
+    DataArrayList();
 
     ///	@brief  The destructor.
-    ~DataArrayList() {
-        // empty
-    }
+    ~DataArrayList();
 
 private:
     DataArrayList( const DataArrayList & ); 
@@ -321,21 +233,13 @@ struct Context {
     DDLNode *m_root;    ///< The root node of the OpenDDL node tree.
 
     ///	@brief  Constructor for initialization.
-    Context()
-        : m_root( ddl_nullptr ) {
-        // empty
-    }
+    Context();
 
     ///	@brief  Destructor.
-    ~Context() {
-        m_root = ddl_nullptr;
-    }
+    ~Context();
 
     ///	@brief  Clears the whole node tree.
-    void clear() {
-        delete m_root;
-        m_root = ddl_nullptr;
-    }
+    void clear();
 
 private:
     Context( const Context & );

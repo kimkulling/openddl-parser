@@ -53,6 +53,7 @@ endif()
 
 SET ( openddl_parser_src
     code/OpenDDLParser.cpp
+    code/OpenDDLCommon.cpp
     code/DDLNode.cpp
     code/Value.cpp
     include/openddlparser/OpenDDLParser.h
