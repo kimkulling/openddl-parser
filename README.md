@@ -118,6 +118,10 @@ The node instance called root contains the data.
 
 All data lists are organized as linked lists.
 
+Reference documentation
+=======================
+Please check http://kimkulling.github.io/openddl-parser/doxygen_html/index.html.
+
 Projects using OpenDDL-Parser
 =============================
 - Asset Importer Lib: https://github.com/assimp/assimp .
