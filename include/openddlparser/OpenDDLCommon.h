@@ -135,7 +135,7 @@ struct DLL_ODDLPARSER_EXPORT Identifier {
     ///	@brief  The constructor with a buffer full of characters.
     ///	@param  buffer  [in] The identifier buffer.
     /// @remark Buffer must be null-terminated.
-    Identifier( char buffer[] );
+    Identifier( const char buffer[] );
 
     ///	@brief  The destructor.
     ~Identifier();

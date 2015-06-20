@@ -79,7 +79,7 @@ Identifier::Identifier( const char buffer[], size_t len )
     // empty
 }
 
-Identifier::Identifier( char buffer[] )
+Identifier::Identifier( const char buffer[] )
 : m_text( buffer, strlen( buffer ) ) {
     // empty
 }

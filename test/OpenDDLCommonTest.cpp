@@ -74,8 +74,10 @@ TEST_F( OpenDDLCommonTest, createNameTest ) {
         name = new Name( GlobalName, nullptr );
     } catch( ... ) {
         ok = false;
+        name = nullptr;
     }
     EXPECT_TRUE( ok );
+    delete name;
 }
 
 TEST_F( OpenDDLCommonTest, createTextTest ) {
