@@ -39,6 +39,12 @@ Value::Iterator::Iterator( Value *start )
     // empty
 }
 
+Value::Iterator::Iterator( const Iterator &rhs )
+: m_start( rhs.m_start )
+, m_current( rhs.m_current ) {
+    // empty
+}
+
 Value::Iterator::~Iterator() {
     // empty
 }
@@ -61,7 +67,7 @@ Value *Value::Iterator::getNext() {
     return v;
 }
 
-const Value::Iterator &Value::Iterator::operator++( int ) {
+const Value::Iterator Value::Iterator::operator++( int ) {
     m_current = m_current->getNext();
     Iterator inst( m_current );
 
@@ -104,7 +110,8 @@ void Value::setBool( bool value ) {
 
 bool Value::getBool() {
     assert( ddl_bool == m_type );
-    return ( bool ) ( *m_data );
+    
+    return ( *m_data == 1 );
 }
 
 void Value::setInt8( int8 value ) {

@@ -61,6 +61,8 @@ public:
         /// @param  start   [in] The first value for iteration,
         Iterator( Value *start );
 
+        Iterator( const Iterator &rhs );
+
         ///	@brief  The class destructor.
         ~Iterator();
 
@@ -73,7 +75,7 @@ public:
         Value *getNext();
         
         ///	@brief  The post-increment operator.
-        const Iterator &operator++( int );
+        const Iterator operator++( int );
         
         ///	@brief  The pre-increment operator.
         Iterator &operator++( );
@@ -92,7 +94,6 @@ public:
         Value *m_current;
 
     private:
-        Iterator( const Iterator & );
         Iterator &operator = ( const Iterator & );
     };
 

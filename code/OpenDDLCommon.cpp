@@ -74,7 +74,7 @@ bool Text::operator == ( const Text &rhs ) const {
 }
 
 
-Identifier::Identifier( char buffer[], size_t len )
+Identifier::Identifier( const char buffer[], size_t len )
 : m_text( buffer, len ) {
     // empty
 }

@@ -87,17 +87,11 @@ typedef unsigned short    uint16;  ///< Unsigned integer, 2 byte
 typedef unsigned int      uint32;  ///< Unsigned integer, 4 byte
 typedef uint64_impl       uint64;  ///< Unsigned integer, 8 byte
 
-///	@brief  Description of the type of a name.
-enum NameType {
-    GlobalName, ///< Name is global.
-    LocalName   ///< Name is local.
-};
-
 ///	@brief  Stores a text.
 ///
 /// A text is stored in a simple character buffer. Texts buffer can be 
 /// greater than the number of stored characters in them.
-struct Text {
+struct DLL_ODDLPARSER_EXPORT Text {
     size_t m_capacity;  ///< The capacity of the text.
     size_t m_len;       ///< The length of the text.
     char *m_buffer;     ///< The buffer with the text.
@@ -130,13 +124,13 @@ private:
 };
 
 ///	@brief  Stores an OpenDDL-specific identifier type.
-struct Identifier {
+struct DLL_ODDLPARSER_EXPORT Identifier {
     Text m_text;
 
     ///	@brief  The constructor with a sized buffer full of characters.
     ///	@param  buffer  [in] The identifier buffer.
     ///	@param  len     [in] The length of the buffer
-    Identifier( char buffer[], size_t len );
+    Identifier( const char buffer[], size_t len );
 
     ///	@brief  The constructor with a buffer full of characters.
     ///	@param  buffer  [in] The identifier buffer.
@@ -154,8 +148,14 @@ private:
     Identifier &operator = ( const Identifier & );
 };
 
+///	@brief  Description of the type of a name.
+enum NameType {
+    GlobalName, ///< Name is global.
+    LocalName   ///< Name is local.
+};
+
 ///	@brief  Stores an OpenDDL-specific name
-struct Name {
+struct DLL_ODDLPARSER_EXPORT Name {
     NameType    m_type;
     Identifier *m_id;
 
@@ -173,7 +173,7 @@ private:
 };
 
 ///	@brief  Stores a bundle of references.
-struct Reference {
+struct DLL_ODDLPARSER_EXPORT Reference {
     size_t   m_numRefs;
     Name   **m_referencedName;
 
@@ -194,7 +194,7 @@ private:
 };
 
 ///	@brief  Stores a property list.
-struct Property {
+struct DLL_ODDLPARSER_EXPORT Property {
     Identifier *m_key;
     Value *m_value;
     Reference *m_ref;
@@ -212,7 +212,7 @@ private:
 };
 
 ///	@brief  Stores a data array list.
-struct DataArrayList {
+struct DLL_ODDLPARSER_EXPORT DataArrayList {
     size_t m_numItems;
     Value *m_dataList;
     DataArrayList *m_next;
@@ -229,7 +229,7 @@ private:
 };
 
 ///	@brief  Stores the context of a parsed OpenDDL declaration.
-struct Context {
+struct DLL_ODDLPARSER_EXPORT Context {
     DDLNode *m_root;    ///< The root node of the OpenDDL node tree.
 
     ///	@brief  Constructor for initialization.
