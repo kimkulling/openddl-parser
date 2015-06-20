@@ -47,7 +47,6 @@ namespace Grammar {
     static const char *CloseArrayToken    = "]";
     static const char *BoolTrue           = "true";
     static const char *BoolFalse          = "false";
-    static const char *RefToken           = "ref";
     static const char *CommaSeparator     = ",";
 
     static const char* PrimitiveTypeToken[ Value::ddl_types_max ] = {
