@@ -51,6 +51,16 @@ elseif ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic -std=c++11 -Wwrite-strings")
 endif()
 
+# Include the doc component.
+ADD_SUBDIRECTORY( Doc )
+FIND_PACKAGE( doxygen )
+IF ( DOXYGEN_FOUND )
+    CONFIGURE_FILE( doc/openddlparser_doc.cfg Doc/Doxyfile @ONLY )
+    ADD_CUSTOM_TARGET( doc ALL ${DOXYGEN_EXECUTABLE} doc/
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen" VERBATIM )
+ENDIF ( DOXYGEN_FOUND )
+
 SET ( openddl_parser_src
     code/OpenDDLParser.cpp
     code/OpenDDLCommon.cpp
