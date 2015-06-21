@@ -52,7 +52,7 @@ elseif ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
 endif()
 
 # Include the doc component.
-ADD_SUBDIRECTORY( Doc )
+ADD_SUBDIRECTORY( doc )
 FIND_PACKAGE( doxygen )
 IF ( DOXYGEN_FOUND )
     CONFIGURE_FILE( doc/openddlparser_doc.in doc/doxygenfile @ONLY )
