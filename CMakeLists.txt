@@ -55,8 +55,8 @@ endif()
 ADD_SUBDIRECTORY( Doc )
 FIND_PACKAGE( doxygen )
 IF ( DOXYGEN_FOUND )
-    CONFIGURE_FILE( doc/openddlparser_doc.cfg Doc/Doxyfile @ONLY )
-    ADD_CUSTOM_TARGET( doc ALL ${DOXYGEN_EXECUTABLE} doc/
+    CONFIGURE_FILE( doc/openddlparser_doc.in doc/doxygenfile @ONLY )
+    ADD_CUSTOM_TARGET( doc ALL ${DOXYGEN_EXECUTABLE} doc/doxygenfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen" VERBATIM )
 ENDIF ( DOXYGEN_FOUND )
