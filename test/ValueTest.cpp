@@ -124,6 +124,20 @@ TEST_F( ValueTest, IteratePreIncTest ) {
     }
 }
 
+TEST_F( ValueTest, IteratePreIncWithNullptrTest ) {
+    Value *val( ddl_nullptr );
+    Value::Iterator it( val );
+    Value::Iterator tmp = ++it;
+    EXPECT_FALSE( tmp.hasNext() );
+}
+
+TEST_F( ValueTest, IteratePostIncWithNullptrTest ) {
+    Value *val( ddl_nullptr );
+    Value::Iterator it( val );
+    Value::Iterator tmp = it++;
+    EXPECT_FALSE( tmp.hasNext() );
+}
+
 TEST_F( ValueTest, IteratePostIncTest ) {
     Value *val( createValueList() );
     Value::Iterator it( val );

@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+static Value::Iterator end( ddl_nullptr );
+
 Value::Iterator::Iterator()
 : m_start( ddl_nullptr )
 , m_current( ddl_nullptr ) {
@@ -68,6 +70,10 @@ Value *Value::Iterator::getNext() {
 }
 
 const Value::Iterator Value::Iterator::operator++( int ) {
+    if( ddl_nullptr == m_current ) {
+        return end;
+    }
+
     m_current = m_current->getNext();
     Iterator inst( m_current );
 
@@ -75,6 +81,10 @@ const Value::Iterator Value::Iterator::operator++( int ) {
 }
 
 Value::Iterator &Value::Iterator::operator++( ) {
+    if( ddl_nullptr == m_current ) {
+        return end;
+    }
+
     m_current = m_current->getNext();
 
     return *this;
