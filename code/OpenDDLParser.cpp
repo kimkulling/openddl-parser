@@ -242,12 +242,12 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
                 in = OpenDDLParser::parseProperty( in, end, &prop );
                 in = lookForNextToken( in, end );
 
-                if( *in != ',' && *in != Grammar::ClosePropertyToken[ 0 ] ) {
+                if( *in != Grammar::CommaSeparator[ 0 ] && *in != Grammar::ClosePropertyToken[ 0 ] ) {
                     logInvalidTokenError( in, Grammar::ClosePropertyToken, m_logCallback );
                     return in;
                 }
                 
-                if( ddl_nullptr != prop && *in != ',' ) {
+                if( ddl_nullptr != prop && *in != Grammar::CommaSeparator[ 0 ] ) {
                     if( ddl_nullptr == first ) {
                         first = prop;
                     }
@@ -349,7 +349,7 @@ char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
     if( Value::ddl_none != type ) {
         // parse a primitive data type
         in = lookForNextToken( in, end );
-        if( *in == '{' ) {
+        if( *in == Grammar::OpenBracketToken[ 0 ] ) {
             Reference *refs( ddl_nullptr );
             DataArrayList *dtArrayList( ddl_nullptr );
             Value *values( ddl_nullptr );
@@ -563,9 +563,9 @@ char *OpenDDLParser::parseReference( char *in, char *end, std::vector<Name*> &na
     if( nextName ) {
         names.push_back( nextName );
     }
-    while( ',' == *in ) {
+    while( Grammar::CommaSeparator[ 0 ] == *in ) {
         in = getNextSeparator( in, end );
-        if( ',' == *in ) {
+        if( Grammar::CommaSeparator[ 0 ] == *in ) {
             in = parseName( in, end, &nextName );
             if( nextName ) {
                 names.push_back( nextName );
