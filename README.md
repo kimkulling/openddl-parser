@@ -4,6 +4,11 @@ The OpenDDL-Parser
 OpenDDL-Parser is a small and easy to use library for DDL-file-parsing. OpenDDL stands for Open Data Description Language, which was introduced by Eric Lengyel
 Check http://openddl.org/ to learn more about it.
 Current build status: [![Build Status](https://travis-ci.org/kimkulling/openddl-parser.png)](https://travis-ci.org/kimkulling/openddl-parser)
+Current coverity check status:
+<a href="https://scan.coverity.com/projects/5606">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/5606/badge.svg"/>
+</a>
 
 Get the source code
 ===================
