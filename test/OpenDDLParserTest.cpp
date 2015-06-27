@@ -228,7 +228,8 @@ TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
     Identifier *id( nullptr );
     char *in = OpenDDLParser::parseIdentifier( name1, end1, &id );
     ASSERT_NE( ddl_nullptr, in );
-    ASSERT_TRUE( id != nullptr );
+    ASSERT_NE( ddl_nullptr, id );
+
     res = strncmp( id->m_text.m_buffer, name1, len1 );
     EXPECT_EQ( 0, res );
     
@@ -247,7 +248,8 @@ TEST_F( OpenDDLParserTest, parseIdentifierWithLineBreakTest ) {
     Identifier *id( nullptr );
     char *in = OpenDDLParser::parseIdentifier( name_with_line_end, end1, &id );
     ASSERT_NE( ddl_nullptr, in );
-    ASSERT_TRUE( id != nullptr );
+    ASSERT_NE( ddl_nullptr, id );
+
     char name[] = "testname";
     res = strncmp( id->m_text.m_buffer, name, strlen( name ) );
     EXPECT_EQ( 0, res );
