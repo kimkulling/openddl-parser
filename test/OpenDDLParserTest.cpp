@@ -142,7 +142,6 @@ TEST_F( OpenDDLParserTest, setLogCallbackTest ) {
 }
 
 TEST_F( OpenDDLParserTest, accessBufferTest ) {
-    bool success( true );
     static const size_t len = 100;
     char *buffer = new char[ len ];
     OpenDDLParser myParser;
@@ -162,6 +161,7 @@ TEST_F( OpenDDLParserTest, accessBufferTest ) {
     }
     EXPECT_TRUE( equal );
 
+    bool success( true );
     try {
         myParser.clear();
         buffer[ 1 ] = 'c';
@@ -197,10 +197,6 @@ TEST_F( OpenDDLParserTest, clearTest ) {
 
     myParser.clear();
     EXPECT_EQ( nullptr, myParser.getRoot() );
-}
-
-TEST_F( OpenDDLParserTest, isDDLDataTypeTest ) {
-
 }
 
 TEST_F( OpenDDLParserTest, normalizeBufferTest ) {
