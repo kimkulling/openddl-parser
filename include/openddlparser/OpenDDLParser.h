@@ -139,6 +139,8 @@ public:
     /// @remark In case of errors check log.
     bool parse();
 
+    bool exportContext( Context *ctx, const std::string &filename );
+
     ///	@brief  Returns the root node.
     /// @return The root node.
     DDLNode *getRoot() const;

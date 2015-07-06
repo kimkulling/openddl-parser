@@ -62,13 +62,15 @@ IF ( DOXYGEN_FOUND )
 ENDIF ( DOXYGEN_FOUND )
 
 SET ( openddl_parser_src
-    code/OpenDDLParser.cpp
     code/OpenDDLCommon.cpp
+    code/OpenDDLExport.cpp
+    code/OpenDDLParser.cpp
     code/DDLNode.cpp
     code/Value.cpp
+    include/openddlparser/OpenDDLCommon.h
+    include/openddlparser/OpenDDLExport.h
     include/openddlparser/OpenDDLParser.h
     include/openddlparser/OpenDDLParserUtils.h
-    include/openddlparser/OpenDDLCommon.h
     include/openddlparser/DDLNode.h
     include/openddlparser/Value.h
     README.md

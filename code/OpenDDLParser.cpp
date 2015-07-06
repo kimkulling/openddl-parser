@@ -207,6 +207,18 @@ bool OpenDDLParser::parse() {
     return true;
 }
 
+bool OpenDDLParser::exportContext( Context *ctx, const std::string &filename ) {
+    if( ddl_nullptr == ctx ) {
+        return false;
+    }
+    
+    if( filename.empty() ) {
+        return false;
+    }
+    return false;
+}
+
+
 char *OpenDDLParser::parseNextNode( char *in, char *end ) {
     in = parseHeader( in, end );
     in = parseStructure( in, end );
