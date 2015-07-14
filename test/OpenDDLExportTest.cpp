@@ -20,20 +20,24 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
-#pragma once
+#include "gtest/gtest.h"
 
-#include <openddlparser/OpenDDLCommon.h>
+#include <openddlparser/OpenDDLExport.h>
 
 BEGIN_ODDLPARSER_NS
 
-class DLL_ODDLPARSER_EXPORT OpenDDLExport {
-public:
-    OpenDDLExport();
-    ~OpenDDLExport();
-    bool exportContext( Context *ctx, const std::string &filename );
-
-private:
-    FILE *m_file;
+class OpenDDLExportTest : public testing::Test {
 };
 
+TEST_F( OpenDDLExportTest, createTest ) {
+    bool ok( true );
+    try {
+        OpenDDLExport myExport;
+    } catch( ... ) {
+        ok = false;
+    }
+    EXPECT_TRUE( ok );
+}
+
 END_ODDLPARSER_NS
+

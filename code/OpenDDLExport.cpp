@@ -21,15 +21,40 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/OpenDDLExport.h>
+#include <openddlparser/DDLNode.h>
 
 BEGIN_ODDLPARSER_NS
 
-OpenDDLExport::OpenDDLExport() {
+struct DDLNodeIterator {
+    const DDLNode::DllNodeList &m_childs;
+    size_t m_idx;
+    DDLNodeIterator( const DDLNode::DllNodeList &childs ) 
+        : m_childs( childs )
+        , m_idx( 0 ) {
+
+    }
+
+    bool getNext( DDLNode **node ) {
+        if( m_childs.size() > m_idx ) {
+            m_idx++;
+            *node = m_childs[ m_idx ];
+            return true;
+        }
+
+        return false;
+    }
+};
+
+OpenDDLExport::OpenDDLExport() 
+:m_file( nullptr ) {
 
 }
 
 OpenDDLExport::~OpenDDLExport() {
-
+    if( nullptr != m_file ) {
+        ::fclose( m_file );
+        m_file = nullptr;
+    }
 }
 
 bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
@@ -40,6 +65,23 @@ bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
     if( ddl_nullptr == ctx ) {
         return false;
     }
+
+    DDLNode *root( ctx->m_root );
+    if( nullptr == root ) {
+        return true;
+    }
+
+    const DDLNode::DllNodeList &childs = root->getChildNodeList();
+    if( childs.empty() ) {
+        return true;
+    }
+
+    DDLNode *current( ddl_nullptr );
+    DDLNodeIterator it( childs );
+    while( it.getNext( &current ) ) {
+
+    }
+
     return false;
 }
 

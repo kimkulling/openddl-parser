@@ -100,6 +100,7 @@ SET( openddl_parser_unittest_src
     test/UnitTestCommon.h
     test/DDLNodeTest.cpp
     test/OpenDDLCommonTest.cpp
+    test/OpenDDLExportTest.cpp
     test/OpenDDLParserTest.cpp
     test/OpenDDLParserUtilsTest.cpp
     test/OpenDDLIntegrationTest.cpp
