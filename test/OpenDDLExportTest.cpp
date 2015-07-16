@@ -23,10 +23,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "gtest/gtest.h"
 
 #include <openddlparser/OpenDDLExport.h>
+#include <openddlparser/DDLNode.h>
 
 BEGIN_ODDLPARSER_NS
 
 class OpenDDLExportTest : public testing::Test {
+public:
+    DDLNode *m_root;
+
+protected:
+    virtual void SetUp() {
+        m_root = createNodeHierarchy();
+    }
+
+    virtual void TearDown() {
+        delete m_root;
+        m_root = ddl_nullptr;
+    }
+
+    DDLNode *createNodeHierarchy() {
+        DDLNode *root = DDLNode::create( "test", "root" );
+        for( uint32 i = 0; i < 10; i++ ) {
+            DDLNode *node( DDLNode::create( "test", "child" ) );
+            node->attachParent( root );
+        }
+        
+        return root;
+    }
 };
 
 TEST_F( OpenDDLExportTest, createTest ) {
@@ -37,6 +60,14 @@ TEST_F( OpenDDLExportTest, createTest ) {
         ok = false;
     }
     EXPECT_TRUE( ok );
+}
+
+TEST_F( OpenDDLExportTest, handleNodeTest ) {
+    OpenDDLExport myExport;
+     
+    bool success( true );
+    success = myExport.handleNode( m_root );
+    EXPECT_TRUE( success );
 }
 
 END_ODDLPARSER_NS

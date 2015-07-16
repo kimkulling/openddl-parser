@@ -35,7 +35,7 @@ struct DDLNodeIterator {
     }
 
     bool getNext( DDLNode **node ) {
-        if( m_childs.size() > m_idx ) {
+        if( m_childs.size() > (m_idx+1) ) {
             m_idx++;
             *node = m_childs[ m_idx ];
             return true;
@@ -71,18 +71,30 @@ bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
         return true;
     }
 
-    const DDLNode::DllNodeList &childs = root->getChildNodeList();
-    if( childs.empty() ) {
+    return handleNode( root );
+}
+
+bool OpenDDLExport::handleNode( DDLNode *node ) {
+    if( ddl_nullptr == node ) {
         return true;
     }
 
+    const DDLNode::DllNodeList &childs = node->getChildNodeList();
+    if( childs.empty() ) {
+        return true;
+    }
     DDLNode *current( ddl_nullptr );
     DDLNodeIterator it( childs );
+    bool success( true );
     while( it.getNext( &current ) ) {
-
+        if( ddl_nullptr != current ) {
+            if( !handleNode( current ) ) {
+                success != false;
+            }
+        }
     }
 
-    return false;
+    return success;
 }
 
 END_ODDLPARSER_NS

@@ -31,6 +31,7 @@ public:
     OpenDDLExport();
     ~OpenDDLExport();
     bool exportContext( Context *ctx, const std::string &filename );
+    bool handleNode( DDLNode *node );
 
 private:
     FILE *m_file;
