@@ -26,6 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+///
+/// @ingroup    OpenDDLParser
+///	@brief      This class represents the OpenDDLExporter.
+///
 class DLL_ODDLPARSER_EXPORT OpenDDLExport {
 public:
     OpenDDLExport();
