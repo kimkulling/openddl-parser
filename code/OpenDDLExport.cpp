@@ -88,7 +88,7 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
     bool success( true );
     while( it.getNext( &current ) ) {
         if( ddl_nullptr != current ) {
-
+            success |= current->writeNode() );
             if( !handleNode( current ) ) {
                 success != false;
             }
@@ -98,11 +98,18 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
     return success;
 }
 
-bool OpenDDLExport::writeProperties( DDLNode *node ) {
+bool OpenDDLExport::writeNode( DDLNode *node ) {
+    bool success( true );
+    if( node->hasProperties() ) {
+        success |= writeProperties( node );
+    }
+
     return true;
 }
 
-bool OpenDDLExport::writeNode( DDLNode *node ) {
+bool OpenDDLExport::writeProperties( DDLNode *node ) {
+    Property *prop( node->getProperties() );
+
     return true;
 }
 

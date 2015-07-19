@@ -60,6 +60,7 @@ BEGIN_ODDLPARSER_NS
 #   define ddl_nullptr NULL
 #endif // OPENDDL_NO_USE_CPP11
 
+// Forward declarations
 class DDLNode;
 class Value;
 
@@ -69,6 +70,7 @@ struct Reference;
 struct Property;
 struct DataArrayList;
 
+// Platform-specific typedefs
 #ifdef _WIN32
 typedef signed __int64    int64_impl;
 typedef unsigned __int64  uint64_impl;
@@ -125,7 +127,7 @@ private:
 
 ///	@brief  Stores an OpenDDL-specific identifier type.
 struct DLL_ODDLPARSER_EXPORT Identifier {
-    Text m_text;
+    Text m_text;    ///< The text element.
 
     ///	@brief  The constructor with a sized buffer full of characters.
     ///	@param  buffer  [in] The identifier buffer.
@@ -156,8 +158,8 @@ enum NameType {
 
 ///	@brief  Stores an OpenDDL-specific name
 struct DLL_ODDLPARSER_EXPORT Name {
-    NameType    m_type;
-    Identifier *m_id;
+    NameType    m_type; ///< The type of the name ( @see NameType ).
+    Identifier *m_id;   ///< The id.
 
     ///	@brief  The constructor with the type and the id.
     ///	@param  type    [in] The name type.
@@ -174,8 +176,8 @@ private:
 
 ///	@brief  Stores a bundle of references.
 struct DLL_ODDLPARSER_EXPORT Reference {
-    size_t   m_numRefs;
-    Name   **m_referencedName;
+    size_t   m_numRefs;         ///< The number of stored references.
+    Name   **m_referencedName;  ///< The reference names.
 
     ///	@brief  The default constructor.
     Reference();
@@ -195,15 +197,19 @@ private:
 
 ///	@brief  Stores a property list.
 struct DLL_ODDLPARSER_EXPORT Property {
-    Identifier *m_key;
-    Value *m_value;
-    Reference *m_ref;
-    Property *m_next;
+    Identifier *m_key;      ///< The identifier / key of the property.
+    Value      *m_value;    ///< The value assigned to its key / id ( ddl_nullptr if none ).
+    Reference  *m_ref;      ///< References assigned to its key / id ( ddl_nullptr if none ).
+    Property   *m_next;     ///< The next property ( ddl_nullptr if none ).
 
-    ///	@brief  Constructor for initialization.
+    ///	@brief  The default constructor.
+    Property();
+
+    ///	@brief  The constructor for initialization.
+    /// @param  id      [in] The identifier
     Property( Identifier *id );
 
-    ///	@brief  Destructor.
+    ///	@brief  The destructor.
     ~Property();
 
 private:
@@ -213,11 +219,11 @@ private:
 
 ///	@brief  Stores a data array list.
 struct DLL_ODDLPARSER_EXPORT DataArrayList {
-    size_t m_numItems;
-    Value *m_dataList;
-    DataArrayList *m_next;
+    size_t         m_numItems;  ///< The number of items in the list.
+    Value         *m_dataList;  ///< The data list ( ee Value ).
+    DataArrayList *m_next;      ///< The next data array list ( ddl_nullptr if last ).
 
-    ///	@brief  Constructor for initialization.
+    ///	@brief  The default constructor for initialization.
     DataArrayList();
 
     ///	@brief  The destructor.

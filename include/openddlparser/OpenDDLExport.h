@@ -38,8 +38,8 @@ public:
     bool handleNode( DDLNode *node );
 
 protected:
-    bool writeProperties( DDLNode *node );
     bool writeNode( DDLNode *node );
+    bool writeProperties( DDLNode *node );
 
 private:
     FILE *m_file;
