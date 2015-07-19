@@ -116,6 +116,18 @@ TEST_F( DDLNodeTest, hasPropertyTest ) {
     EXPECT_TRUE( found );
 }
 
+TEST_F( DDLNodeTest, hasPropertiesTest ) {
+    DDLNode *node = DDLNode::create( "test", "testName" );
+    EXPECT_FALSE(node->hasProperties() );
+
+    Identifier *id = new Identifier( "test", 4 );
+    Property *first = new Property( id );
+    node->setProperties( first );
+    EXPECT_TRUE( node->hasProperties() );
+
+}
+
+
 TEST_F( DDLNodeTest, findPropertyByNameTest ) {
     DDLNode *node = DDLNode::create( "test", "testName" );
     Property *prop( ddl_nullptr );

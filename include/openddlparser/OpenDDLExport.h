@@ -37,6 +37,10 @@ public:
     bool exportContext( Context *ctx, const std::string &filename );
     bool handleNode( DDLNode *node );
 
+protected:
+    bool writeProperties( DDLNode *node );
+    bool writeNode( DDLNode *node );
+
 private:
     FILE *m_file;
 };

@@ -88,6 +88,7 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
     bool success( true );
     while( it.getNext( &current ) ) {
         if( ddl_nullptr != current ) {
+
             if( !handleNode( current ) ) {
                 success != false;
             }
@@ -95,6 +96,14 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
     }
 
     return success;
+}
+
+bool OpenDDLExport::writeProperties( DDLNode *node ) {
+    return true;
+}
+
+bool OpenDDLExport::writeNode( DDLNode *node ) {
+    return true;
 }
 
 END_ODDLPARSER_NS

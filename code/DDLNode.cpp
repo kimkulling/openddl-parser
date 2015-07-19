@@ -139,6 +139,10 @@ bool DDLNode::hasProperty( const std::string &name ) {
     return ( ddl_nullptr != prop );
 }
 
+bool DDLNode::hasProperties() const {
+    return( ddl_nullptr != m_properties );
+}
+
 Property *DDLNode::findPropertyByName( const std::string &name ) {
     if( name.empty() ) {
         return ddl_nullptr;
