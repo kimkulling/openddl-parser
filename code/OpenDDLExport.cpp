@@ -88,7 +88,7 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
     bool success( true );
     while( it.getNext( &current ) ) {
         if( ddl_nullptr != current ) {
-            success |= current->writeNode() );
+            success |= writeNode( current );
             if( !handleNode( current ) ) {
                 success != false;
             }
