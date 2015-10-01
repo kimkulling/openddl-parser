@@ -73,7 +73,6 @@ bool Text::operator == ( const Text &rhs ) const {
     return ( 0 == res );
 }
 
-
 Identifier::Identifier( const char buffer[], size_t len )
 : m_text( buffer, len ) {
     // empty
@@ -140,7 +139,6 @@ Property::~Property() {
     m_ref = ddl_nullptr;;
     m_next = ddl_nullptr;;
 }
-
 
 DataArrayList::DataArrayList()
 : m_numItems( 0 )

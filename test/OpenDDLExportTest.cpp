@@ -71,4 +71,3 @@ TEST_F( OpenDDLExportTest, handleNodeTest ) {
 }
 
 END_ODDLPARSER_NS
-

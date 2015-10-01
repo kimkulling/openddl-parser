@@ -45,4 +45,30 @@ TEST_F( OpenDDLDefectsTest, Issue20_WrongColorNodeParsing ) {
     ASSERT_EQ( 3, numValues );
 }
 
+TEST_F( OpenDDLDefectsTest, assimp_issues_665 ) {
+    char token [] = {
+        "GeometryNode $node2\n"
+        "{\n"
+        "    Name{ string{ \"Plane\" } }\n"
+        "    ObjectRef{ ref{ $geometry1 } }\n"
+        "    MaterialRef( index = 0 ) { ref{ $material1 } }\n"
+        "    Transform\n"
+        "    {\n"
+        "        float[ 16 ]\n"
+        "        {\n"
+        "            { 1.0, 0.0, 0.0, 0.0,\n"
+        "              0.0, 1.0, 0.0, 0.0,\n"
+        "              0.0, 0.0, 1.0, 0.0,\n"
+        "              0.0, 0.0, 0.0, 1.0 }\n"
+        "        }\n"
+        "    }\n"
+        "}\n"
+    };
+
+    OpenDDLParser myParser;
+    myParser.setBuffer( token, strlen( token ) );
+    const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
+}
+
 END_ODDLPARSER_NS

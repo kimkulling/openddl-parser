@@ -63,6 +63,7 @@ public:
             m_data.push_back( data );
         }
     }
+
 protected:
     virtual void SetUp() {
         OpenDDLParserTest::setInstance( this );

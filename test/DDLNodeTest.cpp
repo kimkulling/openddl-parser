@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-
 class DDLNodeTest : public testing::Test {
 };
 
@@ -126,7 +125,6 @@ TEST_F( DDLNodeTest, hasPropertiesTest ) {
     EXPECT_TRUE( node->hasProperties() );
 
 }
-
 
 TEST_F( DDLNodeTest, findPropertyByNameTest ) {
     DDLNode *node = DDLNode::create( "test", "testName" );

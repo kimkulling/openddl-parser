@@ -51,6 +51,7 @@ TEST_F( OpenDDLParserUtilsTest, isCommentTest ) {
     EXPECT_FALSE( result );
 
 }
+
 TEST_F( OpenDDLParserUtilsTest, isUpperCaseTest ) {
     char val = 'a';
     EXPECT_TRUE( isLowerCase<char>( val ) );
