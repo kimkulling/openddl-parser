@@ -36,10 +36,12 @@ public:
     ~OpenDDLExport();
     bool exportContext( Context *ctx, const std::string &filename );
     bool handleNode( DDLNode *node );
+    bool write( const std::string &statement );
 
 protected:
-    bool writeNode( DDLNode *node );
-    bool writeProperties( DDLNode *node );
+    bool writeNode( DDLNode *node, std::string &statement );
+    bool writeProperties( DDLNode *node, std::string &statement );
+    bool writeValue( Value *val, std::string &statement );
 
 private:
     FILE *m_file;

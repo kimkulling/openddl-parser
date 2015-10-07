@@ -141,7 +141,9 @@ void Value::setInt16( int16 value ) {
 
 int16 Value::getInt16() {
     assert( ddl_int16 == m_type );
-    return ( int16 ) ( *m_data );
+    int16 i;
+    ::memcpy( &i, m_data, m_size );
+    return i;
 }
 
 void Value::setInt32( int32 value ) {
@@ -151,16 +153,21 @@ void Value::setInt32( int32 value ) {
 
 int32 Value::getInt32() {
     assert( ddl_int32 == m_type );
-    return ( int32 ) ( *m_data );
+    int32 i;
+    ::memcpy( &i, m_data, m_size );
+    return i;
 }
 
 void Value::setInt64( int64 value ) {
-    assert( ddl_int32 == m_type );
+    assert( ddl_int64 == m_type );
     ::memcpy( m_data, &value, m_size );
 }
 
 int64 Value::getInt64() {
-    return ( int64 ) ( *m_data );
+    assert( ddl_int64 == m_type );
+    int64 i;
+    ::memcpy( &i, m_data, m_size );
+    return i;
 }
 
 void Value::setUnsignedInt8( uint8 value ) {

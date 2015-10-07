@@ -22,16 +22,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/OpenDDLExport.h>
 #include <openddlparser/DDLNode.h>
+#include <openddlparser/Value.h>
+
+#include <sstream>
 
 BEGIN_ODDLPARSER_NS
 
 struct DDLNodeIterator {
     const DDLNode::DllNodeList &m_childs;
     size_t m_idx;
-    DDLNodeIterator( const DDLNode::DllNodeList &childs ) 
-        : m_childs( childs )
-        , m_idx( 0 ) {
 
+    DDLNodeIterator( const DDLNode::DllNodeList &childs ) 
+    : m_childs( childs )
+    , m_idx( 0 ) {
+        // empty
+    }
+
+    ~DDLNodeIterator() {
+        // empty
     }
 
     bool getNext( DDLNode **node ) {
@@ -85,10 +93,11 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
     }
     DDLNode *current( ddl_nullptr );
     DDLNodeIterator it( childs );
+    std::string statement;
     bool success( true );
     while( it.getNext( &current ) ) {
         if( ddl_nullptr != current ) {
-            success |= writeNode( current );
+            success |= writeNode( current, statement );
             if( !handleNode( current ) ) {
                 success != false;
             }
@@ -98,17 +107,158 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
     return success;
 }
 
-bool OpenDDLExport::writeNode( DDLNode *node ) {
-    bool success( true );
-    if( node->hasProperties() ) {
-        success |= writeProperties( node );
+bool OpenDDLExport::write( const std::string &statement ) {
+    if (ddl_nullptr == m_file) {
+        return false;
+    }
+
+    if ( !statement.empty()) {
+        ::fwrite( statement.c_str(), sizeof( char ), statement.size(), m_file );
     }
 
     return true;
 }
 
-bool OpenDDLExport::writeProperties( DDLNode *node ) {
+bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
+    bool success( true );
+    if (node->hasProperties()) {
+        success |= writeProperties( node, statement );
+    }
+
+    return true;
+}
+
+bool OpenDDLExport::writeProperties( DDLNode *node, std::string &statement ) {
+    if ( ddl_nullptr == node ) {
+        return false;
+    }
+
     Property *prop( node->getProperties() );
+    // if no properties are there, return
+    if ( ddl_nullptr == prop ) {
+        return true;
+    }
+
+    if ( ddl_nullptr != prop ) {
+        // (attrib = "position", bla=2)
+        
+        statement = "(";
+        bool first( true );
+        while ( ddl_nullptr != prop ) {
+            if (!first) {
+                statement += ", ";
+            } else {
+                first = false;
+            }
+            statement += std::string( prop->m_key->m_text.m_buffer );
+            statement += " = ";
+
+            writeValue( prop->m_value, statement );
+
+            prop = prop->m_next;
+        }
+
+        statement += ")";
+    }
+
+    return true;
+}
+
+bool OpenDDLExport::writeValue( Value *val, std::string &statement ) {
+    if (ddl_nullptr == val) {
+        return false;
+    }
+
+    switch ( val->m_type ) {
+        case Value::ddl_bool:
+            if ( true == val->getBool() ) {
+                statement += "true";
+            } else {
+                statement += "false";
+            }
+            break;
+        case Value::ddl_int8: 
+            {
+                std::stringstream stream;
+                const int i = static_cast<int>( val->getInt8() );
+                stream << i;
+                statement += stream.str();
+            }
+            break;
+        case Value::ddl_int16:
+            {
+                std::stringstream stream;
+                char buffer[ 256 ];
+                ::memset( buffer, '\0', 256 * sizeof( char ) );
+                sprintf( buffer, "%d", val->getInt16() );
+                statement += buffer;
+        }
+            break;
+        case Value::ddl_int32:
+            {
+                std::stringstream stream;
+                char buffer[ 256 ];
+                ::memset( buffer, '\0', 256 * sizeof( char ) );
+                const int i = static_cast< int >( val->getInt32() );
+                sprintf( buffer, "%d", i );
+                statement += buffer;
+            }
+            break;
+        case Value::ddl_int64:
+            {
+                std::stringstream stream;
+                const int i = static_cast< int >( val->getInt64() );
+                stream << i;
+                statement += stream.str();
+        }
+            break;
+        case Value::ddl_unsigned_int8:
+            {
+                std::stringstream stream;
+                const int i = static_cast< unsigned int >( val->getUnsignedInt8() );
+                stream << i;
+                statement += stream.str();
+            }
+            break;
+        case Value::ddl_unsigned_int16:
+            {
+                std::stringstream stream;
+                const int i = static_cast< unsigned int >( val->getUnsignedInt16() );
+                stream << i;
+                statement += stream.str();
+            }
+            break;
+        case Value::ddl_unsigned_int32:
+            {
+                std::stringstream stream;
+                const int i = static_cast< unsigned int >( val->getUnsignedInt32() );
+                stream << i;
+                statement += stream.str();
+        }
+            break;
+        case Value::ddl_unsigned_int64:
+            {
+                std::stringstream stream;
+                const int i = static_cast< unsigned int >( val->getUnsignedInt64() );
+                stream << i;
+                statement += stream.str();
+        }
+            break;
+        case Value::ddl_half:
+            break;
+        case Value::ddl_float:
+            break;
+        case Value::ddl_double:
+            break;
+        case Value::ddl_string:
+            break;
+        case Value::ddl_ref:
+            break;
+        case Value::ddl_none:
+        case Value::ddl_types_max:
+        default:
+            break;
+    }
 
     return true;
 }

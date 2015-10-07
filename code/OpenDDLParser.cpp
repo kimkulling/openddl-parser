@@ -548,7 +548,7 @@ char *OpenDDLParser::parsePrimitiveDataType( char *in, char *end, Value::ValueTy
         while ( in != end ) {
             in++;
             if( *in == Grammar::CloseArrayToken[ 0 ] ) {
-                len = atoi( start );
+                len = ::atoi( start );
                 ok = true;
                 in++;
                 break;

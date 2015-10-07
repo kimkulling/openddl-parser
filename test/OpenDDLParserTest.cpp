@@ -32,8 +32,8 @@ BEGIN_ODDLPARSER_NS
 
 class OpenDDLParserTest : public testing::Test {
     static OpenDDLParserTest *s_instance;
-    std::vector<Value*> m_data;
-    std::vector<std::string> m_logs;
+    std::vector<Value*>       m_data;
+    std::vector<std::string>  m_logs;
 
 public:
     static void setInstance( OpenDDLParserTest *instance ) {
