@@ -177,7 +177,9 @@ void Value::setUnsignedInt8( uint8 value ) {
 
 uint8 Value::getUnsignedInt8() const {
     assert( ddl_unsigned_int8 == m_type );
-    return ( uint8 ) ( *m_data );
+    uint8 i;
+    ::memcpy( &i, m_data, m_size );
+    return i;
 }
 
 void Value::setUnsignedInt16( uint16 value ) {
@@ -187,7 +189,9 @@ void Value::setUnsignedInt16( uint16 value ) {
 
 uint16 Value::getUnsignedInt16() const {
     assert( ddl_unsigned_int16 == m_type );
-    return ( uint8 ) ( *m_data );
+    uint16 i;
+    ::memcpy( &i, m_data, m_size );
+    return i;
 }
 
 void Value::setUnsignedInt32( uint32 value ) {
@@ -197,7 +201,9 @@ void Value::setUnsignedInt32( uint32 value ) {
 
 uint32 Value::getUnsignedInt32() const {
     assert( ddl_unsigned_int32 == m_type );
-    return ( uint8 ) ( *m_data );
+    uint32 i;
+    ::memcpy( &i, m_data, m_size );
+    return i;
 }
 
 void Value::setUnsignedInt64( uint64 value ) {
@@ -207,7 +213,9 @@ void Value::setUnsignedInt64( uint64 value ) {
 
 uint64 Value::getUnsignedInt64() const {
     assert( ddl_unsigned_int64 == m_type );
-    return ( uint64 ) ( *m_data );
+    uint64 i;
+    ::memcpy( &i, m_data, m_size );
+    return i;
 }
 
 void Value::setFloat( float value ) {
@@ -319,22 +327,25 @@ Value *ValueAllocator::allocPrimData( Value::ValueType type, size_t len ) {
             data->m_size = sizeof( bool );
             break;
         case Value::ddl_int8:
-            data->m_size = sizeof( char );
+            data->m_size = sizeof( int8 );
             break;
         case Value::ddl_int16:
-            data->m_size = sizeof( short );
+            data->m_size = sizeof( int16 );
             break;
         case Value::ddl_int32:
-            data->m_size = sizeof( int );
+            data->m_size = sizeof( int32 );
             break;
         case Value::ddl_int64:
             data->m_size = sizeof( int64 );
             break;
         case Value::ddl_unsigned_int8:
-            data->m_size = sizeof( unsigned char );
+            data->m_size = sizeof( uint8 );
+            break;
+        case Value::ddl_unsigned_int16:
+            data->m_size = sizeof( uint16 );
             break;
         case Value::ddl_unsigned_int32:
-            data->m_size = sizeof( unsigned int );
+            data->m_size = sizeof( uint32 );
             break;
         case Value::ddl_unsigned_int64:
             data->m_size = sizeof( uint64 );

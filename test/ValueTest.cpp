@@ -146,4 +146,67 @@ TEST_F( ValueTest, IteratePostIncTest ) {
     }
 }
 
+TEST_F( ValueTest, accessInt8Test ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_int8 );
+    data->setInt8( 10 );
+    EXPECT_EQ( 10, data->getInt8() ); 
+    ValueAllocator::releasePrimData( &data );
+}
+
+TEST_F( ValueTest, accessInt16Test ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_int16 );
+    data->setInt16( 10 );
+    EXPECT_EQ( 10, data->getInt16() );
+
+    ValueAllocator::releasePrimData( &data );
+}
+
+TEST_F( ValueTest, accessInt32Test ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_int32 );
+    data->setInt32( 10 );
+    EXPECT_EQ( 10, data->getInt32() );
+
+    ValueAllocator::releasePrimData( &data );
+}
+
+TEST_F( ValueTest, accessInt64Test ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_int64 );
+    data->setInt64( 10 );
+    EXPECT_EQ( 10, data->getInt64() );
+
+    ValueAllocator::releasePrimData( &data );
+}
+
+TEST_F( ValueTest, accessUInt8Test ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int8 );
+    data->setUnsignedInt8( 10 );
+    EXPECT_EQ( 10, data->getUnsignedInt8() );
+    
+    ValueAllocator::releasePrimData( &data );
+}
+
+TEST_F( ValueTest, accessUInt16Test ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int16 );
+    data->setUnsignedInt16( 10 );
+    EXPECT_EQ( 10, data->getUnsignedInt16() );
+
+    ValueAllocator::releasePrimData( &data );
+}
+
+TEST_F( ValueTest, accessUInt32Test ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int32 );
+    data->setUnsignedInt32( 10 );
+    EXPECT_EQ( 10, data->getUnsignedInt32() );
+
+    ValueAllocator::releasePrimData( &data );
+}
+
+TEST_F( ValueTest, accessUInt64Test ) {
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
+    data->setUnsignedInt64( 10 );
+    EXPECT_EQ( 10, data->getUnsignedInt64() );
+
+    ValueAllocator::releasePrimData( &data );
+}
+
 END_ODDLPARSER_NS
