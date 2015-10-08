@@ -241,6 +241,7 @@ void Value::setDouble( double value ) {
 }
 
 double Value::getDouble() const {
+    assert( ddl_double == m_type );
     double v;
     ::memcpy( &v, m_data, m_size );
     return v;
@@ -252,6 +253,7 @@ void Value::setString( const std::string &str ) {
     m_data[ str.size() ] = '\0';
 }
 const char *Value::getString() const {
+    assert( ddl_string == m_type );
     return (const char*) m_data;
 }
 
