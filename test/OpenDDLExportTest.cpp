@@ -79,11 +79,11 @@ protected:
         }
     
         Property *prop( ddl_nullptr ), *first( ddl_nullptr ), *prev( ddl_nullptr );
-        for (size_t i = 0; i < numProps; i++) {
+        for ( size_t i = 0; i < numProps; i++) {
             static const size_t Size = 256;
             char buffer[ Size ];
             ::memset( buffer, 0, Size );
-            sprintf( buffer, "id.%d", i );
+            sprintf( buffer, "id.%zu", i );
             Identifier *id = new Identifier( buffer, strlen( buffer ) );
             prop = new Property( id );
             if (ddl_nullptr == first) {
