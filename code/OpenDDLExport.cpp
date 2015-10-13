@@ -99,7 +99,7 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
         if( ddl_nullptr != current ) {
             success |= writeNode( current, statement );
             if( !handleNode( current ) ) {
-                success != false;
+                success = false;
             }
         }
     }
