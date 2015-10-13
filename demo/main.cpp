@@ -23,20 +23,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 #include <cassert>
 #include <openddlparser/OpenDDLParser.h>
+#include <openddlparser/OpenDDLExport.h>
 
 USE_ODDLPARSER_NS
 
-static const char *FileOption = "--file";
-static const char *DumpOption = "--dump";
-static const int   Error = -1;
+static const char *FileOption    = "--file";
+static const char *ExportOption  = "--export";
+static const char *DumpOption    = "--dump";
+static const int   Error         = -1;
 
 static void showhelp() {
     std::cout << "OpenDDL Parser Demo version " << OpenDDLParser::getVersion() << std::endl << std::endl;
     std::cout << "Usage:" << std::endl;
     std::cout << "\topenddl_parser_demo --file <filename>" << std::endl << std::endl;
     std::cout << "Parameter:" << std::endl;
-    std::cout << "\t--file : The Name of the file to load." << std::endl;
-    std::cout << "\t--dump : The content of the loaded file will be dumped." << std::endl;
+    std::cout << "\t--file   : The Name of the file to load." << std::endl;
+    std::cout << "\t--export : The name for the file for export." << std::endl;
+    std::cout << "\t--dump   : The content of the loaded file will be dumped." << std::endl;
 }
 
 static void dumpDDLNodeTree( DDLNode *root ) {
@@ -51,8 +54,8 @@ int main( int argc, char *argv[] ) {
         return Error;
     }
 
-    char *filename( nullptr );
-    bool dump( false );
+    char *filename( nullptr ), *exportFilename(nullptr);
+    bool dump( false ), exportToFile( false );
     for ( int i = 1; i < argc; i++) {
         if (0 == strncmp(FileOption, argv[i], strlen(FileOption))) {
             if ((i + 1) >= argc) {
@@ -65,6 +68,16 @@ int main( int argc, char *argv[] ) {
 
         if (0 == strncmp(DumpOption, argv[ i ], strlen( DumpOption) ) ) {
             dump = true;
+        }
+
+        if( 0==strncmp(ExportOption, argv[i], strlen(ExportOption ) ) ) {
+            if ((i + 1) >= argc) {
+                std::cerr << "No filename for export specified" << std::endl;
+                return Error;
+            } else {
+                exportToFile = true;
+                exportFilename = argv[i+1];
+            }
         }
     }
 
@@ -100,6 +113,10 @@ int main( int argc, char *argv[] ) {
             DDLNode *root = theParser.getRoot();
             if ( dump ) {
                 dumpDDLNodeTree(root);
+            }
+            if ( exportToFile ) {
+                OpenDDLExport theExporter;
+                theExporter.exportContext( theParser.getContext(), exportFilename );
             }
         }
     }
