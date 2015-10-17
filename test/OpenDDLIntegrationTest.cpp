@@ -41,18 +41,18 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     EXPECT_TRUE( result );
 
     DDLNode *myNode = theParser.getRoot();
-    ASSERT_NE( nullptr, myNode );
+    ASSERT_NE( ddl_nullptr, myNode );
 
     Context *ctx = theParser.getContext();
-    ASSERT_NE( nullptr, ctx );
+    ASSERT_NE( ddl_nullptr, ctx );
 
     DDLNode::DllNodeList myList = myNode->getChildNodeList();
     ASSERT_EQ( 2, myList.size() );
     DDLNode *child = myList[ 0 ];
-    ASSERT_NE( nullptr, child );
+    ASSERT_NE( ddl_nullptr, child );
     EXPECT_EQ( "Metric", child->getType() );
     Property *prop = child->getProperties();
-    ASSERT_NE( nullptr, prop );
+    ASSERT_NE( ddl_nullptr, prop );
 
     const char *data1 = ( const char * ) prop->m_value->m_data;
     int res( ::strncmp( "distance", data1, strlen( "distance" ) ) );
@@ -60,7 +60,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     EXPECT_EQ( 0, res );
 
     child = myList[ 1 ];
-    ASSERT_NE( nullptr, child );
+    ASSERT_NE( ddl_nullptr, child );
     EXPECT_EQ( "Metric", child->getType() );
     prop = child->getProperties();
     const char *data2 = ( const char * ) prop->m_value->m_data;
@@ -86,7 +86,7 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureTest ) {
     EXPECT_TRUE( result );
 
     DDLNode *root( theParser.getRoot() );
-    ASSERT_NE( nullptr, root );
+    ASSERT_NE( ddl_nullptr, root );
 }
 
 TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
@@ -105,7 +105,7 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
     EXPECT_TRUE( result );
 
     DDLNode *root( theParser.getRoot() );
-    ASSERT_NE( nullptr, root );
+    ASSERT_NE( ddl_nullptr, root );
 
     DDLNode::DllNodeList childs = root->getChildNodeList();
     ASSERT_EQ( 1, childs.size() );

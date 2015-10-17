@@ -69,12 +69,12 @@ TEST_F( OpenDDLCommonTest, typeSizesTest ) {
 
 TEST_F( OpenDDLCommonTest, createNameTest ) {
     bool ok( true );
-    Name *name( nullptr );
+    Name *name( ddl_nullptr );
     try {
-        name = new Name( GlobalName, nullptr );
+        name = new Name( GlobalName, ddl_nullptr );
     } catch( ... ) {
         ok = false;
-        name = nullptr;
+        name = ddl_nullptr;
     }
     EXPECT_TRUE( ok );
     delete name;

@@ -34,7 +34,7 @@ class OpenDDLParserUtilsTest : public testing::Test {
 TEST_F( OpenDDLParserUtilsTest, isCommentTest ) {
     size_t len( 0 );
     bool result( false );
-    char *end( nullptr );
+    char *end( ddl_nullptr );
     char token1[] = "//";
     end = findEnd( token1, len );
     result = isComment( token1, end );
@@ -49,7 +49,6 @@ TEST_F( OpenDDLParserUtilsTest, isCommentTest ) {
     end = findEnd( token3, len );
     result = isComment( token3, end );
     EXPECT_FALSE( result );
-
 }
 
 TEST_F( OpenDDLParserUtilsTest, isUpperCaseTest ) {
@@ -196,7 +195,6 @@ TEST_F( OpenDDLParserUtilsTest, isHexLiteralTest ) {
     end = findEnd( token11, len );
     result = isHexLiteral( token11, end );
     EXPECT_TRUE( result );
-
 
     char token2[] = "10";
     result = isHexLiteral( token2, end );

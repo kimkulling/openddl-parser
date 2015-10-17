@@ -41,11 +41,11 @@ char *findEnd( char *in, size_t &len ) {
 
 inline
 size_t countItems( Value *data ) {
-    if( nullptr == data ) {
+    if(ddl_nullptr == data ) {
         return 0;
     }
     size_t numItems( 1 );
-    while( nullptr != data->getNext() ) {
+    while(ddl_nullptr != data->getNext() ) {
         numItems++;
         data = data->getNext();
     }
@@ -55,7 +55,7 @@ size_t countItems( Value *data ) {
 template<class T>
 inline
 bool testValues( Value::ValueType expValue, Value *inData, const std::list<T> &expData ) {
-    if( nullptr == inData ) {
+    if(ddl_nullptr == inData ) {
         return false;
     }
 
@@ -66,7 +66,7 @@ bool testValues( Value::ValueType expValue, Value *inData, const std::list<T> &e
     typename std::list<T>::const_iterator it( expData.begin() );
     Value *tmp( inData );
     bool equal( true );
-    while( nullptr != tmp ) {
+    while(ddl_nullptr != tmp ) {
         if( 0 != ::memcmp( (void*) tmp->m_data, &(*it), tmp->m_size ) ) {
             equal = false;
             break;

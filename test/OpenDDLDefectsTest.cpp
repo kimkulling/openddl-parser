@@ -36,12 +36,12 @@ TEST_F( OpenDDLDefectsTest, Issue20_WrongColorNodeParsing ) {
     size_t len( 0 );
     char *end = findEnd( token, len );
 
-    Value *data( nullptr );
+    Value *data( ddl_nullptr );
     Reference *refs( ddl_nullptr );
     size_t numRefs( 0 ), numValues( 0 );
     char *in = OpenDDLParser::parseDataList( token, end, &data, numValues, &refs, numRefs );
-    ASSERT_NE( nullptr, in );
-    ASSERT_NE( nullptr, data );
+    ASSERT_NE( ddl_nullptr, in );
+    ASSERT_NE( ddl_nullptr, data );
     ASSERT_EQ( 3, numValues );
 }
 

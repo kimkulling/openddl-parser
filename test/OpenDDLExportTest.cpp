@@ -32,11 +32,11 @@ class OpenDDLExportMock : public OpenDDLExport {
 public:
     OpenDDLExportMock() 
     : OpenDDLExport() {
-    
+        // empty
     }
     
     virtual ~OpenDDLExportMock() {
-    
+        // empty
     }
     
     virtual bool writePropertiesTester( DDLNode *node, std::string &statement ) {
@@ -46,7 +46,6 @@ public:
     virtual bool writeValueTester( Value *val, std::string &statement ) {
         return writeValue( val, statement );
     }
-
 };
 
 class OpenDDLExportTest : public testing::Test {

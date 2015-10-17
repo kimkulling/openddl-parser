@@ -33,15 +33,15 @@ class DDLNodeTest : public testing::Test {
 };
 
 TEST_F( DDLNodeTest, createDDLNodeTest ) {
-    DDLNode *myNode( nullptr );
+    DDLNode *myNode( ddl_nullptr );
     bool success( true );
     try {
         myNode = DDLNode::create( "test", "" );
     } catch( ... ) {
-        myNode = nullptr;
+        myNode = ddl_nullptr;
         success = false;
     }
-    EXPECT_NE( nullptr, myNode );
+    EXPECT_NE( ddl_nullptr, myNode );
     EXPECT_TRUE( success );
 }
 
@@ -80,7 +80,7 @@ TEST_F( DDLNodeTest, accessParentTest ) {
     EXPECT_EQ( 1, parentNode->getChildNodeList().size() );
 
     DDLNode *myNodeWithoutParent = DDLNode::create( childType, name1 );
-    EXPECT_EQ( nullptr, myNodeWithoutParent->getParent() );
+    EXPECT_EQ( ddl_nullptr, myNodeWithoutParent->getParent() );
 
     myNodeWithoutParent->attachParent( parentNode );
     EXPECT_EQ( parentNode, myNodeWithoutParent->getParent() );
@@ -94,8 +94,8 @@ TEST_F( DDLNodeTest, accessParentTest ) {
 
 TEST_F( DDLNodeTest, accessPropertiesDDLNodeTest ) {
     DDLNode *node = DDLNode::create( "test", "testName" );
-    
-    EXPECT_EQ( nullptr, node->getProperties() );
+    ASSERT_NE( ddl_nullptr, node );
+    EXPECT_EQ( ddl_nullptr, node->getProperties() );
     Identifier *id = new Identifier( "test", 4 );
     Property *first = new Property( id );
     node->setProperties( first );
@@ -104,6 +104,7 @@ TEST_F( DDLNodeTest, accessPropertiesDDLNodeTest ) {
 
 TEST_F( DDLNodeTest, hasPropertyTest ) {
     DDLNode *node = DDLNode::create( "test", "testName" );
+    ASSERT_NE( ddl_nullptr, node );
     bool found( false );
     found = node->hasProperty( "test" );
     EXPECT_FALSE( found );
@@ -117,7 +118,8 @@ TEST_F( DDLNodeTest, hasPropertyTest ) {
 
 TEST_F( DDLNodeTest, hasPropertiesTest ) {
     DDLNode *node = DDLNode::create( "test", "testName" );
-    EXPECT_FALSE(node->hasProperties() );
+    ASSERT_NE( ddl_nullptr, node );
+    EXPECT_FALSE( node->hasProperties() );
 
     Identifier *id = new Identifier( "test", 4 );
     Property *first = new Property( id );
@@ -128,6 +130,7 @@ TEST_F( DDLNodeTest, hasPropertiesTest ) {
 
 TEST_F( DDLNodeTest, findPropertyByNameTest ) {
     DDLNode *node = DDLNode::create( "test", "testName" );
+    ASSERT_NE( ddl_nullptr, node );
     Property *prop( ddl_nullptr );
     prop = node->findPropertyByName( "test" );
     EXPECT_EQ( ddl_nullptr, prop );
@@ -141,6 +144,7 @@ TEST_F( DDLNodeTest, findPropertyByNameTest ) {
 
 TEST_F( DDLNodeTest, accessValueTest ) {
     DDLNode *myNode = DDLNode::create( "test", "name" );
+    ASSERT_NE( ddl_nullptr, myNode );
     EXPECT_EQ( nullptr, myNode->getValue() );
 
     Value *myValue( new Value( Value::ddl_bool ) );
@@ -150,6 +154,7 @@ TEST_F( DDLNodeTest, accessValueTest ) {
 
 TEST_F( DDLNodeTest, accessDataArrayListTest ) {
     DDLNode *myNode = DDLNode::create( "test", "name" );
+    ASSERT_NE( ddl_nullptr, myNode );
     EXPECT_EQ( nullptr, myNode->getDataArrayList() );
 
     DataArrayList *dtArrayList( new DataArrayList );
@@ -159,6 +164,7 @@ TEST_F( DDLNodeTest, accessDataArrayListTest ) {
 
 TEST_F( DDLNodeTest, accessReferencesTest ) {
     DDLNode *myNode = DDLNode::create( "test", "name" );
+    ASSERT_NE( ddl_nullptr, myNode );
     EXPECT_EQ( nullptr, myNode->getReferences() );
 
     Reference *ref = new Reference;
