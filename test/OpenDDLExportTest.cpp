@@ -193,6 +193,8 @@ TEST_F( OpenDDLExportTest, writePropertiesTest ) {
     m_root->setProperties( prop );
 
     ok = myExporter.writePropertiesTester( m_root, statement );
+    EXPECT_TRUE( ok );
+    EXPECT_EQ( "(id.0 = 0)", statement );
 
 }
 
