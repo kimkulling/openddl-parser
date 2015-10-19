@@ -84,7 +84,10 @@ protected:
             ::memset( buffer, 0, Size );
             sprintf( buffer, "id.%zu", i );
             Identifier *id = new Identifier( buffer, strlen( buffer ) );
+            Value *v = ValueAllocator::allocPrimData( Value::ddl_int32 );
+            v->setInt32( i );
             prop = new Property( id );
+            prop->m_value = v;
             if (ddl_nullptr == first) {
                 first = prop;
             }
