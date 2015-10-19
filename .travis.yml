@@ -8,14 +8,14 @@ env:
   matrix:
       - CHECK_CODE_COVERAGE=ON
       - CHECK_CODE_COVERAGE=OFF
-      - CPP11=OPENDDL_NO_USE_CPP
+      - CPP11=-DOPENDDL_NO_USE_CPP
       - CPP11=
 language: cpp
 compiler:
   - gcc
   - clang
 script: 
-    - cmake -DDDL_CHECK_CODE_COVERAGE=$CHECK_CODE_COVERAGE -D$CPP11 -G "Unix Makefiles" ;
+    - cmake -DDDL_CHECK_CODE_COVERAGE=$CHECK_CODE_COVERAGE $CPP11 -G "Unix Makefiles" ;
       make ;
       ls ;
       cd bin ;
