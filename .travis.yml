@@ -9,7 +9,6 @@ env:
       - CHECK_CODE_COVERAGE=ON
       - CHECK_CODE_COVERAGE=OFF
       - CPP11=-DOPENDDL_NO_USE_CPP
-      - CPP11=
 language: cpp
 compiler:
   - gcc
