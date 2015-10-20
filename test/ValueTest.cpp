@@ -59,14 +59,14 @@ protected:
 
 TEST_F( ValueTest, ValueDataAllocTest ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    EXPECT_NE( ddl_nullptr, data );
+    EXPECT_FALSE( ddl_nullptr == data );
     ValueAllocator::releasePrimData( &data );
     EXPECT_EQ( ddl_nullptr, data );
 }
 
 TEST_F( ValueTest, ValueAccessBoolTest ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    ASSERT_NE( ddl_nullptr, data );
+    ASSERT_FALSE( ddl_nullptr == data );
     data->setBool( true );
     EXPECT_EQ( true, data->getBool() );
     data->setBool( false );
@@ -78,7 +78,7 @@ TEST_F( ValueTest, ValueAccessBoolTest ) {
 TEST_F( ValueTest, ValueAccessStringTest ) {
     std::string text = "hallo";
     Value *data = ValueAllocator::allocPrimData( Value::ddl_string, text.size() );
-    ASSERT_NE( ddl_nullptr, data );
+    ASSERT_FALSE( ddl_nullptr == data );
 
     data->setString( text );
     int res = ::strncmp( text.c_str(), data->getString(), text.size() );
@@ -87,7 +87,7 @@ TEST_F( ValueTest, ValueAccessStringTest ) {
 
 TEST_F( ValueTest, ValueAccessNextTest ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    ASSERT_NE( ddl_nullptr, data );
+    ASSERT_FALSE( ddl_nullptr == data );
     EXPECT_EQ( ddl_nullptr, data->getNext() );
 
     Value *dataNext = ValueAllocator::allocPrimData( Value::ddl_bool );
@@ -112,7 +112,7 @@ TEST_F( ValueTest, IterateTest ) {
     Value *v( ddl_nullptr );
     while( it.hasNext() ) {
         v = it.getNext();
-        EXPECT_NE( ddl_nullptr, v );
+        EXPECT_FALSE( ddl_nullptr == v );
     }
 }
 

@@ -92,7 +92,7 @@ TEST_F( OpenDDLCommonTest, createTextTest ) {
 
 TEST_F( OpenDDLCommonTest, accessTextTest ) {
     Text *theText = createTestText();
-    ASSERT_NE( ddl_nullptr, theText );
+    ASSERT_TRUE( ddl_nullptr != theText );
 
     EXPECT_EQ( getTestTextLen(), theText->m_len );
     int res( strncmp( getTestText(), theText->m_buffer, getTestTextLen() ) );
@@ -101,16 +101,16 @@ TEST_F( OpenDDLCommonTest, accessTextTest ) {
 
 TEST_F( OpenDDLCommonTest, clearTextTest ) {
     Text *theText = createTestText();
-    ASSERT_NE( ddl_nullptr, theText );
+    ASSERT_TRUE( ddl_nullptr != theText );
 
     theText->clear();
     EXPECT_EQ( 0, theText->m_len );
-    EXPECT_EQ( ddl_nullptr, theText->m_buffer );
+    EXPECT_TRUE( ddl_nullptr == theText->m_buffer );
 }
 
 TEST_F( OpenDDLCommonTest, setTextTest ) {
     Text *theText = createTestText();
-    ASSERT_NE( ddl_nullptr, theText );
+    ASSERT_FALSE( ddl_nullptr == theText );
 
     static const std::string test2 = "Hello, World!";
     theText->set( test2.c_str(), test2.size() );
