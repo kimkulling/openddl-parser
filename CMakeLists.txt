@@ -6,7 +6,13 @@ SET ( OPENDDL_PARSER_VERSION_PATCH 0 )
 SET ( OPENDDL_PARSER_VERSION ${CPPCORE_VERSION_MAJOR}.${CPPCORE_VERSION_MINOR}.${CPPCORE_VERSION_PATCH} )
 SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
 
-option( DDL_CHECK_CODE_COVERAGE "Set to ON to track code coverage in unit tests ( only supported for gcc ) " OFF )
+option( DDL_CHECK_CODE_COVERAGE "Set to ON to track code coverage in unit tests ( only supported for gcc ). " OFF )
+option( DDL_USE_CPP11           "Set to ON to use C++11 features." OFF )
+
+if ( DDL_USE_CPP11 )
+else()
+    add_definitions( -DOPENDDL_NO_USE_CPP11 )
+endif()
 
 if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
     find_package(Threads)

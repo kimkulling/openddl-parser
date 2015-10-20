@@ -195,7 +195,6 @@ TEST_F( OpenDDLExportTest, writePropertiesTest ) {
     ok = myExporter.writePropertiesTester( m_root, statement );
     EXPECT_TRUE( ok );
     EXPECT_EQ( "(id.0 = 0)", statement );
-
 }
 
 END_ODDLPARSER_NS
