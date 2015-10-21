@@ -95,7 +95,7 @@ bool Value::Iterator::operator == ( const Iterator &rhs ) const {
 }
 
 Value *Value::Iterator::operator->( ) const {
-    if( nullptr == m_current ) {
+    if(ddl_nullptr == m_current ) {
         return ddl_nullptr;
     }
     return m_current;
@@ -120,7 +120,6 @@ void Value::setBool( bool value ) {
 
 bool Value::getBool() {
     assert( ddl_bool == m_type );
-    
     return ( *m_data == 1 );
 }
 
