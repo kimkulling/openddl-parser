@@ -61,7 +61,7 @@ OpenDDLExport::OpenDDLExport()
 OpenDDLExport::~OpenDDLExport() {
     if( nullptr != m_file ) {
         ::fclose( m_file );
-        m_file = nullptr;
+        m_file = ddl_nullptr;
     }
 }
 
@@ -75,7 +75,7 @@ bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
     }
 
     DDLNode *root( ctx->m_root );
-    if( nullptr == root ) {
+    if(ddl_nullptr == root ) {
         return true;
     }
 
