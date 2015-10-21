@@ -54,7 +54,7 @@ int main( int argc, char *argv[] ) {
         return Error;
     }
 
-    char *filename( nullptr ), *exportFilename(nullptr);
+    char *filename( ddl_nullptr ), *exportFilename( ddl_nullptr );
     bool dump( false ), exportToFile( false );
     for ( int i = 1; i < argc; i++) {
         if (0 == strncmp(FileOption, argv[i], strlen(FileOption))) {
