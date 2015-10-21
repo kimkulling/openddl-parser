@@ -43,7 +43,7 @@ static void showhelp() {
 }
 
 static void dumpDDLNodeTree( DDLNode *root ) {
-    if (nullptr == root) {
+    if (ddl_nullptr == root) {
         return;
     }
 }
@@ -83,13 +83,13 @@ int main( int argc, char *argv[] ) {
 
     std::cout << "file to import: " << filename << std::endl;
     
-    if( nullptr == filename ) {
+    if(ddl_nullptr == filename ) {
         std::cerr << "Invalid filename." << std::endl;
         return Error;
     }
 
     FILE *fileStream = fopen( filename, "rb+" );
-    if( NULL == filename ) {
+    if(ddl_nullptr == filename ) {
         std::cerr << "Cannot open file " << filename << std::endl;
         return Error;
     }
