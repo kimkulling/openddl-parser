@@ -54,12 +54,12 @@ struct DDLNodeIterator {
 };
 
 OpenDDLExport::OpenDDLExport() 
-:m_file( nullptr ) {
-
+:m_file( ddl_nullptr ) {
+    // empty
 }
 
 OpenDDLExport::~OpenDDLExport() {
-    if( nullptr != m_file ) {
+    if ( ddl_nullptr != m_file ) {
         ::fclose( m_file );
         m_file = ddl_nullptr;
     }
