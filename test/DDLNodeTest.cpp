@@ -145,7 +145,7 @@ TEST_F( DDLNodeTest, findPropertyByNameTest ) {
 TEST_F( DDLNodeTest, accessValueTest ) {
     DDLNode *myNode = DDLNode::create( "test", "name" );
     ASSERT_FALSE( ddl_nullptr == myNode );
-    EXPECT_EQ( nullptr, myNode->getValue() );
+    EXPECT_TRUE( ddl_nullptr == myNode->getValue() );
 
     Value *myValue( new Value( Value::ddl_bool ) );
     myNode->setValue( myValue );
@@ -155,7 +155,7 @@ TEST_F( DDLNodeTest, accessValueTest ) {
 TEST_F( DDLNodeTest, accessDataArrayListTest ) {
     DDLNode *myNode = DDLNode::create( "test", "name" );
     ASSERT_FALSE( ddl_nullptr == myNode );
-    EXPECT_EQ( nullptr, myNode->getDataArrayList() );
+    EXPECT_TRUE( ddl_nullptr == myNode->getDataArrayList() );
 
     DataArrayList *dtArrayList( new DataArrayList );
     myNode->setDataArrayList( dtArrayList );
@@ -165,7 +165,7 @@ TEST_F( DDLNodeTest, accessDataArrayListTest ) {
 TEST_F( DDLNodeTest, accessReferencesTest ) {
     DDLNode *myNode = DDLNode::create( "test", "name" );
     ASSERT_FALSE( ddl_nullptr == myNode );
-    EXPECT_EQ( nullptr, myNode->getReferences() );
+    EXPECT_TRUE( ddl_nullptr == myNode->getReferences() );
 
     Reference *ref = new Reference;
     myNode->setReferences( ref );
