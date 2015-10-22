@@ -32,14 +32,31 @@ BEGIN_ODDLPARSER_NS
 ///
 class DLL_ODDLPARSER_EXPORT OpenDDLExport {
 public:
+    ///	@brief  The class constructor
     OpenDDLExport();
+
+    ///	@brief  The class destructor.
     ~OpenDDLExport();
+
+    ///	@brief  Export the data of a parser context.
+    /// @param  ctx         [in] Pointer to the context.
+    /// @param  filename    [in] The filename for the export.
+    /// @return True in case of success, false in case of an error.
     bool exportContext( Context *ctx, const std::string &filename );
+
+    ///	@brief  Handles a node export.
+    /// @param  node        [in] The node to handle with.
+    /// @return True in case of success, false in case of an error.
     bool handleNode( DDLNode *node );
+
+    ///	@brief  Writes the statement to the stream.
+    /// @param  statement   [in]  The content to write.
+    /// @return True in case of success, false in case of an error.
     bool write( const std::string &statement );
 
 protected:
     bool writeNode( DDLNode *node, std::string &statement );
+    bool writeNodeHeader( DDLNode *node, std::string &statement );
     bool writeProperties( DDLNode *node, std::string &statement );
     bool writeValue( Value *val, std::string &statement );
 

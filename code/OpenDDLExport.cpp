@@ -75,7 +75,7 @@ bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
     }
 
     DDLNode *root( ctx->m_root );
-    if(ddl_nullptr == root ) {
+    if ( ddl_nullptr == root ) {
         return true;
     }
 
@@ -119,10 +119,27 @@ bool OpenDDLExport::write( const std::string &statement ) {
     return true;
 }
 
+
 bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     bool success( true );
     if (node->hasProperties()) {
         success |= writeProperties( node, statement );
+    }
+
+    return true;
+}
+
+bool OpenDDLExport::writeNodeHeader( DDLNode *node, std::string &statement ) {
+    if (ddl_nullptr == node) {
+        return false;
+    }
+
+    statement += node->getType();
+    const std::string &name( node->getName() );
+    if ( !name.empty() ) {
+        statement += " ";
+        statement += "$";
+        statement += name;
     }
 
     return true;
@@ -140,8 +157,7 @@ bool OpenDDLExport::writeProperties( DDLNode *node, std::string &statement ) {
     }
 
     if ( ddl_nullptr != prop ) {
-        // (attrib = "position", bla=2)
-        
+        // for instance(attrib = "position", bla=2)
         statement = "(";
         bool first( true );
         while ( ddl_nullptr != prop ) {
@@ -152,9 +168,7 @@ bool OpenDDLExport::writeProperties( DDLNode *node, std::string &statement ) {
             }
             statement += std::string( prop->m_key->m_text.m_buffer );
             statement += " = ";
-
             writeValue( prop->m_value, statement );
-
             prop = prop->m_next;
         }
 

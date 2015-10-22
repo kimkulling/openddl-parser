@@ -98,7 +98,7 @@ int main( int argc, char *argv[] ) {
     fseek( fileStream, 0, SEEK_END );
     const size_t size( ftell( fileStream ) );
     
-    rewind( fileStream );
+    ::rewind( fileStream );
     
     if( size > 0 ) {
         char *buffer = new char[ size ];

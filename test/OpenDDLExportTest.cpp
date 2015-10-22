@@ -39,6 +39,10 @@ public:
         // empty
     }
     
+    virtual bool writeNodeHeaderTester( DDLNode *node, std::string &statement ) {
+        return writeNodeHeader( node, statement );
+    }
+
     virtual bool writePropertiesTester( DDLNode *node, std::string &statement ) {
         return writeProperties( node, statement );
     }
@@ -118,6 +122,26 @@ TEST_F( OpenDDLExportTest, handleNodeTest ) {
     bool success( true );
     success = myExport.handleNode( m_root );
     EXPECT_TRUE( success );
+}
+
+TEST_F( OpenDDLExportTest, writeNodeHeaderTest ) {
+    OpenDDLExportMock myExport;
+
+    bool ok( true );
+    std::string statement;
+    ok = myExport.writeNodeHeaderTester( ddl_nullptr, statement );
+    EXPECT_FALSE( ok );
+
+    DDLNode *node( DDLNode::create( "test", "" ) );
+    node->attachParent( m_root );
+    ok = myExport.writeNodeHeaderTester( node, statement );
+    EXPECT_TRUE( ok );
+    EXPECT_EQ( "test", statement );
+    statement.clear();
+
+    ok = myExport.writeNodeHeaderTester( m_root, statement );
+    EXPECT_TRUE( ok );
+    EXPECT_EQ( "test $root", statement );
 }
 
 TEST_F( OpenDDLExportTest, writeBoolTest ) {
