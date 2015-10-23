@@ -67,6 +67,10 @@ namespace Grammar {
     };
 } // Namespace Grammar
 
+const char *getTypeToken( Value::ValueType  type ) {
+    return Grammar::PrimitiveTypeToken[ type ];
+}
+
 static void logInvalidTokenError( char *in, const std::string &exp, OpenDDLParser::logCallback callback ) {
     std::stringstream stream;
     stream << "Invalid token " << *in << ", " << exp << " expected." << std::endl;

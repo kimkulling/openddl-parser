@@ -23,13 +23,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include <openddlparser/OpenDDLCommon.h>
+#include <openddlparser/Value.h>
 
 BEGIN_ODDLPARSER_NS
 
+//-------------------------------------------------------------------------------------------------
 ///
 /// @ingroup    OpenDDLParser
 ///	@brief      This class represents the OpenDDLExporter.
 ///
+//-------------------------------------------------------------------------------------------------
 class DLL_ODDLPARSER_EXPORT OpenDDLExport {
 public:
     ///	@brief  The class constructor
@@ -58,7 +61,9 @@ protected:
     bool writeNode( DDLNode *node, std::string &statement );
     bool writeNodeHeader( DDLNode *node, std::string &statement );
     bool writeProperties( DDLNode *node, std::string &statement );
+    bool writeValueType( Value::ValueType type, size_t numItems, std::string &statement );
     bool writeValue( Value *val, std::string &statement );
+    bool writeValueArray( DataArrayList *al, std::string &statement );
 
 private:
     FILE *m_file;

@@ -80,6 +80,8 @@ enum LogSeverity {
     ddl_error_msg       ///< Parser errors
 };
 
+DLL_ODDLPARSER_EXPORT const char *getTypeToken( Value::ValueType  type );
+
 //-------------------------------------------------------------------------------------------------
 ///	@class		OpenDDLParser
 ///	@ingroup	OpenDDLParser

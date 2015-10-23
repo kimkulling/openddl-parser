@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <openddlparser/OpenDDLExport.h>
 #include <openddlparser/DDLNode.h>
 #include <openddlparser/Value.h>
+#include "UnitTestCommon.h"
 
 BEGIN_ODDLPARSER_NS
 
@@ -47,8 +48,16 @@ public:
         return writeProperties( node, statement );
     }
 
+    virtual bool writeValueTypeTester( Value::ValueType type, size_t numItems, std::string &statement ) {
+        return writeValueType( type, numItems, statement );
+    }
+
     virtual bool writeValueTester( Value *val, std::string &statement ) {
         return writeValue( val, statement );
+    }
+
+    virtual bool writeValueArrayTester( DataArrayList *al, std::string &statement ) {
+        return writeValueArray( al, statement );
     }
 };
 
@@ -206,6 +215,26 @@ TEST_F( OpenDDLExportTest, writeFloatTest ) {
 TEST_F( OpenDDLExportTest, writeStringTest ) {
 }
 
+TEST_F( OpenDDLExportTest, writeValueTypeTest ) {
+    OpenDDLExportMock myExporter;
+    bool ok( true );
+    std::string statement;
+    ok = myExporter.writeValueTypeTester( Value::ddl_types_max, 1, statement );
+    EXPECT_FALSE( ok );
+    EXPECT_TRUE( statement.empty() );
+
+    Value *v_int32 = ValueAllocator::allocPrimData( Value::ddl_int32 );
+    ok = myExporter.writeValueTypeTester( v_int32->m_type, 1, statement );
+    EXPECT_TRUE( ok );
+    EXPECT_EQ( "int32", statement );
+    statement.clear();
+
+    Value *v_int32_array = ValueAllocator::allocPrimData( Value::ddl_int32 );
+    ok = myExporter.writeValueTypeTester( v_int32_array->m_type, 10, statement );
+    EXPECT_TRUE( ok );
+    EXPECT_EQ( "int32[10]", statement );
+}
+
 TEST_F( OpenDDLExportTest, writePropertiesTest ) {
     OpenDDLExportMock myExporter;
     bool ok( true );
@@ -225,6 +254,35 @@ TEST_F( OpenDDLExportTest, writePropertiesTest ) {
     ok = myExporter.writePropertiesTester( m_root, statement );
     EXPECT_TRUE( ok );
     EXPECT_EQ( "(id.0 = 0, id.1 = 1)", statement );
+}
+
+TEST_F( OpenDDLExportTest, writeValueArrayTest ) {
+    OpenDDLExportMock myExporter;
+    bool ok( true );
+    std::string statement;
+    ok = myExporter.writeValueArrayTester( ddl_nullptr, statement );
+    EXPECT_FALSE( ok );
+    EXPECT_TRUE( statement.empty() );
+
+    char token [] =
+        "float[ 3 ]\n"
+        "{\n"
+        "    {0x3F800000, 0x00000000, 0x00000000}\n"
+        "}\n";
+
+    size_t len( 0 );
+    char *end = findEnd( token, len );
+    DataArrayList *dataArrayList( ddl_nullptr );
+    Value::ValueType type;
+
+    char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, len );
+    ASSERT_EQ( Value::ddl_float, type );
+    ASSERT_EQ( 3, len );
+    in = OpenDDLParser::parseDataArrayList( in, end, &dataArrayList );
+    ASSERT_FALSE( ddl_nullptr == dataArrayList );
+
+    ok = myExporter.writeValueArrayTester( dataArrayList, statement );
+
 }
 
 END_ODDLPARSER_NS

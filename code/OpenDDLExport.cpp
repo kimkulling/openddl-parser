@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <openddlparser/OpenDDLExport.h>
 #include <openddlparser/DDLNode.h>
 #include <openddlparser/Value.h>
+#include <openddlparser/OpenDDLParser.h>
 
 #include <sstream>
 
@@ -119,12 +120,24 @@ bool OpenDDLExport::write( const std::string &statement ) {
     return true;
 }
 
-
 bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     bool success( true );
     if (node->hasProperties()) {
         success |= writeProperties( node, statement );
     }
+
+    statement += "{";
+
+    DataArrayList *al( node->getDataArrayList() );
+    if (ddl_nullptr != al) {
+        writeValueArray( al, statement );
+    }
+    Value *v( node->getValue() );
+    while (v != ddl_nullptr) {
+
+    }
+
+    statement += "}";
 
     return true;
 }
@@ -173,6 +186,26 @@ bool OpenDDLExport::writeProperties( DDLNode *node, std::string &statement ) {
         }
 
         statement += ")";
+    }
+
+    return true;
+}
+
+bool OpenDDLExport::writeValueType( Value::ValueType type, size_t numItems, std::string &statement ) {
+    if ( Value::ddl_types_max == type) {
+        return false;
+    }
+
+    const std::string typeStr( getTypeToken( type ) );
+    statement += typeStr;
+    // if we have an array to write
+    if ( numItems > 1 ) {
+        statement += "[";
+        char buffer[ 256 ];
+        ::memset( buffer, '\0', 256 * sizeof( char ) );
+        sprintf( buffer, "%d", numItems );
+        statement += buffer;
+        statement += "]";
     }
 
     return true;
@@ -272,6 +305,14 @@ bool OpenDDLExport::writeValue( Value *val, std::string &statement ) {
         case Value::ddl_types_max:
         default:
             break;
+    }
+
+    return true;
+}
+
+bool OpenDDLExport::writeValueArray( DataArrayList *al, std::string &statement ) {
+    if (ddl_nullptr == al) {
+        return false;
     }
 
     return true;
