@@ -21,8 +21,6 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #pragma once
-#ifndef OPENDDLPARSER_TESTUTILITIES_H_INC
-#define OPENDDLPARSER_TESTUTILITIES_H_INC
 
 #include <openddlparser/OpenDDLCommon.h>
 #include <openddlparser/OpenDDLParser.h>
@@ -79,5 +77,3 @@ bool testValues( Value::ValueType expValue, Value *inData, const std::list<T> &e
 }
 
 END_ODDLPARSER_NS
-
-#endif // OPENDDLPARSER_TESTUTILITIES_H_INC
