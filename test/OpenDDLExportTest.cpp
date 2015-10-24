@@ -267,7 +267,7 @@ TEST_F( OpenDDLExportTest, writeValueArrayTest ) {
     char token [] =
         "float[ 3 ]\n"
         "{\n"
-        "    {0x3F800000, 0x00000000, 0x00000000}\n"
+        "    {1, 2, 3}\n"
         "}\n";
 
     size_t len( 0 );
@@ -282,7 +282,8 @@ TEST_F( OpenDDLExportTest, writeValueArrayTest ) {
     ASSERT_FALSE( ddl_nullptr == dataArrayList );
 
     ok = myExporter.writeValueArrayTester( dataArrayList, statement );
-
+    EXPECT_TRUE( ok );
+    EXPECT_EQ( "1, 2, 3", statement );
 }
 
 END_ODDLPARSER_NS

@@ -122,6 +122,7 @@ bool OpenDDLExport::write( const std::string &statement ) {
 
 bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     bool success( true );
+    writeNodeHeader( node, statement );
     if (node->hasProperties()) {
         success |= writeProperties( node, statement );
     }
@@ -129,12 +130,14 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     statement += "{";
 
     DataArrayList *al( node->getDataArrayList() );
-    if (ddl_nullptr != al) {
+    if ( ddl_nullptr != al ) {
+        writeValueType( al->m_dataList->m_type, al->m_numItems, statement );
         writeValueArray( al, statement );
     }
     Value *v( node->getValue() );
-    while (v != ddl_nullptr) {
-
+    if (ddl_nullptr != v ) {
+        writeValueType( al->m_dataList->m_type, 1, statement );
+        writeValue( v, statement );
     }
 
     statement += "}";
@@ -313,6 +316,28 @@ bool OpenDDLExport::writeValue( Value *val, std::string &statement ) {
 bool OpenDDLExport::writeValueArray( DataArrayList *al, std::string &statement ) {
     if (ddl_nullptr == al) {
         return false;
+    }
+
+    if (0 == al->m_numItems) {
+        return true;
+    }
+
+    DataArrayList *nextDataArrayList = al ;
+    Value *nextValue( nextDataArrayList->m_dataList );
+    while (ddl_nullptr != nextDataArrayList) {
+        if (ddl_nullptr != nextDataArrayList) {
+            nextValue = nextDataArrayList->m_dataList;
+            size_t idx( 0 );
+            while (ddl_nullptr != nextValue) {
+                if (idx > 0) {
+                    statement += ", ";
+                }
+                writeValue( nextValue, statement );
+                nextValue = nextValue->m_next;
+                idx++;
+            }
+        }
+        nextDataArrayList = nextDataArrayList->m_next;
     }
 
     return true;
