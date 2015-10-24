@@ -326,6 +326,7 @@ bool OpenDDLExport::writeValueArray( DataArrayList *al, std::string &statement )
     Value *nextValue( nextDataArrayList->m_dataList );
     while (ddl_nullptr != nextDataArrayList) {
         if (ddl_nullptr != nextDataArrayList) {
+            statement += "{ ";
             nextValue = nextDataArrayList->m_dataList;
             size_t idx( 0 );
             while (ddl_nullptr != nextValue) {
@@ -336,6 +337,7 @@ bool OpenDDLExport::writeValueArray( DataArrayList *al, std::string &statement )
                 nextValue = nextValue->m_next;
                 idx++;
             }
+            statement += " }";
         }
         nextDataArrayList = nextDataArrayList->m_next;
     }

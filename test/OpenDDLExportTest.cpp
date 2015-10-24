@@ -283,7 +283,7 @@ TEST_F( OpenDDLExportTest, writeValueArrayTest ) {
 
     ok = myExporter.writeValueArrayTester( dataArrayList, statement );
     EXPECT_TRUE( ok );
-    EXPECT_EQ( "1, 2, 3", statement );
+    EXPECT_EQ( "{ 1, 2, 3 }", statement );
 }
 
 END_ODDLPARSER_NS

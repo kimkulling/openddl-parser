@@ -136,4 +136,7 @@ TEST_F( OpenDDLIntegrationTest, parseTransformDataTest ) {
     EXPECT_TRUE( result );
 }
 
+TEST_F( OpenDDLIntegrationTest, exportDataTest ) {
+}
+
 END_ODDLPARSER_NS
