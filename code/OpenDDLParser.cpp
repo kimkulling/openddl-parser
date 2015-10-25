@@ -221,7 +221,6 @@ bool OpenDDLParser::exportContext( Context *ctx, const std::string &filename ) {
     return false;
 }
 
-
 char *OpenDDLParser::parseNextNode( char *in, char *end ) {
     in = parseHeader( in, end );
     in = parseStructure( in, end );
@@ -231,7 +230,8 @@ char *OpenDDLParser::parseNextNode( char *in, char *end ) {
 
 static void dumpId( Identifier *id ) {
     if( ddl_nullptr != id ) {
-        std::cout << id->m_text.m_buffer << std::endl;
+        if ( ddl_nullptr != id->m_text.m_buffer ) { }
+            std::cout << id->m_text.m_buffer << std::endl;
     }
 }
 
