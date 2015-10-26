@@ -239,6 +239,8 @@ TEST_F( OpenDDLIntegrationTest, exportDataTest ) {
     theParser.setBuffer( token, strlen( token ) );
     result = theParser.parse();
     EXPECT_TRUE( result );
+
+    theParser.exportContext( theParser.getContext(), "test" );
 }
 
 END_ODDLPARSER_NS

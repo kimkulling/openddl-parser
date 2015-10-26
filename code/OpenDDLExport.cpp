@@ -136,7 +136,7 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     }
     Value *v( node->getValue() );
     if (ddl_nullptr != v ) {
-        writeValueType( al->m_dataList->m_type, 1, statement );
+        writeValueType( v->m_type, 1, statement );
         writeValue( v, statement );
     }
 
@@ -174,7 +174,7 @@ bool OpenDDLExport::writeProperties( DDLNode *node, std::string &statement ) {
 
     if ( ddl_nullptr != prop ) {
         // for instance(attrib = "position", bla=2)
-        statement = "(";
+        statement += "(";
         bool first( true );
         while ( ddl_nullptr != prop ) {
             if (!first) {
