@@ -21,6 +21,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/OpenDDLParser.h>
+#include <openddlparser/OpenDDLExport.h>
 
 #include <cassert>
 #include <iostream>
@@ -218,6 +219,10 @@ bool OpenDDLParser::exportContext( Context *ctx, const std::string &filename ) {
     if( filename.empty() ) {
         return false;
     }
+
+    OpenDDLExport myExporter;
+    return myExporter.exportContext( ctx, filename );
+
     return false;
 }
 
