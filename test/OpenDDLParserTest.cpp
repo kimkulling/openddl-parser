@@ -314,7 +314,8 @@ TEST_F( OpenDDLParserTest, parsePrimitiveArrayHexTest ) {
     Value *data( ddl_nullptr );
     Reference *refs( ddl_nullptr );
     size_t numRefs(0), numValues( 0 );
-    char *in = OpenDDLParser::parseDataList( token, end, &data, numValues, &refs, numRefs );
+    Value::ValueType type( Value::ddl_none );
+    char *in = OpenDDLParser::parseDataList( token, end, type, &data, numValues, &refs, numRefs );
     EXPECT_NE( in, token );
 }
 
@@ -563,7 +564,8 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     end = findEnd( token1, len );
     Reference *refs( ddl_nullptr );
     size_t numRefs( 0 ), numValues( 0 );
-    in = OpenDDLParser::parseDataList( token1, end, &data, numValues, &refs, numRefs );
+    Value::ValueType type( Value::ddl_none );
+    in = OpenDDLParser::parseDataList( token1, end, type, &data, numValues, &refs, numRefs );
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == data );
 
@@ -579,7 +581,7 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
 
     char token2[] = "{ \"string1\",\"string2\"}";
     end = findEnd( token2, len );
-    in = OpenDDLParser::parseDataList( token2, end, &data, numValues, &refs, numRefs );
+    in = OpenDDLParser::parseDataList( token2, end, type, &data, numValues, &refs, numRefs );
     ASSERT_FALSE( ddl_nullptr == data );
     registerValueForDeletion( data );
 
