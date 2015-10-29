@@ -133,6 +133,7 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     if (node->hasProperties()) {
         success |= writeProperties( node, statement );
     }
+    writeLineEnd( statement );
 
     statement += "{";
 

@@ -216,10 +216,6 @@ bool OpenDDLParser::exportContext( Context *ctx, const std::string &filename ) {
         return false;
     }
     
-    if( filename.empty() ) {
-        return false;
-    }
-
     OpenDDLExport myExporter;
     return myExporter.exportContext( ctx, filename );
 
