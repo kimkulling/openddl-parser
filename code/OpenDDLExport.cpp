@@ -67,10 +67,6 @@ OpenDDLExport::~OpenDDLExport() {
 }
 
 bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
-    if( filename.empty() ) {
-        return false;
-    }
-
     if( ddl_nullptr == ctx ) {
         return false;
     }
@@ -78,6 +74,13 @@ bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
     DDLNode *root( ctx->m_root );
     if ( ddl_nullptr == root ) {
         return true;
+    }
+
+    if (!filename.empty()) {
+        m_file = ::fopen( filename.c_str(), "a" );
+        if (m_file == ddl_nullptr) {
+            return false;
+        }
     }
 
     return handleNode( root );
@@ -150,6 +153,11 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
 
     statement += "}";
     writeLineEnd( statement );
+
+    if (ddl_nullptr != m_file) {
+        write( statement );
+        statement.clear();
+    }
 
     return true;
 }

@@ -240,7 +240,7 @@ TEST_F( OpenDDLIntegrationTest, exportDataTest ) {
     result = theParser.parse();
     EXPECT_TRUE( result );
 
-    theParser.exportContext( theParser.getContext(), "test" );
+    theParser.exportContext( theParser.getContext(), "" );
 }
 
 END_ODDLPARSER_NS
