@@ -210,6 +210,15 @@ TEST_F( OpenDDLExportTest, writeIntegerTest ) {
 }
 
 TEST_F( OpenDDLExportTest, writeFloatTest ) {
+    OpenDDLExportMock myExport;
+    Value *v = ValueAllocator::allocPrimData( Value::ddl_float );
+    v->setFloat( 1.1f );
+    bool ok( true );
+    std::string statement;
+    ok = myExport.writeValueTester( v, statement );
+    EXPECT_TRUE( ok );
+    EXPECT_EQ( "1.1", statement );
+    ValueAllocator::releasePrimData( &v );
 }
 
 TEST_F( OpenDDLExportTest, writeStringTest ) {
@@ -222,7 +231,6 @@ TEST_F( OpenDDLExportTest, writeStringTest ) {
     EXPECT_TRUE( ok );
     EXPECT_EQ( "\"huhu\"", statement );
     ValueAllocator::releasePrimData( &v );
-
 }
 
 TEST_F( OpenDDLExportTest, writeValueTypeTest ) {

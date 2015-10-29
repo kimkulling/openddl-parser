@@ -120,6 +120,10 @@ bool OpenDDLExport::write( const std::string &statement ) {
     return true;
 }
 
+static void writeLineEnd( std::string &statement ) {
+    statement += "\n";
+}
+
 bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     bool success( true );
     writeNodeHeader( node, statement );
@@ -137,10 +141,15 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     Value *v( node->getValue() );
     if (ddl_nullptr != v ) {
         writeValueType( v->m_type, 1, statement );
+        statement += "{";
+        writeLineEnd( statement );
         writeValue( v, statement );
+        statement += "}";
+        writeLineEnd( statement );
     }
 
     statement += "}";
+    writeLineEnd( statement );
 
     return true;
 }
@@ -297,6 +306,11 @@ bool OpenDDLExport::writeValue( Value *val, std::string &statement ) {
         case Value::ddl_half:
             break;
         case Value::ddl_float:
+            {
+                std::stringstream stream;
+                stream << val->getFloat();
+                statement += stream.str();
+            }
             break;
         case Value::ddl_double:
             break;
