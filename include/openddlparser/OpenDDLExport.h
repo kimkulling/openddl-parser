@@ -64,9 +64,14 @@ protected:
     bool writeValueType( Value::ValueType type, size_t numItems, std::string &statement );
     bool writeValue( Value *val, std::string &statement );
     bool writeValueArray( DataArrayList *al, std::string &statement );
+    void writeLine( const std::string &statement );
+    void incIntention();
+    void decIntention();
 
 private:
     FILE *m_file;
+    int m_intent;
+    std::string m_data;
 };
 
 END_ODDLPARSER_NS

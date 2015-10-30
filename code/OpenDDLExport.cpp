@@ -54,8 +54,13 @@ struct DDLNodeIterator {
     }
 };
 
+static void writeLineEnd( std::string &statement ) {
+    statement += "\n";
+}
+
 OpenDDLExport::OpenDDLExport() 
-:m_file( ddl_nullptr ) {
+: m_file( ddl_nullptr )
+, m_intent( 0 ) {
     // empty
 }
 
@@ -123,10 +128,6 @@ bool OpenDDLExport::write( const std::string &statement ) {
     return true;
 }
 
-static void writeLineEnd( std::string &statement ) {
-    statement += "\n";
-}
-
 bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     bool success( true );
     writeNodeHeader( node, statement );
@@ -135,8 +136,7 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     }
     writeLineEnd( statement );
 
-    statement += "{";
-
+    writeLine( "{" );
     DataArrayList *al( node->getDataArrayList() );
     if ( ddl_nullptr != al ) {
         writeValueType( al->m_dataList->m_type, al->m_numItems, statement );
@@ -145,19 +145,19 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     Value *v( node->getValue() );
     if (ddl_nullptr != v ) {
         writeValueType( v->m_type, 1, statement );
-        statement += "{";
+        writeLine( "{" );
         writeLineEnd( statement );
         writeValue( v, statement );
-        statement += "}";
-        writeLineEnd( statement );
+        writeLine( statement );
+        writeLine( "}" );
+        writeLineEnd( m_data );
     }
-
-    statement += "}";
-    writeLineEnd( statement );
+    writeLine( "}" );
+    writeLineEnd( m_data );
 
     if (ddl_nullptr != m_file) {
         write( statement );
-        statement.clear();
+        m_data.clear();
     }
 
     return true;
@@ -174,6 +174,7 @@ bool OpenDDLExport::writeNodeHeader( DDLNode *node, std::string &statement ) {
         statement += " ";
         statement += "$";
         statement += name;
+        writeLine( statement );
     }
 
     return true;
@@ -191,7 +192,7 @@ bool OpenDDLExport::writeProperties( DDLNode *node, std::string &statement ) {
     }
 
     if ( ddl_nullptr != prop ) {
-        // for instance(attrib = "position", bla=2)
+        // for instance (attrib = "position", bla=2)
         statement += "(";
         bool first( true );
         while ( ddl_nullptr != prop ) {
@@ -373,6 +374,29 @@ bool OpenDDLExport::writeValueArray( DataArrayList *al, std::string &statement )
     }
 
     return true;
+}
+
+void OpenDDLExport::writeLine( const std::string &statement ) {
+    if (statement == "{") {
+        incIntention();
+    }
+    if (statement == "}") {
+        decIntention();
+    }
+
+    for (size_t i = 0; i < m_intent; i++) {
+        m_data += " ";
+    }
+
+    m_data += statement;
+}
+
+void OpenDDLExport::incIntention() {
+    m_intent += 4;
+}
+
+void OpenDDLExport::decIntention() {
+    m_intent -= 4;
 }
 
 END_ODDLPARSER_NS
