@@ -28,6 +28,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BEGIN_ODDLPARSER_NS
 
 //-------------------------------------------------------------------------------------------------
+/// @ingroup    IOStreamBase
+///	@brief      This class represents the stream to write out.
+//-------------------------------------------------------------------------------------------------
+class DLL_ODDLPARSER_EXPORT IOStreamBase {
+public:
+    IOStreamBase();
+    virtual ~IOStreamBase();
+    virtual bool open( const std::string &anme );
+    virtual bool close();
+    virtual void write( const std::string &statement );
+
+private:
+    FILE *m_file;
+};
+
+//-------------------------------------------------------------------------------------------------
 ///
 /// @ingroup    OpenDDLParser
 ///	@brief      This class represents the OpenDDLExporter.
@@ -36,7 +52,7 @@ BEGIN_ODDLPARSER_NS
 class DLL_ODDLPARSER_EXPORT OpenDDLExport {
 public:
     ///	@brief  The class constructor
-    OpenDDLExport();
+    OpenDDLExport( IOStreamBase *stream = ddl_nullptr );
 
     ///	@brief  The class destructor.
     ~OpenDDLExport();
@@ -55,7 +71,7 @@ public:
     ///	@brief  Writes the statement to the stream.
     /// @param  statement   [in]  The content to write.
     /// @return True in case of success, false in case of an error.
-    bool write( const std::string &statement );
+    bool writeToStream( const std::string &statement );
 
 protected:
     bool writeNode( DDLNode *node, std::string &statement );
@@ -64,14 +80,9 @@ protected:
     bool writeValueType( Value::ValueType type, size_t numItems, std::string &statement );
     bool writeValue( Value *val, std::string &statement );
     bool writeValueArray( DataArrayList *al, std::string &statement );
-    void writeLine( const std::string &statement );
-    void incIntention();
-    void decIntention();
 
 private:
-    FILE *m_file;
-    int m_intent;
-    std::string m_data;
+    IOStreamBase *m_stream;
 };
 
 END_ODDLPARSER_NS

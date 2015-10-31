@@ -29,6 +29,42 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
+IOStreamBase::IOStreamBase()
+: m_file( ddl_nullptr ) {
+    // empty
+}
+IOStreamBase::~IOStreamBase() {
+    // empty
+}
+
+bool IOStreamBase::open( const std::string &name ) {
+    m_file = ::fopen( name.c_str(), "a" );
+    if (m_file == ddl_nullptr) {
+        return false;
+    }
+    
+    return true;
+}
+
+bool IOStreamBase::close() {
+    if (ddl_nullptr == m_file) {
+        return false;
+    }
+
+    ::fclose( m_file );
+    m_file = ddl_nullptr;
+
+    return true;
+}
+
+void IOStreamBase::write( const std::string &statement ) {
+    if (ddl_nullptr == m_file) {
+        return;
+    }
+
+    ::fwrite( statement.c_str(), sizeof( char ), statement.size(), m_file );
+}
+
 struct DDLNodeIterator {
     const DDLNode::DllNodeList &m_childs;
     size_t m_idx;
@@ -58,17 +94,18 @@ static void writeLineEnd( std::string &statement ) {
     statement += "\n";
 }
 
-OpenDDLExport::OpenDDLExport() 
-: m_file( ddl_nullptr )
-, m_intent( 0 ) {
-    // empty
+OpenDDLExport::OpenDDLExport( IOStreamBase *stream )
+: m_stream( stream ) {
+    if (ddl_nullptr == m_stream) {
+        m_stream = new IOStreamBase();
+    }
 }
 
 OpenDDLExport::~OpenDDLExport() {
-    if ( ddl_nullptr != m_file ) {
-        ::fclose( m_file );
-        m_file = ddl_nullptr;
+    if (ddl_nullptr != m_stream) {
+        m_stream->close();
     }
+    delete m_stream;
 }
 
 bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
@@ -82,13 +119,14 @@ bool OpenDDLExport::exportContext( Context *ctx, const std::string &filename ) {
     }
 
     if (!filename.empty()) {
-        m_file = ::fopen( filename.c_str(), "a" );
-        if (m_file == ddl_nullptr) {
+        if (!m_stream->open( filename )) {
             return false;
         }
     }
 
-    return handleNode( root );
+    const bool retValue( handleNode( root ) );
+    
+    return retValue;
 }
 
 bool OpenDDLExport::handleNode( DDLNode *node ) {
@@ -116,13 +154,13 @@ bool OpenDDLExport::handleNode( DDLNode *node ) {
     return success;
 }
 
-bool OpenDDLExport::write( const std::string &statement ) {
-    if (ddl_nullptr == m_file) {
+bool OpenDDLExport::writeToStream( const std::string &statement ) {
+    if (ddl_nullptr == m_stream ) {
         return false;
     }
 
     if ( !statement.empty()) {
-        ::fwrite( statement.c_str(), sizeof( char ), statement.size(), m_file );
+        m_stream->write( statement );
     }
 
     return true;
@@ -136,7 +174,7 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     }
     writeLineEnd( statement );
 
-    writeLine( "{" );
+    statement = "}";
     DataArrayList *al( node->getDataArrayList() );
     if ( ddl_nullptr != al ) {
         writeValueType( al->m_dataList->m_type, al->m_numItems, statement );
@@ -145,20 +183,16 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     Value *v( node->getValue() );
     if (ddl_nullptr != v ) {
         writeValueType( v->m_type, 1, statement );
-        writeLine( "{" );
+        statement = "{";
         writeLineEnd( statement );
         writeValue( v, statement );
-        writeLine( statement );
-        writeLine( "}" );
-        writeLineEnd( m_data );
+        statement = "}";
+        writeLineEnd( statement );
     }
-    writeLine( "}" );
-    writeLineEnd( m_data );
+    statement = "}";
+    writeLineEnd( statement );
 
-    if (ddl_nullptr != m_file) {
-        write( statement );
-        m_data.clear();
-    }
+    writeToStream( statement );
 
     return true;
 }
@@ -174,7 +208,6 @@ bool OpenDDLExport::writeNodeHeader( DDLNode *node, std::string &statement ) {
         statement += " ";
         statement += "$";
         statement += name;
-        writeLine( statement );
     }
 
     return true;
@@ -374,29 +407,6 @@ bool OpenDDLExport::writeValueArray( DataArrayList *al, std::string &statement )
     }
 
     return true;
-}
-
-void OpenDDLExport::writeLine( const std::string &statement ) {
-    if (statement == "{") {
-        incIntention();
-    }
-    if (statement == "}") {
-        decIntention();
-    }
-
-    for (size_t i = 0; i < m_intent; i++) {
-        m_data += " ";
-    }
-
-    m_data += statement;
-}
-
-void OpenDDLExport::incIntention() {
-    m_intent += 4;
-}
-
-void OpenDDLExport::decIntention() {
-    m_intent -= 4;
 }
 
 END_ODDLPARSER_NS
