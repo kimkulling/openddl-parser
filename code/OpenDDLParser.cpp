@@ -206,6 +206,8 @@ bool OpenDDLParser::parse() {
     size_t pos( current - &m_buffer[ 0 ] );
     while( pos < m_buffer.size() ) {
         current = parseNextNode( current, end );
+        if(current==ddl_nullptr)
+            return false;
         pos = current - &m_buffer[ 0 ];
     }
     return true;
@@ -260,7 +262,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
 
                 if( *in != Grammar::CommaSeparator[ 0 ] && *in != Grammar::ClosePropertyToken[ 0 ] ) {
                     logInvalidTokenError( in, Grammar::ClosePropertyToken, m_logCallback );
-                    return in;
+                    return ddl_nullptr;
                 }
                 
                 if( ddl_nullptr != prop && *in != Grammar::CommaSeparator[ 0 ] ) {
@@ -311,13 +313,16 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         // loop over all children ( data and nodes )
         do {
             in = parseStructureBody( in, end, error );
+            if(in == ddl_nullptr){
+                return ddl_nullptr;
+            }
         } while ( *in != '}' );
         in++;
     } else {
         in++;
         logInvalidTokenError( in, std::string( Grammar::OpenBracketToken ), m_logCallback );
         error = true;
-        return in;
+        return ddl_nullptr;
     }
     in = lookForNextToken( in, end );
     
@@ -386,6 +391,7 @@ char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
         in = lookForNextToken( in, end );
         if( *in != '}' ) {
             logInvalidTokenError( in, std::string( Grammar::CloseBracketToken ), m_logCallback );
+            return ddl_nullptr;
         } else {
             //in++;
         }
