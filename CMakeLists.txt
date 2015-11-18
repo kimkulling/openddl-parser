@@ -8,6 +8,7 @@ SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
 
 option( DDL_CHECK_CODE_COVERAGE "Set to ON to track code coverage in unit tests ( only supported for gcc ). " OFF )
 option( DDL_USE_CPP11           "Set to ON to use C++11 features ( always on on windows )." ON )
+option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts" OFF )
 
 if ( DDL_USE_CPP11 )
     MESSAGE( "huhu")
@@ -30,6 +31,9 @@ endif()
 add_definitions( -DOPENDDLPARSER_BUILD )
 add_definitions( -D_VARIADIC_MAX=10 )
 add_definitions( -DGTEST_HAS_PTHREAD=0 )
+if ( DDL_DEBUG_OUTPUT )
+    add_definitions( -DDDL_DEBUG_HEADER_NAME)
+endif( DDL_DEBUG_OUTPUT )
 
 INCLUDE_DIRECTORIES(
     ./

@@ -72,4 +72,34 @@ TEST_F( OpenDDLDefectsTest, assimp_issues_665 ) {
     EXPECT_TRUE( ok );
 }
 
+TEST_F( OpenDDLDefectsTest, no_whitespace ) {
+    char token [] = {
+        "GeometryNode$node2"
+        "{"
+        "Name{string{\"Plane\"}}"
+        "ObjectRef{ref{$geometry1}}"
+        "MaterialRef(index=0){ref{$material1}}"
+        "Transform"
+        "{"
+        "float[16]"
+        "{"
+        "{1.0,0.0,0.0,0.0,"
+        "0.0,1.0,0.0,0.0,"
+        "0.0,0.0,1.0,0.0,"
+        "0.0,0.0,0.0,1.0}"
+        "}"
+        "}"
+        "}"
+    };
+
+    OpenDDLParser myParser;
+    myParser.setBuffer( token, strlen( token ) );
+    const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
+    DDLNode *root = myParser.getRoot();
+    DDLNode::DllNodeList childs = root->getChildNodeList();
+    EXPECT_STREQ( "node2", childs[0]->getName().c_str());
+    EXPECT_STREQ( "GeometryNode", childs[0]->getType().c_str());
+}
+
 END_ODDLPARSER_NS

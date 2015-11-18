@@ -82,14 +82,14 @@ int main( int argc, char *argv[] ) {
     }
 
     std::cout << "file to import: " << filename << std::endl;
-    
+
     if(ddl_nullptr == filename ) {
         std::cerr << "Invalid filename." << std::endl;
         return Error;
     }
 
     FILE *fileStream = fopen( filename, "rb+" );
-    if(ddl_nullptr == filename ) {
+    if(ddl_nullptr == fileStream ) {
         std::cerr << "Cannot open file " << filename << std::endl;
         return Error;
     }
@@ -97,9 +97,9 @@ int main( int argc, char *argv[] ) {
     // obtain file size:
     fseek( fileStream, 0, SEEK_END );
     const size_t size( ftell( fileStream ) );
-    
+
     ::rewind( fileStream );
-    
+
     if( size > 0 ) {
         char *buffer = new char[ size ];
         const size_t readSize( fread( buffer, sizeof( char ), size, fileStream ) );

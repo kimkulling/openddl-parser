@@ -33,7 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #  include <windows.h>
 #endif // _WIN32
 
-#define DEBUG_HEADER_NAME 
 
 BEGIN_ODDLPARSER_NS
 
@@ -75,11 +74,14 @@ const char *getTypeToken( Value::ValueType  type ) {
 static void logInvalidTokenError( char *in, const std::string &exp, OpenDDLParser::logCallback callback ) {
     std::stringstream stream;
     stream << "Invalid token " << *in << ", " << exp << " expected." << std::endl;
+    std::string full(in);
+    std::string part(full.substr(0,50));
+    stream << part;
     callback( ddl_error_msg, stream.str() );
 }
 
 static bool isIntegerType( Value::ValueType integerType ) {
-    if( integerType != Value::ddl_int8 && integerType != Value::ddl_int16 && 
+    if( integerType != Value::ddl_int8 && integerType != Value::ddl_int16 &&
             integerType != Value::ddl_int32 && integerType != Value::ddl_int64 ) {
         return false;
     }
@@ -193,7 +195,7 @@ bool OpenDDLParser::parse() {
     if( m_buffer.empty() ) {
         return false;
     }
-    
+
     normalizeBuffer( m_buffer );
 
     m_context = new Context;
@@ -206,6 +208,8 @@ bool OpenDDLParser::parse() {
     size_t pos( current - &m_buffer[ 0 ] );
     while( pos < m_buffer.size() ) {
         current = parseNextNode( current, end );
+        if(current==ddl_nullptr)
+            return false;
         pos = current - &m_buffer[ 0 ];
     }
     return true;
@@ -215,7 +219,7 @@ bool OpenDDLParser::exportContext( Context *ctx, const std::string &filename ) {
     if( ddl_nullptr == ctx ) {
         return false;
     }
-    
+
     OpenDDLExport myExporter;
     return myExporter.exportContext( ctx, filename );
 
@@ -244,7 +248,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
     Identifier *id( ddl_nullptr );
     in = OpenDDLParser::parseIdentifier( in, end, &id );
 
-#ifdef DEBUG_HEADER_NAME    
+#ifdef DEBUG_HEADER_NAME
     dumpId( id );
 #endif // DEBUG_HEADER_NAME
 
@@ -260,9 +264,9 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
 
                 if( *in != Grammar::CommaSeparator[ 0 ] && *in != Grammar::ClosePropertyToken[ 0 ] ) {
                     logInvalidTokenError( in, Grammar::ClosePropertyToken, m_logCallback );
-                    return in;
+                    return ddl_nullptr;
                 }
-                
+
                 if( ddl_nullptr != prop && *in != Grammar::CommaSeparator[ 0 ] ) {
                     if( ddl_nullptr == first ) {
                         first = prop;
@@ -311,16 +315,19 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         // loop over all children ( data and nodes )
         do {
             in = parseStructureBody( in, end, error );
+            if(in == ddl_nullptr){
+                return ddl_nullptr;
+            }
         } while ( *in != '}' );
         in++;
     } else {
         in++;
         logInvalidTokenError( in, std::string( Grammar::OpenBracketToken ), m_logCallback );
         error = true;
-        return in;
+        return ddl_nullptr;
     }
     in = lookForNextToken( in, end );
-    
+
     // pop node from stack after successful parsing
     if( !error ) {
         popNode();
@@ -386,6 +393,7 @@ char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
         in = lookForNextToken( in, end );
         if( *in != '}' ) {
             logInvalidTokenError( in, std::string( Grammar::CloseBracketToken ), m_logCallback );
+            return ddl_nullptr;
         } else {
             //in++;
         }
@@ -420,7 +428,7 @@ DDLNode *OpenDDLParser::top() {
     if( m_stack.empty() ) {
         return ddl_nullptr;
     }
-    
+
     DDLNode *top( m_stack.back() );
     return top;
 }
@@ -479,7 +487,7 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
     if( *in == '%' ) {
         ntype = LocalName;
     }
-
+    in++;
     Name *currentName( ddl_nullptr );
     Identifier *id( ddl_nullptr );
     in = parseIdentifier( in, end, &id );
@@ -489,7 +497,7 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
             *name = currentName;
         }
     }
-    
+
     return in;
 }
 
@@ -501,7 +509,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
 
     // ignore blanks
     in = lookForNextToken( in, end );
-    
+
     // staring with a number is forbidden
     if( isNumeric<const char>( *in ) ) {
         return in;
@@ -510,11 +518,11 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
     // get size of id
     size_t idLen( 0 );
     char *start( in );
-    while( !isSeparator( *in ) && !isNewLine( *in ) && ( in != end ) && *in != Grammar::OpenPropertyToken[ 0 ] && *in != Grammar::ClosePropertyToken[ 0 ] ) {
+    while( !isSeparator( *in ) && !isNewLine( *in ) && ( in != end ) && *in != Grammar::OpenPropertyToken[ 0 ] && *in != Grammar::ClosePropertyToken[ 0 ] && *in != '$' ) {
         ++in;
         ++idLen;
     }
-    
+
     const size_t len( idLen );
     Identifier *newId = new Identifier( start, len );
     *id = newId;
@@ -660,7 +668,7 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
             default:
                 break;
         }
-    } 
+    }
 
     return in;
 }
@@ -813,7 +821,7 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
                     ( *prop )->m_ref = ref;
                 }
             }
-        } 
+        }
     }
 
     return in;

@@ -53,7 +53,7 @@ public:
     void addLog( const std::string &msg ) {
         m_logs.push_back( msg );
     }
-    
+
     void clearTestLog() {
         m_logs.clear();
     }
@@ -132,7 +132,7 @@ TEST_F( OpenDDLParserTest, createTest ) {
     EXPECT_TRUE( success );
 }
 
-TEST_F( OpenDDLParserTest, setLogCallbackTest ) {    
+TEST_F( OpenDDLParserTest, setLogCallbackTest ) {
     OpenDDLParser myParser;
 
     myParser.setLogCallback( OpenDDLParserTest::testLogCallback );
@@ -229,7 +229,7 @@ TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
 
     res = strncmp( id->m_text.m_buffer, name1, len1 );
     EXPECT_EQ( 0, res );
-    
+
     size_t len2( 0 );
     char name2[] = " testname ", *end2( findEnd( name2, len2 ) );
     in = OpenDDLParser::parseIdentifier( name2, end2, &id );
@@ -282,7 +282,7 @@ TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeTest ) {
     EXPECT_EQ( Value::ddl_none, type );
     EXPECT_EQ( 0, len );
 }
- 
+
 TEST_F( OpenDDLParserTest, parsePrimitiveDataTypeWithArrayTest ) {
     size_t len1( 0 );
     char token[] = "float[3]", *end( findEnd( token, len1 ) );
@@ -308,7 +308,7 @@ TEST_F( OpenDDLParserTest , parsePrimitiveArrayWithSpacesTest ) {
 
 TEST_F( OpenDDLParserTest, parsePrimitiveArrayHexTest ) {
     size_t len( 0 );
-    char token[] = 
+    char token[] =
         "{0x01,0x02,0x03}\n";
     char *end( findEnd( token, len ) );
     Value *data( ddl_nullptr );
@@ -344,13 +344,13 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     name = names[ 0 ];
     EXPECT_FALSE( ddl_nullptr == name );
     EXPECT_EQ( GlobalName, name->m_type );
-    res = strncmp( name->m_id->m_text.m_buffer, "$name1", strlen( "$name1" ) );
+    res = strncmp( name->m_id->m_text.m_buffer, "name1", strlen( "name1" ) );
     EXPECT_EQ( 0, res );
 
     name = names[ 1 ];
     EXPECT_FALSE( ddl_nullptr == name );
     EXPECT_EQ( LocalName, name->m_type );
-    res = strncmp( name->m_id->m_text.m_buffer, "%name2", strlen( "%name2" ) );
+    res = strncmp( name->m_id->m_text.m_buffer, "name2", strlen( "name2" ) );
     EXPECT_EQ( 0, res );
 }
 
@@ -375,13 +375,13 @@ TEST_F( OpenDDLParserTest, copyReferenceTest ) {
     name = ref->m_referencedName[ 0 ];
     EXPECT_FALSE( ddl_nullptr == name );
     EXPECT_EQ( GlobalName, name->m_type );
-    res = strncmp( name->m_id->m_text.m_buffer, "$name1", strlen( "$name1" ) );
+    res = strncmp( name->m_id->m_text.m_buffer, "name1", strlen( "name1" ) );
     EXPECT_EQ( 0, res );
 
     name = ref->m_referencedName[ 1 ];
     EXPECT_FALSE( ddl_nullptr == name );
     EXPECT_EQ( LocalName, name->m_type );
-    res = strncmp( name->m_id->m_text.m_buffer, "%name2", strlen( "%name2" ) );
+    res = strncmp( name->m_id->m_text.m_buffer, "name2", strlen( "name2" ) );
     EXPECT_EQ( 0, res );
 }
 
@@ -490,7 +490,7 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     in = OpenDDLParser::parseHexaLiteral( token2, end, &data );
     ASSERT_FALSE( ddl_nullptr == data );
     v = data->getUnsignedInt64();
-    
+
     static const unsigned int ExpValue = 255;
     EXPECT_EQ( ExpValue, v );
     registerValueForDeletion( data );
@@ -515,8 +515,8 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
     ASSERT_FALSE( ddl_nullptr == prop );
     ASSERT_FALSE( ddl_nullptr == prop->m_key );
     int res = strncmp( "lod", prop->m_key->m_text.m_buffer, prop->m_key->m_text.m_len );
-    EXPECT_EQ( 0, res ); 
-        
+    EXPECT_EQ( 0, res );
+
     char prop2[] = "key = \"angle\"", *end2( findEnd( prop2, len ) );
     in = OpenDDLParser::parseProperty( prop2, end2, &prop );
     ASSERT_FALSE( ddl_nullptr == prop );
@@ -558,7 +558,7 @@ TEST_F( OpenDDLParserTest, getVersionTest ) {
 TEST_F( OpenDDLParserTest, parseDataListTest ) {
     Value *data( ddl_nullptr );
     size_t len( 0 );
-    
+
     char *in( ddl_nullptr ), *end( ddl_nullptr );
     char token1[] = "{1,2,3,4}";
     end = findEnd( token1, len );
@@ -601,7 +601,7 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
 }
 
 TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
-    char token[] = 
+    char token[] =
         "float[ 16 ]\n"
         "{\n"
         "    {0x3F800000, 0x00000000, 0x00000000, 0x00000000,\n"
