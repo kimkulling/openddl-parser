@@ -208,8 +208,9 @@ bool OpenDDLParser::parse() {
     size_t pos( current - &m_buffer[ 0 ] );
     while( pos < m_buffer.size() ) {
         current = parseNextNode( current, end );
-        if(current==ddl_nullptr)
+        if(current==ddl_nullptr) {
             return false;
+        }
         pos = current - &m_buffer[ 0 ];
     }
     return true;
