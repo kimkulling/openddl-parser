@@ -487,7 +487,7 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
     if( *in == '%' ) {
         ntype = LocalName;
     }
-
+    in++;
     Name *currentName( ddl_nullptr );
     Identifier *id( ddl_nullptr );
     in = parseIdentifier( in, end, &id );
@@ -518,7 +518,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
     // get size of id
     size_t idLen( 0 );
     char *start( in );
-    while( !isSeparator( *in ) && !isNewLine( *in ) && ( in != end ) && *in != Grammar::OpenPropertyToken[ 0 ] && *in != Grammar::ClosePropertyToken[ 0 ] ) {
+    while( !isSeparator( *in ) && !isNewLine( *in ) && ( in != end ) && *in != Grammar::OpenPropertyToken[ 0 ] && *in != Grammar::ClosePropertyToken[ 0 ] && *in != '$' ) {
         ++in;
         ++idLen;
     }
