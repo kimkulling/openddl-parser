@@ -74,11 +74,14 @@ const char *getTypeToken( Value::ValueType  type ) {
 static void logInvalidTokenError( char *in, const std::string &exp, OpenDDLParser::logCallback callback ) {
     std::stringstream stream;
     stream << "Invalid token " << *in << ", " << exp << " expected." << std::endl;
+    std::string full(in);
+    std::string part(full.substr(0,50));
+    stream << part;
     callback( ddl_error_msg, stream.str() );
 }
 
 static bool isIntegerType( Value::ValueType integerType ) {
-    if( integerType != Value::ddl_int8 && integerType != Value::ddl_int16 && 
+    if( integerType != Value::ddl_int8 && integerType != Value::ddl_int16 &&
             integerType != Value::ddl_int32 && integerType != Value::ddl_int64 ) {
         return false;
     }
@@ -192,7 +195,7 @@ bool OpenDDLParser::parse() {
     if( m_buffer.empty() ) {
         return false;
     }
-    
+
     normalizeBuffer( m_buffer );
 
     m_context = new Context;
@@ -216,7 +219,7 @@ bool OpenDDLParser::exportContext( Context *ctx, const std::string &filename ) {
     if( ddl_nullptr == ctx ) {
         return false;
     }
-    
+
     OpenDDLExport myExporter;
     return myExporter.exportContext( ctx, filename );
 
@@ -245,7 +248,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
     Identifier *id( ddl_nullptr );
     in = OpenDDLParser::parseIdentifier( in, end, &id );
 
-#ifdef DEBUG_HEADER_NAME    
+#ifdef DEBUG_HEADER_NAME
     dumpId( id );
 #endif // DEBUG_HEADER_NAME
 
@@ -263,7 +266,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
                     logInvalidTokenError( in, Grammar::ClosePropertyToken, m_logCallback );
                     return ddl_nullptr;
                 }
-                
+
                 if( ddl_nullptr != prop && *in != Grammar::CommaSeparator[ 0 ] ) {
                     if( ddl_nullptr == first ) {
                         first = prop;
@@ -324,7 +327,7 @@ char *OpenDDLParser::parseStructure( char *in, char *end ) {
         return ddl_nullptr;
     }
     in = lookForNextToken( in, end );
-    
+
     // pop node from stack after successful parsing
     if( !error ) {
         popNode();
@@ -425,7 +428,7 @@ DDLNode *OpenDDLParser::top() {
     if( m_stack.empty() ) {
         return ddl_nullptr;
     }
-    
+
     DDLNode *top( m_stack.back() );
     return top;
 }
@@ -494,7 +497,7 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
             *name = currentName;
         }
     }
-    
+
     return in;
 }
 
@@ -506,7 +509,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
 
     // ignore blanks
     in = lookForNextToken( in, end );
-    
+
     // staring with a number is forbidden
     if( isNumeric<const char>( *in ) ) {
         return in;
@@ -519,7 +522,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
         ++in;
         ++idLen;
     }
-    
+
     const size_t len( idLen );
     Identifier *newId = new Identifier( start, len );
     *id = newId;
@@ -665,7 +668,7 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
             default:
                 break;
         }
-    } 
+    }
 
     return in;
 }
@@ -818,7 +821,7 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
                     ( *prop )->m_ref = ref;
                 }
             }
-        } 
+        }
     }
 
     return in;
