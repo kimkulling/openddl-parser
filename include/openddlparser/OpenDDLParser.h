@@ -128,11 +128,11 @@ public:
     ///	@brief  Returns the buffer pointer.
     /// @return The buffer pointer.
     const char *getBuffer() const;
-    
+
     /// @brief  Returns the size of the buffer.
     /// @return The buffer size.
     size_t getBufferSize() const;
-    
+
     ///	@brief  Clears all parser data, including buffer and active context.
     void clear();
 
