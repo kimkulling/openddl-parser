@@ -109,12 +109,12 @@ public:
         ddl_unsigned_int16,     ///< Unsigned integer type, 16 bytes
         ddl_unsigned_int32,     ///< Unsigned integer type, 32 bytes
         ddl_unsigned_int64,     ///< Unsigned integer type, 64 bytes
-        ddl_half,               
-        ddl_float,
-        ddl_double,
-        ddl_string,
-        ddl_ref,
-        ddl_types_max
+        ddl_half,               ///< Half data type. 
+        ddl_float,              ///< float data type
+        ddl_double,             ///< Double data type.
+        ddl_string,             ///< String datatype.
+        ddl_ref,                ///< Refrence, used to define references to other data definitions.
+        ddl_types_max           ///< Upper limit.
     };
 
     Value( ValueType type );
