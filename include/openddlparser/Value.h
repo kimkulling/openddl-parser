@@ -112,8 +112,8 @@ public:
         ddl_half,               ///< Half data type. 
         ddl_float,              ///< float data type
         ddl_double,             ///< Double data type.
-        ddl_string,             ///< String datatype.
-        ddl_ref,                ///< Refrence, used to define references to other data definitions.
+        ddl_string,             ///< String data type.
+        ddl_ref,                ///< Reference, used to define references to other data definitions.
         ddl_types_max           ///< Upper limit.
     };
 
