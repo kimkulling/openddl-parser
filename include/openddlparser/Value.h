@@ -117,34 +117,118 @@ public:
         ddl_types_max           ///< Upper limit.
     };
 
+    ///	@brief  The class constructor.
+    /// @param  type        [in] The value type.
     Value( ValueType type );
+
+    ///	@brief  The class destructor.
     ~Value();
+    
+    ///	@brief  Assigns a boolean to the value.
+    /// @param  value       [in9 The value.
     void setBool( bool value );
+
+    ///	@brief  Returns the boolean value.
+    /// @return The boolean value.
     bool getBool();
+
+    ///	@brief  Assigns a int8 to the value.
+    /// @param  value       [in] The value.
     void setInt8( int8 value );
+
+    ///	@brief  Returns the int8 value.
+    /// @return The int8 value.
     int8 getInt8();
+
+    ///	@brief  Assigns a int16 to the value.
+    /// @param  value       [in] The value.
     void setInt16( int16 value );
+
+    ///	@brief  Returns the int16 value.
+    /// @return The int16 value.
     int16 getInt16();
+
+    ///	@brief  Assigns a int32 to the value.
+    /// @param  value       [in] The value.
     void setInt32( int32 value );
+
+    ///	@brief  Returns the int16 value.
+    /// @return The int32 value.
     int32 getInt32();
+
+    ///	@brief  Assigns a int64 to the value.
+    /// @param  value       [in] The value.
     void setInt64( int64 value );
+
+    ///	@brief  Returns the int16 value.
+    /// @return The int64 value.
     int64 getInt64();
+
+    ///	@brief  Assigns a unsigned int8 to the value.
+    /// @param  value       [in] The value.
     void setUnsignedInt8( uint8 value );
+
+    ///	@brief  Returns the unsigned int8 value.
+    /// @return The unsigned int8 value.
     uint8 getUnsignedInt8() const;
+
+    ///	@brief  Assigns a unsigned int16 to the value.
+    /// @param  value       [in] The value.
     void setUnsignedInt16( uint16 value );
+
+    ///	@brief  Returns the unsigned int16 value.
+    /// @return The unsigned int16 value.
     uint16 getUnsignedInt16() const;
+
+    ///	@brief  Assigns a unsigned int32 to the value.
+    /// @param  value       [in] The value.
     void setUnsignedInt32( uint32 value );
+
+    ///	@brief  Returns the unsigned int8 value.
+    /// @return The unsigned int32 value.
     uint32 getUnsignedInt32() const;
+
+    ///	@brief  Assigns a unsigned int64 to the value.
+    /// @param  value       [in] The value.
     void setUnsignedInt64( uint64 value );
+
+    ///	@brief  Returns the unsigned int64 value.
+    /// @return The unsigned int64 value.
     uint64 getUnsignedInt64() const;
+
+    ///	@brief  Assigns a float to the value.
+    /// @param  value       [in] The value.
     void setFloat( float value );
+
+    ///	@brief  Returns the float value.
+    /// @return The float value.
     float getFloat() const;
+
+    ///	@brief  Assigns a double to the value.
+    /// @param  value       [in] The value.
     void setDouble( double value );
+
+    ///	@brief  Returns the double value.
+    /// @return The double value.
     double getDouble() const;
+
+    ///	@brief  Assigns a std::string to the value.
+    /// @param  value       [in] The value.
     void setString( const std::string &str );
+
+    ///	@brief  Returns the std::string value.
+    /// @return The std::string value.
     const char *getString() const;
+    
+    ///	@brief  Dumps the value.
     void dump();
+
+    ///	@brief  Assigns the next value.
+    ///	@param  next        [n] The next value.
     void setNext( Value *next );
+
+    ///	@brief  Returns the next value.
+    /// @return The next value.s
     Value *getNext() const;
 
     ValueType m_type;
