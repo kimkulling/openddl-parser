@@ -150,6 +150,7 @@ DataArrayList::DataArrayList()
 DataArrayList::~DataArrayList() {
     // empty
 }
+
 size_t DataArrayList::size() {
     size_t result=1;
     DataArrayList *n=m_next;
@@ -159,6 +160,7 @@ size_t DataArrayList::size() {
     }
     return result;
 }
+
 Context::Context()
 : m_root( ddl_nullptr ) {
     // empty
