@@ -31,15 +31,15 @@ BEGIN_ODDLPARSER_NS
 
 class OpenDDLExportMock : public OpenDDLExport {
 public:
-    OpenDDLExportMock() 
+    OpenDDLExportMock()
     : OpenDDLExport() {
         // empty
     }
-    
+
     virtual ~OpenDDLExportMock() {
         // empty
     }
-    
+
     virtual bool writeNodeHeaderTester( DDLNode *node, std::string &statement ) {
         return writeNodeHeader( node, statement );
     }
@@ -81,7 +81,7 @@ protected:
             DDLNode *node( DDLNode::create( "test", "child" ) );
             node->attachParent( root );
         }
-        
+
         return root;
     }
 
@@ -89,7 +89,7 @@ protected:
         if (0 == numProps) {
             return ddl_nullptr;
         }
-    
+
         Property *prop( ddl_nullptr ), *first( ddl_nullptr ), *prev( ddl_nullptr );
         for ( size_t i = 0; i < numProps; i++) {
             static const size_t Size = 256;
@@ -127,7 +127,7 @@ TEST_F( OpenDDLExportTest, createTest ) {
 
 TEST_F( OpenDDLExportTest, handleNodeTest ) {
     OpenDDLExport myExport;
-     
+
     bool success( true );
     success = myExport.handleNode( m_root );
     EXPECT_TRUE( success );
@@ -297,7 +297,7 @@ TEST_F( OpenDDLExportTest, writeValueArrayTest ) {
     char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, len );
     ASSERT_EQ( Value::ddl_float, type );
     ASSERT_EQ( 3, len );
-    in = OpenDDLParser::parseDataArrayList( in, end, &dataArrayList );
+    in = OpenDDLParser::parseDataArrayList( in, end, type, &dataArrayList );
     ASSERT_FALSE( ddl_nullptr == dataArrayList );
 
     ok = myExporter.writeValueArrayTester( dataArrayList, statement );
