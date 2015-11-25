@@ -541,7 +541,7 @@ TEST_F( OpenDDLParserTest, parseDataArrayListTest ) {
     char *end( findEnd( token, len ) );
     DataArrayList *dtArrayList( ddl_nullptr );
 
-    char *in = OpenDDLParser::parseDataArrayList( token, end, &dtArrayList );
+    char *in = OpenDDLParser::parseDataArrayList( token, end,Value::ddl_none, &dtArrayList );
     ASSERT_FALSE( ddl_nullptr == dtArrayList );
     const size_t numItems( countItems( dtArrayList->m_dataList ) );
     EXPECT_NE( token, in );
@@ -618,7 +618,7 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
     ASSERT_EQ( Value::ddl_float, type );
     ASSERT_EQ( 16, len );
 
-    in = OpenDDLParser::parseDataArrayList( in, end, &dataArrayList );
+    in = OpenDDLParser::parseDataArrayList( in, end, type, &dataArrayList );
     ASSERT_FALSE( ddl_nullptr == dataArrayList );
     ASSERT_FALSE( ddl_nullptr == dataArrayList->m_dataList );
     EXPECT_EQ( 16, dataArrayList->m_numItems );
@@ -656,7 +656,7 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithMultibleArrayTest ) {
     ASSERT_EQ( Value::ddl_float, type );
     ASSERT_EQ( 3, len );
 
-    in = OpenDDLParser::parseDataArrayList( in, end, &dataArrayList );
+    in = OpenDDLParser::parseDataArrayList( in, end, type, &dataArrayList );
     ASSERT_FALSE( ddl_nullptr == dataArrayList );
 
     size_t numLists( 0 );

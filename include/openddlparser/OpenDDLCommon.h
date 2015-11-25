@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #ifndef _WIN32
 #  include <inttypes.h>
-#endif 
+#endif
 
 #ifdef _MSC_VER
 #   define TAG_DLL_EXPORT __declspec(dllexport)
@@ -92,7 +92,7 @@ typedef uint64_impl       uint64;  ///< Unsigned integer, 8 byte
 
 ///	@brief  Stores a text.
 ///
-/// A text is stored in a simple character buffer. Texts buffer can be 
+/// A text is stored in a simple character buffer. Texts buffer can be
 /// greater than the number of stored characters in them.
 struct DLL_ODDLPARSER_EXPORT Text {
     size_t m_capacity;  ///< The capacity of the text.
@@ -142,7 +142,7 @@ struct DLL_ODDLPARSER_EXPORT Identifier {
 
     ///	@brief  The destructor.
     ~Identifier();
-    
+
     ///	@brief  The compare operator.
     bool operator == ( const Identifier &rhs ) const;
 
@@ -182,7 +182,7 @@ struct DLL_ODDLPARSER_EXPORT Reference {
 
     ///	@brief  The default constructor.
     Reference();
-     
+
     ///	@brief  The constructor with an array of ref names.
     /// @param  numrefs     [in] The number of ref names.
     /// @param  names       [in] The ref names.
@@ -230,8 +230,11 @@ struct DLL_ODDLPARSER_EXPORT DataArrayList {
     ///	@brief  The destructor.
     ~DataArrayList();
 
+    /// @brief  Gets the length of the array
+    size_t size();
+
 private:
-    DataArrayList( const DataArrayList & ); 
+    DataArrayList( const DataArrayList & );
     DataArrayList &operator = ( const DataArrayList & );
 };
 

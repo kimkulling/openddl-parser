@@ -85,6 +85,14 @@ static bool isIntegerType( Value::ValueType integerType ) {
             integerType != Value::ddl_int32 && integerType != Value::ddl_int64 ) {
         return false;
     }
+    return true;
+}
+
+static bool isUnsignedIntegerType( Value::ValueType integerType ) {
+    if( integerType != Value::ddl_unsigned_int8 && integerType != Value::ddl_unsigned_int16 &&
+            integerType != Value::ddl_unsigned_int32 && integerType != Value::ddl_unsigned_int64 ) {
+        return false;
+    }
 
     return true;
 }
@@ -383,7 +391,7 @@ char *OpenDDLParser::parseStructureBody( char *in, char *end, bool &error ) {
                 setNodeValues( top(), values );
                 setNodeReferences( top(), refs );
             } else if( arrayLen > 1 ) {
-                in = parseDataArrayList( in, end, &dtArrayList );
+                in = parseDataArrayList( in, end, type, &dtArrayList );
                 setNodeDataArrayList( top(), dtArrayList );
             } else {
                 std::cerr << "0 for array is invalid." << std::endl;
@@ -640,7 +648,7 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
         return in;
     }
 
-    if( !isIntegerType( integerType ) ) {
+    if( !(isIntegerType( integerType ) || isUnsignedIntegerType(integerType)) ) {
         return in;
     }
 
@@ -651,7 +659,13 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
     }
 
     if( isNumeric( *start ) ) {
-        const int value( atoi( start ) );
+#ifdef OPENDDL_NO_USE_CPP11
+        const int64 value( atol( start ) ); // maybe not really 64bit as atoll is but exists without c++11
+        const uint64 uvalue( strtoul( start,ddl_nullptr,10 ) );
+#else
+        const int64 value( atoll( start ) );
+        const uint64 uvalue( strtoull( start,ddl_nullptr,10 ) );
+#endif
         *integer = ValueAllocator::allocPrimData( integerType );
         switch( integerType ) {
             case Value::ddl_int8:
@@ -666,6 +680,18 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
             case Value::ddl_int64:
                     ( *integer )->setInt64( ( int64 ) value );
                     break;
+            case Value::ddl_unsigned_int8:
+                    ( *integer )->setUnsignedInt8( (uint8) uvalue );
+                    break;
+            case Value::ddl_unsigned_int16:
+                    ( *integer )->setUnsignedInt16( ( uint16 ) uvalue );
+                    break;
+            case Value::ddl_unsigned_int32:
+                    ( *integer )->setUnsignedInt32( ( uint32 ) uvalue );
+                    break;
+            case Value::ddl_unsigned_int64:
+                    ( *integer )->setUnsignedInt64( ( uint64 ) uvalue );
+                    break;
             default:
                 break;
         }
@@ -674,7 +700,7 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
     return in;
 }
 
-char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, Value **floating ) {
+char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, Value **floating, Value::ValueType floatType) {
     *floating = ddl_nullptr;
     if( ddl_nullptr == in || in == end ) {
         return in;
@@ -699,9 +725,16 @@ char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, Value **floating
     }
 
     if( ok ) {
-        const float value( ( float ) atof( start ) );
-        *floating = ValueAllocator::allocPrimData( Value::ddl_float );
-        ( *floating )->setFloat( value );
+        if(floatType == Value::ddl_double)
+        {
+            const double value( atof( start ) );
+            *floating = ValueAllocator::allocPrimData( Value::ddl_double );
+            ( *floating )->setDouble( value );
+        } else {
+            const float value( ( float ) atof( start ) );
+            *floating = ValueAllocator::allocPrimData( Value::ddl_float );
+            ( *floating )->setFloat( value );
+        }
     }
 
     return in;
@@ -865,12 +898,27 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value::ValueType type, 
                     }
                 }
             } else {
-                if (Value::ddl_int32 == type) {
-                    in = parseIntegerLiteral( in, end, &current );
-                } else if (Value::ddl_float == type) {
-                    in = parseFloatingLiteral( in, end, &current );
-                } else if (Value::ddl_string == type) {
-                    in = parseStringLiteral( in, end, &current );
+                switch(type){
+                    case Value::ddl_int8:
+                    case Value::ddl_int16:
+                    case Value::ddl_int32:
+                    case Value::ddl_int64:
+                    case Value::ddl_unsigned_int8:
+                    case Value::ddl_unsigned_int16:
+                    case Value::ddl_unsigned_int32:
+                    case Value::ddl_unsigned_int64:
+                        in = parseIntegerLiteral( in, end, &current, type);
+                        break;
+                    case Value::ddl_half:
+                    case Value::ddl_float:
+                    case Value::ddl_double:
+                        in = parseFloatingLiteral( in, end, &current, type);
+                        break;
+                    case Value::ddl_string:
+                        in = parseStringLiteral( in, end, &current );
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -904,7 +952,7 @@ static DataArrayList *createDataArrayList( Value *currentValue, size_t numValues
     return dataList;
 
 }
-char *OpenDDLParser::parseDataArrayList( char *in, char *end, DataArrayList **dataList ) {
+char *OpenDDLParser::parseDataArrayList( char *in, char *end,Value::ValueType type, DataArrayList **dataList ) {
     *dataList = ddl_nullptr;
     if( ddl_nullptr == in || in == end ) {
         return in;
@@ -919,7 +967,7 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end, DataArrayList **da
         do {
             size_t numRefs( 0 ), numValues( 0 );
             currentValue = ddl_nullptr;
-            Value::ValueType type( Value::ddl_none );
+
             in = parseDataList( in, end, type, &currentValue, numValues, &refs, numRefs );
             if( ddl_nullptr != currentValue ) {
                 if( ddl_nullptr == prev ) {
