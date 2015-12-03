@@ -73,7 +73,7 @@ const char *getTypeToken( Value::ValueType  type ) {
 
 static void logInvalidTokenError( char *in, const std::string &exp, OpenDDLParser::logCallback callback ) {
     std::stringstream stream;
-    stream << "Invalid token " << *in << ", " << exp << " expected." << std::endl;
+    stream << "Invalid token \"" << *in << "\"" << " expected \"" << exp << "\"" << std::endl;
     std::string full(in);
     std::string part(full.substr(0,50));
     stream << part;
