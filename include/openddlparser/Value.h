@@ -231,7 +231,8 @@ public:
     /// @return The next value.s
     Value *getNext() const;
 
-    /// @brief  Gets the length of the array
+    /// @brief  Gets the length of the array.
+    /// @return The number of items in the array.
     size_t size();
 
     ValueType m_type;
