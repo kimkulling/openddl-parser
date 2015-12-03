@@ -42,8 +42,8 @@ class DLL_ODDLPARSER_EXPORT Value {
 
 public:
     ///	@brief  This class implements an iterator through a Value list.
-    ///	
-    /// When getting a new value you need to know how to iterate through it. The Value::Iterator 
+    ///
+    /// When getting a new value you need to know how to iterate through it. The Value::Iterator
     /// will help you here:
     ///	@code
     /// Value *val = node->getValue();
@@ -73,10 +73,10 @@ public:
         ///	@brief  Returns the next item and moves the iterator to it.
         ///	@return The next value, is ddl_nullptr in case of being the last item.
         Value *getNext();
-        
+
         ///	@brief  The post-increment operator.
         const Iterator operator++( int );
-        
+
         ///	@brief  The pre-increment operator.
         Iterator &operator++( );
 
@@ -109,7 +109,7 @@ public:
         ddl_unsigned_int16,     ///< Unsigned integer type, 16 bytes
         ddl_unsigned_int32,     ///< Unsigned integer type, 32 bytes
         ddl_unsigned_int64,     ///< Unsigned integer type, 64 bytes
-        ddl_half,               ///< Half data type. 
+        ddl_half,               ///< Half data type.
         ddl_float,              ///< float data type
         ddl_double,             ///< Double data type.
         ddl_string,             ///< String data type.
@@ -123,7 +123,7 @@ public:
 
     ///	@brief  The class destructor.
     ~Value();
-    
+
     ///	@brief  Assigns a boolean to the value.
     /// @param  value       [in9 The value.
     void setBool( bool value );
@@ -219,7 +219,7 @@ public:
     ///	@brief  Returns the std::string value.
     /// @return The std::string value.
     const char *getString() const;
-    
+
     ///	@brief  Dumps the value.
     void dump();
 
@@ -230,6 +230,9 @@ public:
     ///	@brief  Returns the next value.
     /// @return The next value.s
     Value *getNext() const;
+
+    /// @brief  Gets the length of the array
+    size_t size();
 
     ValueType m_type;
     size_t m_size;
