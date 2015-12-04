@@ -209,4 +209,18 @@ TEST_F( ValueTest, accessUInt64Test ) {
     ValueAllocator::releasePrimData( &data );
 }
 
+TEST_F(ValueTest, sizeTest) {
+    Value *data1 = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
+    size_t size( data1->size() );
+    EXPECT_EQ( 1, size );
+
+    Value *data2 = ValueAllocator::allocPrimData(Value::ddl_unsigned_int64);
+    data1->setNext( data2 );
+    size = data1->size();
+    EXPECT_EQ(2, size);
+
+    ValueAllocator::releasePrimData(&data2);
+    ValueAllocator::releasePrimData(&data1);
+}
+
 END_ODDLPARSER_NS

@@ -95,7 +95,7 @@ protected:
             static const size_t Size = 256;
             char buffer[ Size ];
             ::memset( buffer, 0, Size );
-            sprintf( buffer, "id.%zu", i );
+            sprintf( buffer, "id.%d", static_cast<int>(i) );
             Identifier *id = new Identifier( buffer, strlen( buffer ) );
             Value *v = ValueAllocator::allocPrimData( Value::ddl_int32 );
             v->setInt32( i );
