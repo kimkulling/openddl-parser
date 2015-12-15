@@ -102,4 +102,28 @@ TEST_F( OpenDDLDefectsTest, no_whitespace ) {
     EXPECT_STREQ( "GeometryNode", childs[0]->getType().c_str());
 }
 
+TEST_F( OpenDDLDefectsTest, strings_with_the_comment_syntax_in_them_breaks_the_parser ) {
+    char token[] = {
+        "Material $material1\n"
+        "{\n"
+        "    Name { string { \"defaultMat\" } }\n"
+        "\n"
+        "    Color( attrib = \"diffuse\" ) { float[ 3 ] {{0.6400000190734865, 0.6400000190734865, 0.6400000190734865}} }\n"
+        "    Color( attrib = \"specular\" ) { float[ 3 ] {{0.5, 0.5, 0.5}} }\n"
+        "    Param( attrib = \"specular_power\" ) { float { 50 } }\n"
+        "\n"
+        "    Texture( attrib = \"diffuse\" )\n"
+        "    {\n"
+        "        string { \"//f/kittylow.bmp\" }\n"
+        "    }\n"
+        "}\n"
+    };
+
+    OpenDDLParser myParser;
+    myParser.setBuffer( token, strlen( token ) );
+    const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
+
+}
+
 END_ODDLPARSER_NS

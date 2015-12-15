@@ -29,10 +29,15 @@ BEGIN_ODDLPARSER_NS
 template<class T>
 inline
 bool isComment( T *in, T *end ) {
-    if( *in == '/' ) {
-        if( in + 1 != end ) {
-            if( *( in + 1 ) == '/' ) {
-                return true;
+    if ( *in=='/' ) {
+        if ( in+1!=end ) {
+            if ( *( in+1 )=='/' ) {
+                char *drive( ( in+2 ) );
+                if ( isUpperCase( *drive )||isLowerCase( *drive )&&*( drive+1 )=='/' )  {
+                    return false;
+                } else {
+                    return true;
+                }
             }
         }
     }

@@ -49,6 +49,11 @@ TEST_F( OpenDDLParserUtilsTest, isCommentTest ) {
     end = findEnd( token3, len );
     result = isComment( token3, end );
     EXPECT_FALSE( result );
+
+    char token4[] = "//f/";
+    end = findEnd( token4, len );
+    result = isComment( token3, end );
+    EXPECT_FALSE( result );
 }
 
 TEST_F( OpenDDLParserUtilsTest, isUpperCaseTest ) {
