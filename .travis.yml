@@ -1,6 +1,6 @@
 install:
   - sudo apt-get install cmake
-  - sudo apt-get install doxygen
+#  - sudo apt-get install doxygen
 env:
   global:
     - TRAVIS_NO_EXPORT=YES
@@ -14,7 +14,7 @@ language: cpp
 compiler:
   - gcc
   - clang
-script: 
+script:
     - cmake -DDDL_CHECK_CODE_COVERAGE=$CHECK_CODE_COVERAGE -DDDL_USE_CPP11=$CHECK_USE_CPP11 -G "Unix Makefiles" ;
       make ;
       ls ;
