@@ -28,24 +28,6 @@ BEGIN_ODDLPARSER_NS
 
 template<class T>
 inline
-bool isComment( T *in, T *end ) {
-    if ( *in=='/' ) {
-        if ( in+1!=end ) {
-            if ( *( in+1 )=='/' ) {
-                char *drive( ( in+2 ) );
-                if ( isUpperCase<T>( *drive )||isLowerCase<T>( *drive )&&*( drive+1 )=='/' )  {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
-
-template<class T>
-inline
 bool isUpperCase( T in ) {
     return ( in >= 'A' && in <= 'Z' );
 }
@@ -103,7 +85,7 @@ template<class T>
 inline
 bool isNumeric( const T in ) {
     return ( in >= '0' && in <= '9' );
-    //return ( chartype_table[in] );
+	//return ( chartype_table[in] );
     /*if (in >= '0' &&  in <= '9' )
     return true;
 
@@ -254,4 +236,24 @@ int hex2Decimal( char in ) {
     return ErrorHex2Decimal;
 }
 
+template<class T>
+inline
+bool isComment( T *in, T *end ) {
+    if ( *in=='/' ) {
+        if ( in+1!=end ) {
+            if ( *( in+1 )=='/' ) {
+                char *drive( ( in+2 ) );
+                if ( isUpperCase<T>( *drive )||isLowerCase<T>( *drive )&&*( drive+1 )=='/' )  {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
 END_ODDLPARSER_NS
+
