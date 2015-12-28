@@ -106,6 +106,10 @@ struct DDLNodeIterator {
 
         return false;
     }
+
+private:
+    DDLNodeIterator() ddl_no_copy;
+    DDLNodeIterator &operator = ( const DDLNodeIterator & ) ddl_no_copy;
 };
 
 static void writeLineEnd( std::string &statement ) {
