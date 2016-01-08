@@ -243,8 +243,9 @@ char *OpenDDLParser::parseNextNode( char *in, char *end ) {
 #ifdef DEBUG_HEADER_NAME
 static void dumpId( Identifier *id ) {
     if( ddl_nullptr != id ) {
-        if ( ddl_nullptr != id->m_text.m_buffer ) { }
+        if ( ddl_nullptr != id->m_text.m_buffer ) {
             std::cout << id->m_text.m_buffer << std::endl;
+	}
     }
 }
 #endif
