@@ -626,6 +626,22 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
     EXPECT_NE('}', *in );
 }
 
+
+TEST_F( OpenDDLParserTest, parseDataArrayListWithRefsTest ) {
+    char token[] =
+        "Friends\n"
+        "{\n"
+        "    ref{ $alice }\n"
+        "}\n";
+    size_t len(0);
+    char *end = findEnd(token, len);
+    DataArrayList *dataArrayList( ddl_nullptr );
+    Reference *refs( ddl_nullptr);
+
+    Value::ValueType type;
+    char *in = OpenDDLParser::parsePrimitiveDataType(token, end, type, len);
+}
+
 static void validateDataArray( Value *value, size_t expectedNumItems  ) {
     std::cout << "validateDataArray" << std::endl;
     size_t countedItems( 0 );

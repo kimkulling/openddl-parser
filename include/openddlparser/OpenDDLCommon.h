@@ -227,7 +227,8 @@ private:
 ///	@brief  Stores a data array list.
 struct DLL_ODDLPARSER_EXPORT DataArrayList {
     size_t         m_numItems;  ///< The number of items in the list.
-    Value         *m_dataList;  ///< The data list ( ee Value ).
+    Value         *m_dataList;  ///< The data list ( a Value ).
+    Reference     *m_Refs;
     DataArrayList *m_next;      ///< The next data array list ( ddl_nullptr if last ).
 
     ///	@brief  The default constructor for initialization.

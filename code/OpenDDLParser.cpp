@@ -862,7 +862,8 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
     return in;
 }
 
-char *OpenDDLParser::parseDataList( char *in, char *end, Value::ValueType type, Value **data, size_t &numValues, Reference **refs, size_t &numRefs ) {
+char *OpenDDLParser::parseDataList( char *in, char *end, Value::ValueType type, Value **data, 
+                                    size_t &numValues, Reference **refs, size_t &numRefs ) {
     *data = ddl_nullptr;
     numValues = numRefs = 0;
     if( ddl_nullptr == in || in == end ) {
@@ -879,17 +880,13 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value::ValueType type, 
             if (Value::ddl_none == type) {
                 if (isInteger( in, end )) {
                     in = parseIntegerLiteral( in, end, &current );
-                }
-                else if (isFloat( in, end )) {
+                } else if (isFloat( in, end )) {
                     in = parseFloatingLiteral( in, end, &current );
-                }
-                else if (isStringLiteral( *in )) {
+                } else if (isStringLiteral( *in )) {
                     in = parseStringLiteral( in, end, &current );
-                }
-                else if (isHexLiteral( in, end )) {
+                } else if (isHexLiteral( in, end )) {
                     in = parseHexaLiteral( in, end, &current );
-                }
-                else {                          // reference data
+                } else {                          // reference data
                     std::vector<Name*> names;
                     in = parseReference( in, end, names );
                     if (!names.empty()) {
@@ -945,16 +942,17 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value::ValueType type, 
     return in;
 }
 
-static DataArrayList *createDataArrayList( Value *currentValue, size_t numValues ) {
+static DataArrayList *createDataArrayList( Value *currentValue, size_t numValues, Reference *refs ) {
     DataArrayList *dataList = new DataArrayList;
     dataList->m_dataList = currentValue;
     dataList->m_numItems = numValues;
+    dataList->m_Refs = refs;
 
     return dataList;
 
 }
-char *OpenDDLParser::parseDataArrayList( char *in, char *end,Value::ValueType type, DataArrayList **dataList ) {
-    *dataList = ddl_nullptr;
+char *OpenDDLParser::parseDataArrayList( char *in, char *end,Value::ValueType type, DataArrayList **dataArrayList ) {
+    *dataArrayList = ddl_nullptr;
     if( ddl_nullptr == in || in == end ) {
         return in;
     }
@@ -970,12 +968,12 @@ char *OpenDDLParser::parseDataArrayList( char *in, char *end,Value::ValueType ty
             currentValue = ddl_nullptr;
 
             in = parseDataList( in, end, type, &currentValue, numValues, &refs, numRefs );
-            if( ddl_nullptr != currentValue ) {
+            if( ddl_nullptr != currentValue || 0 != numRefs ) {
                 if( ddl_nullptr == prev ) {
-                    *dataList = createDataArrayList( currentValue, numValues );
-                    prev = *dataList;
+                    *dataArrayList = createDataArrayList( currentValue, numValues, refs );
+                    prev = *dataArrayList;
                 } else {
-                    currentDataList = createDataArrayList( currentValue, numValues );
+                    currentDataList = createDataArrayList( currentValue, numValues, refs );
                     if( ddl_nullptr != prev ) {
                         prev->m_next = currentDataList;
                         prev = currentDataList;
