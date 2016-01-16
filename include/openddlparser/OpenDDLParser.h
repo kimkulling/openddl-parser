@@ -63,9 +63,6 @@ inline
 T *getNextToken( T *in, T *end ) {
     T *tmp( in );
     in = lookForNextToken( in, end );
-    /*while( ( isSpace( *in ) || isNewLine( *in ) || ',' == *in ) && ( in != end ) ) {
-        in++;
-    }*/
     if( tmp == in ) {
         in++;
     }
