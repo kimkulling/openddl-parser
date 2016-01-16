@@ -220,6 +220,9 @@ public:
     /// @return The std::string value.
     const char *getString() const;
 
+    void setRef( Reference *ref );
+    Reference *getRef() const;
+
     ///	@brief  Dumps the value.
     void dump();
 

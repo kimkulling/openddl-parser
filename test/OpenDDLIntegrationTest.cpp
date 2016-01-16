@@ -112,9 +112,14 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
 
     DDLNode::DllNodeList childChilds = childs[ 0 ]->getChildNodeList();
     ASSERT_EQ( 3, childChilds.size() );
-    EXPECT_EQ( "Name", childChilds[ 0 ]->getType() );
-    EXPECT_EQ( "ObjectRef", childChilds[ 1 ]->getType() );
-    EXPECT_EQ( "MaterialRef", childChilds[ 2 ]->getType() );
+
+    DDLNode *currentNode( ddl_nullptr );
+    currentNode = childChilds[ 0 ];
+    EXPECT_EQ( "Name", currentNode->getType() );
+    currentNode = childChilds[ 1 ];
+    EXPECT_EQ( "ObjectRef", currentNode->getType() );
+    currentNode = childChilds[ 2 ];
+    EXPECT_EQ( "MaterialRef", currentNode->getType() );
 }
 
 TEST_F( OpenDDLIntegrationTest, parseTransformDataTest ) {
@@ -240,7 +245,8 @@ TEST_F( OpenDDLIntegrationTest, exportDataTest ) {
     result = theParser.parse();
     EXPECT_TRUE( result );
 
-    theParser.exportContext( theParser.getContext(), "" );
+    result = theParser.exportContext( theParser.getContext(), "" );
+    EXPECT_TRUE( result );
 }
 
 END_ODDLPARSER_NS

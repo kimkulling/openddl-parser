@@ -197,6 +197,8 @@ struct DLL_ODDLPARSER_EXPORT Reference {
     ///	@brief  The destructor.
     ~Reference();
 
+    size_t sizeInBytes();
+
 private:
     Reference( const Reference & ) ddl_no_copy;
     Reference &operator = ( const Reference & ) ddl_no_copy;
@@ -228,7 +230,6 @@ private:
 struct DLL_ODDLPARSER_EXPORT DataArrayList {
     size_t         m_numItems;  ///< The number of items in the list.
     Value         *m_dataList;  ///< The data list ( a Value ).
-    Reference     *m_Refs;
     DataArrayList *m_next;      ///< The next data array list ( ddl_nullptr if last ).
 
     ///	@brief  The default constructor for initialization.

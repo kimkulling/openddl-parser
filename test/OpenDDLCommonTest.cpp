@@ -126,4 +126,16 @@ TEST_F( OpenDDLCommonTest, CompareIdentifierTest ) {
     EXPECT_TRUE( equal );
 }
 
+TEST_F( OpenDDLCommonTest, sizeInBytesReferenceTest ) {
+    Identifier *id = new Identifier( "test", 4 );
+    Name *name = new Name( GlobalName, id );
+    Reference *ref1( new Reference( 1, &name ) );
+    size_t size( ref1->sizeInBytes() );
+    EXPECT_EQ( 4, size );
+
+    Reference *ref2( new Reference( 0, ddl_nullptr ) );
+    size = ref2->sizeInBytes();
+    EXPECT_EQ( 0, size );
+}
+
 END_ODDLPARSER_NS

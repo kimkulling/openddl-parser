@@ -251,9 +251,20 @@ void Value::setString( const std::string &str ) {
     ::memcpy( m_data, str.c_str(), str.size() );
     m_data[ str.size() ] = '\0';
 }
+
 const char *Value::getString() const {
     assert( ddl_string == m_type );
     return (const char*) m_data;
+}
+
+void Value::setRef( Reference *ref ) {
+    assert( ddl_ref == m_type );
+}
+
+Reference *Value::getRef() const {
+    assert( ddl_ref == m_type );
+
+    return ddl_nullptr;
 }
 
 void Value::dump() {
@@ -298,7 +309,7 @@ void Value::dump() {
         std::cout << getDouble() << std::endl;
         break;
     case ddl_string:
-        std::cout << "Not supported" << std::endl;
+        std::cout << getString() << std::endl;
         break;
     case ddl_ref:
         std::cout << "Not supported" << std::endl;

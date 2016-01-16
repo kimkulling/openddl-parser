@@ -110,10 +110,12 @@ Reference::Reference()
 Reference::Reference( size_t numrefs, Name **names )
 : m_numRefs( numrefs )
 , m_referencedName( ddl_nullptr ) {
-    m_referencedName = new Name *[ numrefs ];
-    for( size_t i = 0; i < numrefs; i++ ) {
-        Name *name = new Name( names[ i ]->m_type, names[ i ]->m_id );
-        m_referencedName[ i ] = name;
+    if ( numrefs > 0 ) {
+        m_referencedName = new Name *[ numrefs ];
+        for ( size_t i = 0; i < numrefs; i++ ) {
+            Name *name = new Name( names[ i ]->m_type, names[ i ]->m_id );
+            m_referencedName[ i ] = name;
+        }
     }
 }
 
@@ -123,6 +125,22 @@ Reference::~Reference() {
     }
     m_numRefs = 0;
     m_referencedName = ddl_nullptr;
+}
+
+size_t Reference::sizeInBytes() {
+    if ( 0 == m_numRefs ) {
+        return 0;
+    }
+
+    size_t size( 0 );
+    for ( size_t i = 0; i < m_numRefs; i++ ) {
+        Name *name( m_referencedName[ i ] );
+        if ( ddl_nullptr != name ) {
+            size += name->m_id->m_text.m_len;
+        }
+    }
+
+    return size;
 }
 
 Property::Property( Identifier *id )
