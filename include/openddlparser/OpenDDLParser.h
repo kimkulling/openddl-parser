@@ -172,8 +172,8 @@ public: // parser helpers
     static const char *getVersion();
 
 private:
-    OpenDDLParser( const OpenDDLParser & );
-    OpenDDLParser &operator = ( const OpenDDLParser & );
+    OpenDDLParser( const OpenDDLParser & ) ddl_no_copy;
+    OpenDDLParser &operator = ( const OpenDDLParser & ) ddl_no_copy;
 
 private:
     logCallback m_logCallback;
