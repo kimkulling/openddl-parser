@@ -259,6 +259,10 @@ const char *Value::getString() const {
 
 void Value::setRef( Reference *ref ) {
     assert( ddl_ref == m_type );
+
+    if ( ddl_nullptr == ref ) {
+
+    }
 }
 
 Reference *Value::getRef() const {
