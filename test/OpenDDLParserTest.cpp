@@ -222,19 +222,19 @@ TEST_F( OpenDDLParserTest, parseIdentifierTest ) {
     size_t len1( 0 );
     char name1[] = "testname", *end1( findEnd( name1, len1 ) );
 
-    Identifier *id( ddl_nullptr );
+    Text *id( ddl_nullptr );
     char *in = OpenDDLParser::parseIdentifier( name1, end1, &id );
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == id );
 
-    res = strncmp( id->m_text.m_buffer, name1, len1 );
+    res = strncmp( id->m_buffer, name1, len1 );
     EXPECT_EQ( 0, res );
 
     size_t len2( 0 );
     char name2[] = " testname ", *end2( findEnd( name2, len2 ) );
     in = OpenDDLParser::parseIdentifier( name2, end2, &id );
     EXPECT_TRUE( id != ddl_nullptr );
-    res = strncmp( id->m_text.m_buffer, name1, id->m_text.m_len );
+    res = strncmp( id->m_buffer, name1, id->m_len );
     EXPECT_EQ( 0, res );
 }
 
@@ -242,13 +242,13 @@ TEST_F( OpenDDLParserTest, parseIdentifierWithLineBreakTest ) {
     int res( 0 );
     size_t len1( 0 );
     char name_with_line_end[] = "testname\r\n", *end1( findEnd( name_with_line_end, len1 ) );
-    Identifier *id( ddl_nullptr );
+    Text *id( ddl_nullptr );
     char *in = OpenDDLParser::parseIdentifier( name_with_line_end, end1, &id );
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == id );
 
     char name[] = "testname";
-    res = strncmp( id->m_text.m_buffer, name, strlen( name ) );
+    res = strncmp( id->m_buffer, name, strlen( name ) );
     EXPECT_EQ( 0, res );
 }
 
@@ -344,13 +344,13 @@ TEST_F( OpenDDLParserTest, parseReferenceTest ) {
     name = names[ 0 ];
     EXPECT_FALSE( ddl_nullptr == name );
     EXPECT_EQ( GlobalName, name->m_type );
-    res = strncmp( name->m_id->m_text.m_buffer, "name1", strlen( "name1" ) );
+    res = strncmp( name->m_id->m_buffer, "name1", strlen( "name1" ) );
     EXPECT_EQ( 0, res );
 
     name = names[ 1 ];
     EXPECT_FALSE( ddl_nullptr == name );
     EXPECT_EQ( LocalName, name->m_type );
-    res = strncmp( name->m_id->m_text.m_buffer, "name2", strlen( "name2" ) );
+    res = strncmp( name->m_id->m_buffer, "name2", strlen( "name2" ) );
     EXPECT_EQ( 0, res );
 }
 
@@ -375,13 +375,13 @@ TEST_F( OpenDDLParserTest, copyReferenceTest ) {
     name = ref->m_referencedName[ 0 ];
     EXPECT_FALSE( ddl_nullptr == name );
     EXPECT_EQ( GlobalName, name->m_type );
-    res = strncmp( name->m_id->m_text.m_buffer, "name1", strlen( "name1" ) );
+    res = strncmp( name->m_id->m_buffer, "name1", strlen( "name1" ) );
     EXPECT_EQ( 0, res );
 
     name = ref->m_referencedName[ 1 ];
     EXPECT_FALSE( ddl_nullptr == name );
     EXPECT_EQ( LocalName, name->m_type );
-    res = strncmp( name->m_id->m_text.m_buffer, "name2", strlen( "name2" ) );
+    res = strncmp( name->m_id->m_buffer, "name2", strlen( "name2" ) );
     EXPECT_EQ( 0, res );
 }
 
@@ -514,14 +514,14 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == prop );
     ASSERT_FALSE( ddl_nullptr == prop->m_key );
-    int res = strncmp( "lod", prop->m_key->m_text.m_buffer, prop->m_key->m_text.m_len );
+    int res = strncmp( "lod", prop->m_key->m_buffer, prop->m_key->m_len );
     EXPECT_EQ( 0, res );
 
     char prop2[] = "key = \"angle\"", *end2( findEnd( prop2, len ) );
     in = OpenDDLParser::parseProperty( prop2, end2, &prop );
     ASSERT_FALSE( ddl_nullptr == prop );
     ASSERT_FALSE( ddl_nullptr == prop->m_key );
-    res = strncmp( "key", prop->m_key->m_text.m_buffer, prop->m_key->m_text.m_len );
+    res = strncmp( "key", prop->m_key->m_buffer, prop->m_key->m_len );
     EXPECT_EQ( 0, res );
 
     EXPECT_EQ( Value::ddl_string, prop->m_value->m_type );

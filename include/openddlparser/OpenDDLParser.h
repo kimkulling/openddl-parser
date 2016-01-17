@@ -158,7 +158,7 @@ public: // parser helpers
     DDLNode *top();
     static void normalizeBuffer( std::vector<char> &buffer );
     static char *parseName( char *in, char *end, Name **name );
-    static char *parseIdentifier( char *in, char *end, Identifier **id );
+    static char *parseIdentifier( char *in, char *end, Text **id );
     static char *parsePrimitiveDataType( char *in, char *end, Value::ValueType &type, size_t &len );
     static char *parseReference( char *in, char *end, std::vector<Name*> &names );
     static char *parseBooleanLiteral( char *in, char *end, Value **boolean );

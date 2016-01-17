@@ -260,8 +260,11 @@ const char *Value::getString() const {
 void Value::setRef( Reference *ref ) {
     assert( ddl_ref == m_type );
 
-    if ( ddl_nullptr == ref ) {
+    if ( ddl_nullptr != ref ) {
+        const size_t sizeInBytes( ref->sizeInBytes() );
+        if ( sizeInBytes > 0 ) {
 
+        }
     }
 }
 

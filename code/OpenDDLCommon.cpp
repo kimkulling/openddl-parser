@@ -73,7 +73,7 @@ bool Text::operator == ( const Text &rhs ) const {
     return ( 0 == res );
 }
 
-Identifier::Identifier( const char buffer[], size_t len )
+/*Identifier::Identifier( const char buffer[], size_t len )
 : m_text( buffer, len ) {
     // empty
 }
@@ -90,8 +90,8 @@ Identifier::~Identifier() {
 bool Identifier::operator == ( const Identifier &rhs ) const {
     return m_text == rhs.m_text;
 }
-
-Name::Name( NameType type, Identifier *id )
+*/
+Name::Name( NameType type, Text *id )
 : m_type( type )
 , m_id( id ) {
     // empty
@@ -136,14 +136,14 @@ size_t Reference::sizeInBytes() {
     for ( size_t i = 0; i < m_numRefs; i++ ) {
         Name *name( m_referencedName[ i ] );
         if ( ddl_nullptr != name ) {
-            size += name->m_id->m_text.m_len;
+            size += name->m_id->m_len;
         }
     }
 
     return size;
 }
 
-Property::Property( Identifier *id )
+Property::Property( Text *id )
 : m_key( id )
 , m_value( ddl_nullptr )
 , m_ref( ddl_nullptr )

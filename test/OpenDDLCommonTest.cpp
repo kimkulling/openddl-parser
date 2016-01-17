@@ -121,13 +121,13 @@ TEST_F( OpenDDLCommonTest, setTextTest ) {
 }
 
 TEST_F( OpenDDLCommonTest, CompareIdentifierTest ) {
-    Identifier id1( "test" ), id2( "test" );
+    Text id1( "test", 4 ), id2( "test", 4 );
     bool equal( id1 == id2 );
     EXPECT_TRUE( equal );
 }
 
 TEST_F( OpenDDLCommonTest, sizeInBytesReferenceTest ) {
-    Identifier *id = new Identifier( "test", 4 );
+    Text *id = new Text( "test", 4 );
     Name *name = new Name( GlobalName, id );
     Reference *ref1( new Reference( 1, &name ) );
     size_t size( ref1->sizeInBytes() );

@@ -97,12 +97,12 @@ static bool isUnsignedIntegerType( Value::ValueType integerType ) {
     return true;
 }
 
-static DDLNode *createDDLNode( Identifier *id, OpenDDLParser *parser ) {
+static DDLNode *createDDLNode( Text *id, OpenDDLParser *parser ) {
     if( ddl_nullptr == id || ddl_nullptr == parser ) {
         return ddl_nullptr;
     }
 
-    const std::string type( id->m_text.m_buffer );
+    const std::string type( id->m_buffer );
     DDLNode *parent( parser->top() );
     DDLNode *node = DDLNode::create( type, "", parent );
 
@@ -255,7 +255,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
         return in;
     }
 
-    Identifier *id( ddl_nullptr );
+    Text *id( ddl_nullptr );
     in = OpenDDLParser::parseIdentifier( in, end, &id );
 
 #ifdef DEBUG_HEADER_NAME
@@ -306,7 +306,7 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
         Name *name( ddl_nullptr );
         in = OpenDDLParser::parseName( in, end, &name );
         if( ddl_nullptr != name && ddl_nullptr != node ) {
-            const std::string nodeName( name->m_id->m_text.m_buffer );
+            const std::string nodeName( name->m_id->m_buffer );
             node->setName( nodeName );
         }
     }
@@ -499,7 +499,7 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
     }
     in++;
     Name *currentName( ddl_nullptr );
-    Identifier *id( ddl_nullptr );
+    Text *id( ddl_nullptr );
     in = parseIdentifier( in, end, &id );
     if( id ) {
         currentName = new Name( ntype, id );
@@ -511,7 +511,7 @@ char *OpenDDLParser::parseName( char *in, char *end, Name **name ) {
     return in;
 }
 
-char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
+char *OpenDDLParser::parseIdentifier( char *in, char *end, Text **id ) {
     *id = ddl_nullptr;
     if( ddl_nullptr == in || in == end ) {
         return in;
@@ -534,7 +534,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Identifier **id ) {
     }
 
     const size_t len( idLen );
-    Identifier *newId = new Identifier( start, len );
+    Text *newId = new Text( start, len );
     *id = newId;
 
     return in;
@@ -767,7 +767,7 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, Value **stringData
     return in;
 }
 
-static void createPropertyWithData( Identifier *id, Value *primData, Property **prop ) {
+static void createPropertyWithData( Text *id, Value *primData, Property **prop ) {
     if( ddl_nullptr != primData ) {
         ( *prop ) = new Property( id );
         ( *prop )->m_value = primData;
@@ -830,7 +830,7 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
     }
 
     in = lookForNextToken( in, end );
-    Identifier *id( ddl_nullptr );
+    Text *id( ddl_nullptr );
     in = parseIdentifier( in, end, &id );
     if( ddl_nullptr != id ) {
         in = lookForNextToken( in, end );
@@ -877,7 +877,15 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value::ValueType type, 
         while( '}' != *in ) {
             current = ddl_nullptr;
             in = lookForNextToken( in, end );
-            if (Value::ddl_none == type || Value::ddl_ref == type ) {
+            if ( Value::ddl_ref == type ) {
+                std::vector<Name*> names;
+                in = parseReference( in, end, names );
+                if ( !names.empty() ) {
+                    Reference *ref = new Reference( names.size(), &names[ 0 ] );
+                    *refs = ref;
+                    numRefs = names.size();
+                }
+            } else  if ( Value::ddl_none == type ) {
                 if (isInteger( in, end )) {
                     in = parseIntegerLiteral( in, end, &current );
                 } else if (isFloat( in, end )) {
@@ -886,14 +894,6 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value::ValueType type, 
                     in = parseStringLiteral( in, end, &current );
                 } else if (isHexLiteral( in, end )) {
                     in = parseHexaLiteral( in, end, &current );
-                } else {                          // reference data
-                    std::vector<Name*> names;
-                    in = parseReference( in, end, names );
-                    if (!names.empty()) {
-                        Reference *ref = new Reference( names.size(), &names[ 0 ] );
-                        *refs = ref;
-                        numRefs = names.size();
-                    }
                 }
             } else {
                 switch(type){

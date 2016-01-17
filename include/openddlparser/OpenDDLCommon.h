@@ -132,31 +132,6 @@ private:
     Text &operator = ( const Text & ) ddl_no_copy;
 };
 
-///	@brief  Stores an OpenDDL-specific identifier type.
-struct DLL_ODDLPARSER_EXPORT Identifier {
-    Text m_text;    ///< The text element.
-
-    ///	@brief  The constructor with a sized buffer full of characters.
-    ///	@param  buffer  [in] The identifier buffer.
-    ///	@param  len     [in] The length of the buffer
-    Identifier( const char buffer[], size_t len );
-
-    ///	@brief  The constructor with a buffer full of characters.
-    ///	@param  buffer  [in] The identifier buffer.
-    /// @remark Buffer must be null-terminated.
-    Identifier( const char buffer[] );
-
-    ///	@brief  The destructor.
-    ~Identifier();
-
-    ///	@brief  The compare operator.
-    bool operator == ( const Identifier &rhs ) const;
-
-private:
-    Identifier( const Identifier & ) ddl_no_copy;
-    Identifier &operator = ( const Identifier & ) ddl_no_copy;
-};
-
 ///	@brief  Description of the type of a name.
 enum NameType {
     GlobalName, ///< Name is global.
@@ -166,12 +141,12 @@ enum NameType {
 ///	@brief  Stores an OpenDDL-specific name
 struct DLL_ODDLPARSER_EXPORT Name {
     NameType    m_type; ///< The type of the name ( @see NameType ).
-    Identifier *m_id;   ///< The id.
+    Text *m_id;   ///< The id.
 
     ///	@brief  The constructor with the type and the id.
     ///	@param  type    [in] The name type.
     ///	@param  id      [in] The id.
-    Name( NameType type, Identifier *id );
+    Name( NameType type, Text *id );
 
     ///	@brief  The destructor.
     ~Name();
@@ -206,7 +181,7 @@ private:
 
 ///	@brief  Stores a property list.
 struct DLL_ODDLPARSER_EXPORT Property {
-    Identifier *m_key;      ///< The identifier / key of the property.
+    Text       *m_key;      ///< The identifier / key of the property.
     Value      *m_value;    ///< The value assigned to its key / id ( ddl_nullptr if none ).
     Reference  *m_ref;      ///< References assigned to its key / id ( ddl_nullptr if none ).
     Property   *m_next;     ///< The next property ( ddl_nullptr if none ).
@@ -216,7 +191,7 @@ struct DLL_ODDLPARSER_EXPORT Property {
 
     ///	@brief  The constructor for initialization.
     /// @param  id      [in] The identifier
-    Property( Identifier *id );
+    Property( Text *id );
 
     ///	@brief  The destructor.
     ~Property();
