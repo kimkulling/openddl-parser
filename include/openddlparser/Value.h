@@ -244,8 +244,8 @@ public:
     Value *m_next;
 
 private:
-    Value &operator =( const Value & );
-    Value( const Value  & );
+    Value &operator =( const Value & ) ddl_no_copy;
+    Value( const Value  & ) ddl_no_copy;
 };
 
 ///------------------------------------------------------------------------------------------------
