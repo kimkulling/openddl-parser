@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "gtest/gtest.h"
 
 #include <openddlparser/OpenDDLCommon.h>
+#include <openddlparser/Value.h>
 
 BEGIN_ODDLPARSER_NS
 
@@ -116,14 +117,37 @@ TEST_F( OpenDDLCommonTest, setTextTest ) {
     theText->set( test2.c_str(), test2.size() );
     
     EXPECT_EQ( test2.size(), theText->m_len );
-    int res( strncmp( test2.c_str(), theText->m_buffer, test2.size() ) );
+    const int res( strncmp( test2.c_str(), theText->m_buffer, test2.size() ) );
     EXPECT_EQ( 0, res );
 }
 
 TEST_F( OpenDDLCommonTest, CompareIdentifierTest ) {
     Text id1( "test", 4 ), id2( "test", 4 );
-    bool equal( id1 == id2 );
-    EXPECT_TRUE( equal );
+    EXPECT_EQ( id1, id2 );
+}
+
+TEST_F( OpenDDLCommonTest, accessAdatArrayListTest ) {
+    DataArrayList *list = new DataArrayList;
+    Value *data1 = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
+    data1->setUnsignedInt64( 1 );
+    Value *data2 = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
+    data2->setUnsignedInt64( 2 );
+    Value *data3 = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
+    data3->setUnsignedInt64( 3 );
+    data1->m_next = data2;
+    data2->m_next = data3;
+    list->m_dataList = data1;
+}
+
+TEST_F( OpenDDLCommonTest, sizeAdatArrayListTest ) {
+    DataArrayList *list = new DataArrayList;
+    EXPECT_EQ( 0, list->size() );
+    DataArrayList *listNext = new DataArrayList;
+    list->m_next = listNext;
+    EXPECT_EQ( 1, list->size() );
+
+    delete list;
+    delete listNext;
 }
 
 TEST_F( OpenDDLCommonTest, sizeInBytesReferenceTest ) {

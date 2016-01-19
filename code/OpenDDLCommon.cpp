@@ -73,24 +73,6 @@ bool Text::operator == ( const Text &rhs ) const {
     return ( 0 == res );
 }
 
-/*Identifier::Identifier( const char buffer[], size_t len )
-: m_text( buffer, len ) {
-    // empty
-}
-
-Identifier::Identifier( const char buffer[] )
-: m_text( buffer, strlen( buffer ) ) {
-    // empty
-}
-
-Identifier::~Identifier() {
-    // empty
-}
-
-bool Identifier::operator == ( const Identifier &rhs ) const {
-    return m_text == rhs.m_text;
-}
-*/
 Name::Name( NameType type, Text *id )
 : m_type( type )
 , m_id( id ) {
@@ -98,6 +80,7 @@ Name::Name( NameType type, Text *id )
 }
 
 Name::~Name() {
+    delete m_id;
     m_id = ddl_nullptr;
 }
 
@@ -170,7 +153,7 @@ DataArrayList::~DataArrayList() {
 }
 
 size_t DataArrayList::size() {
-    size_t result=1;
+    size_t result( 0 );
     DataArrayList *n=m_next;
     while( n!=ddl_nullptr ) {
         result++;
@@ -185,7 +168,7 @@ Context::Context()
 }
 
 Context::~Context() {
-    m_root = ddl_nullptr;
+    clear();
 }
 
 void Context::clear() {

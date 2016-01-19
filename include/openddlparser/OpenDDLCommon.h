@@ -141,7 +141,7 @@ enum NameType {
 ///	@brief  Stores an OpenDDL-specific name
 struct DLL_ODDLPARSER_EXPORT Name {
     NameType    m_type; ///< The type of the name ( @see NameType ).
-    Text *m_id;   ///< The id.
+    Text        *m_id;  ///< The id.
 
     ///	@brief  The constructor with the type and the id.
     ///	@param  type    [in] The name type.
