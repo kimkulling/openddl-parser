@@ -256,9 +256,9 @@ struct DLL_ODDLPARSER_EXPORT ValueAllocator {
     static void releasePrimData( Value **data );
 
 private:
-    ValueAllocator();
-    ValueAllocator( const ValueAllocator  & );
-    ValueAllocator &operator = ( const ValueAllocator & );
+    ValueAllocator() ddl_no_copy;
+    ValueAllocator( const ValueAllocator  & ) ddl_no_copy;
+    ValueAllocator &operator = ( const ValueAllocator & ) ddl_no_copy;
 };
 
 END_ODDLPARSER_NS

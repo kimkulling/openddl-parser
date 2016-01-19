@@ -263,7 +263,17 @@ void Value::setRef( Reference *ref ) {
     if ( ddl_nullptr != ref ) {
         const size_t sizeInBytes( ref->sizeInBytes() );
         if ( sizeInBytes > 0 ) {
+            if ( ddl_nullptr != m_data ) {
+                delete [] m_data;
+            }
 
+            m_data = new unsigned char[ sizeof( Reference ) ];
+            Reference *myRef = ( Reference * ) m_data;
+            myRef->m_numRefs = ref->m_numRefs;
+            myRef->m_referencedName =  new Name *[ myRef->m_numRefs ];
+            for ( size_t i = 0; i < myRef->m_numRefs; i++ ) {
+                myRef->m_referencedName[ i ] = new Name( ref->m_referencedName[ i ]->m_type, ref->m_referencedName[ i ]->m_id );
+            }
         }
     }
 }
@@ -271,58 +281,58 @@ void Value::setRef( Reference *ref ) {
 Reference *Value::getRef() const {
     assert( ddl_ref == m_type );
 
-    return ddl_nullptr;
+    return (Reference*) m_data;
 }
 
 void Value::dump() {
     switch( m_type ) {
-    case ddl_none:
-        std::cout << "None" << std::endl;
-        break;
-    case ddl_bool:
-        std::cout << getBool() << std::endl;
-        break;
-    case ddl_int8:
-        std::cout << getInt8() << std::endl;
-        break;
-    case ddl_int16:
-        std::cout << getInt16() << std::endl;
-        break;
-    case ddl_int32:
-        std::cout << getInt32() << std::endl;
-        break;
-    case ddl_int64:
-        std::cout << getInt64() << std::endl;
-        break;
-    case ddl_unsigned_int8:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_unsigned_int16:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_unsigned_int32:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_unsigned_int64:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_half:
-        std::cout << "Not supported" << std::endl;
-        break;
-    case ddl_float:
-        std::cout << getFloat() << std::endl;
-        break;
-    case ddl_double:
-        std::cout << getDouble() << std::endl;
-        break;
-    case ddl_string:
-        std::cout << getString() << std::endl;
-        break;
-    case ddl_ref:
-        std::cout << "Not supported" << std::endl;
-        break;
-    default:
-        break;
+        case ddl_none:
+            std::cout << "None" << std::endl;
+            break;
+        case ddl_bool:
+            std::cout << getBool() << std::endl;
+            break;
+        case ddl_int8:
+            std::cout << getInt8() << std::endl;
+            break;
+        case ddl_int16:
+            std::cout << getInt16() << std::endl;
+            break;
+        case ddl_int32:
+            std::cout << getInt32() << std::endl;
+            break;
+        case ddl_int64:
+            std::cout << getInt64() << std::endl;
+            break;
+        case ddl_unsigned_int8:
+            std::cout << "Not supported" << std::endl;
+            break;
+        case ddl_unsigned_int16:
+            std::cout << "Not supported" << std::endl;
+            break;
+        case ddl_unsigned_int32:
+            std::cout << "Not supported" << std::endl;
+            break;
+        case ddl_unsigned_int64:
+            std::cout << "Not supported" << std::endl;
+            break;
+        case ddl_half:
+            std::cout << "Not supported" << std::endl;
+            break;
+        case ddl_float:
+            std::cout << getFloat() << std::endl;
+            break;
+        case ddl_double:
+            std::cout << getDouble() << std::endl;
+            break;
+        case ddl_string:
+            std::cout << getString() << std::endl;
+            break;
+        case ddl_ref:
+            std::cout << "Not supported" << std::endl;
+            break;
+        default:
+            break;
     }
 }
 

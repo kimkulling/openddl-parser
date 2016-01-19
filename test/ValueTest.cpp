@@ -209,12 +209,29 @@ TEST_F( ValueTest, accessUInt64Test ) {
     ValueAllocator::releasePrimData( &data );
 }
 
+TEST_F( ValueTest, accessReferenceTest ) {
+    Reference *ref = new Reference;
+    Name *name = new Name( GlobalName, new Text( "hello", 4 ) );
+    ref->m_numRefs = 1;
+    ref->m_referencedName = &name;
+
+    Value *data = ValueAllocator::allocPrimData( Value::ddl_ref );
+    data->setRef( ref );
+    Reference *newRef( data->getRef() );
+    EXPECT_EQ( ref->m_numRefs, newRef->m_numRefs );
+    for ( size_t i = 0; i < ref->m_numRefs; i++ ) {
+        Name *orig( ref->m_referencedName[ i ] ), *newName( newRef->m_referencedName[ i ] );
+        EXPECT_EQ( orig->m_type, newName->m_type );
+        EXPECT_EQ( *orig->m_id, *newName->m_id );
+    }
+}
+
 TEST_F(ValueTest, sizeTest) {
-    Value *data1 = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
+    Value *data1 = ValueAllocator::allocPrimData( Value::ddl_ref );
     size_t size( data1->size() );
     EXPECT_EQ( 1, size );
 
-    Value *data2 = ValueAllocator::allocPrimData(Value::ddl_unsigned_int64);
+    Value *data2 = ValueAllocator::allocPrimData(Value::ddl_ref);
     data1->setNext( data2 );
     size = data1->size();
     EXPECT_EQ(2, size);
