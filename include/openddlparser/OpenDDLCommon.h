@@ -172,6 +172,8 @@ struct DLL_ODDLPARSER_EXPORT Reference {
     ///	@brief  The destructor.
     ~Reference();
 
+    /// @brief  Returns the size in bytes to store one deep reference copy.
+    /// @return The size on bytes.
     size_t sizeInBytes();
 
 private:

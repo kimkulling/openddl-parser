@@ -220,7 +220,12 @@ public:
     /// @return The std::string value.
     const char *getString() const;
 
+    /// @brief  Set the reference.
+    /// @param  ref     [in] Pointer showing to the reference.
     void setRef( Reference *ref );
+
+    /// @brief  Returns the pointer showing to the reference.
+    /// @return Pointer showing to the reference.
     Reference *getRef() const;
 
     ///	@brief  Dumps the value.
