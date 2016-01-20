@@ -126,19 +126,6 @@ TEST_F( OpenDDLCommonTest, CompareIdentifierTest ) {
     EXPECT_EQ( id1, id2 );
 }
 
-TEST_F( OpenDDLCommonTest, accessAdatArrayListTest ) {
-    DataArrayList *list = new DataArrayList;
-    Value *data1 = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
-    data1->setUnsignedInt64( 1 );
-    Value *data2 = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
-    data2->setUnsignedInt64( 2 );
-    Value *data3 = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
-    data3->setUnsignedInt64( 3 );
-    data1->m_next = data2;
-    data2->m_next = data3;
-    list->m_dataList = data1;
-}
-
 TEST_F( OpenDDLCommonTest, sizeAdatArrayListTest ) {
     DataArrayList *list = new DataArrayList;
     EXPECT_EQ( 0, list->size() );

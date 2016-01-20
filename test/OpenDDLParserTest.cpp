@@ -629,20 +629,20 @@ TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
 
 TEST_F( OpenDDLParserTest, parseDataArrayListWithRefsTest ) {
     char token[] =
-        "{\n"
-        "    ref{ $alice }\n"
-        "}\n";
+        "ref{ $alice }\n"; // data list with references
     size_t len(0);
     char *end = findEnd(token, len);
 
     Value::ValueType type;
     char *in = OpenDDLParser::parsePrimitiveDataType(token, end, type, len);
-    ASSERT_EQ( Value::ddl_none, type );
-    ASSERT_EQ( 0, len );
+    ASSERT_EQ( Value::ddl_ref, type );
+    ASSERT_EQ( 1, len );
     Value *val( ddl_nullptr );
     size_t numRefs( 0 ), numValues( 0 );
     Reference *refs( ddl_nullptr );
     in = OpenDDLParser::parseDataList( in, end, type, &val, numValues, &refs, numRefs );
+    EXPECT_EQ( 1, numRefs );
+    EXPECT_FALSE( ddl_nullptr == refs );
 }
 
 static void validateDataArray( Value *value, size_t expectedNumItems  ) {
