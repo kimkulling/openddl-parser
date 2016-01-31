@@ -9,6 +9,7 @@ SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
 option( DDL_CHECK_CODE_COVERAGE "Set to ON to track code coverage in unit tests ( only supported for gcc ). " OFF )
 option( DDL_USE_CPP11           "Set to ON to use C++11 features ( always on on windows )." ON )
 option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts" OFF )
+option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser." ON)
 
 if ( DDL_USE_CPP11 )
     MESSAGE( "huhu")
@@ -28,12 +29,16 @@ else()
     add_definitions( -D_CRT_SECURE_NO_WARNINGS )
 endif()
 
+if ( DDL_STATIC_LIBRARY )
+	add_definitions( -DOPENDDL_STATIC_LIBARY )
+endif()
+
 add_definitions( -DOPENDDLPARSER_BUILD )
 add_definitions( -D_VARIADIC_MAX=10 )
 add_definitions( -DGTEST_HAS_PTHREAD=0 )
 if ( DDL_DEBUG_OUTPUT )
     add_definitions( -DDDL_DEBUG_HEADER_NAME)
-endif( DDL_DEBUG_OUTPUT )
+endif()
 
 INCLUDE_DIRECTORIES(
     ./
@@ -95,9 +100,15 @@ SET ( openddl_parser_src
  
 SOURCE_GROUP( code            FILES ${openddl_parser_src} )
 
-ADD_LIBRARY( openddl_parser SHARED
-    ${openddl_parser_src}
-)
+if ( DDL_STATIC_LIBRARY )
+	ADD_LIBRARY( openddl_parser STATIC
+		${openddl_parser_src}
+	)
+else()
+	ADD_LIBRARY( openddl_parser SHARED
+		${openddl_parser_src}
+	)
+endif()
 
 SET ( GTEST_PATH contrib/gtest-1.7.0 )
 
