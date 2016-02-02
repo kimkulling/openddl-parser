@@ -100,7 +100,7 @@ public:
     ///	@brief  The class constructor.
     ///	@param  buffer      [in] The buffer
     ///	@param  len         [in] Size of the buffer
-    OpenDDLParser( char *buffer, size_t len );
+    OpenDDLParser( const char *buffer, size_t len );
 
     ///	@brief  The class destructor.
     ~OpenDDLParser();
@@ -116,7 +116,7 @@ public:
     ///	@brief  Assigns a new buffer to parse.
     ///	@param  buffer      [in] The buffer
     ///	@param  len         [in] Size of the buffer
-    void setBuffer( char *buffer, size_t len );
+    void setBuffer( const char *buffer, size_t len );
 
     ///	@brief  Assigns a new buffer to parse.
     /// @param  buffer      [in] The buffer as a std::vector.
