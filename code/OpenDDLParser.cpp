@@ -135,7 +135,7 @@ OpenDDLParser::OpenDDLParser()
     // empty
 }
 
-OpenDDLParser::OpenDDLParser( char *buffer, size_t len )
+OpenDDLParser::OpenDDLParser( const char *buffer, size_t len )
 : m_logCallback( &logMessage )
 , m_buffer()
 , m_context( ddl_nullptr ) {
@@ -162,7 +162,7 @@ OpenDDLParser::logCallback OpenDDLParser::getLogCallback() const {
     return m_logCallback;
 }
 
-void OpenDDLParser::setBuffer( char *buffer, size_t len ) {
+void OpenDDLParser::setBuffer( const char *buffer, size_t len ) {
     clear();
     if( 0 == len ) {
         return;
