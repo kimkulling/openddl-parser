@@ -33,6 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 #if defined(_MSC_VER) && !defined( OPENDDL_STATIC_LIBARY )
+
 #   define TAG_DLL_EXPORT __declspec(dllexport)
 #   define TAG_DLL_IMPORT __declspec(dllimport )
 #   ifdef OPENDDLPARSER_BUILD

@@ -126,4 +126,26 @@ TEST_F( OpenDDLDefectsTest, strings_with_the_comment_syntax_in_them_breaks_the_p
 
 }
 
+TEST_F( OpenDDLDefectsTest, parse_light_object_issue38 ) {
+    char token[] = {
+        "LightObject $light1( type = \"point\" ) // Lamp\n"
+        "{\n"
+        "    Color( attrib = \"light\" ) { float[ 3 ]{ { 1.0, 1.0, 1.0 } } }\n"
+        "\n"
+        "    Atten( curve = \"inverse_square\" )\n"
+        "    {\n"
+        "        Param( attrib = \"scale\" ) { float{ 5.47722400800463 } }\n"
+        "    }\n"
+        "}\n"
+    };
+    
+    OpenDDLParser myParser;
+    myParser.setBuffer( token, strlen( token ) );
+    const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
+    DDLNode *root = myParser.getRoot();
+    EXPECT_TRUE( ddl_nullptr != root );
+
+}
+
 END_ODDLPARSER_NS
