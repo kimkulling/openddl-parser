@@ -716,6 +716,11 @@ char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, Value **floating
 
     // parse the float value
     bool ok( false );
+    if ( isHexLiteral( start, end ) ) {
+        parseHexaLiteral( start, end, floating );
+        return in;
+    }
+
     if( isNumeric( *start ) ) {
         ok = true;
     } else {

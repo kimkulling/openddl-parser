@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <openddlparser/OpenDDLParser.h>
 
 #include "UnitTestCommon.h"
+#include <vector>
 
 BEGIN_ODDLPARSER_NS
 
@@ -122,23 +123,55 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
     EXPECT_EQ( "MaterialRef", currentNode->getType() );
 }
 
+static void dataArrayList2StdVector( DataArrayList *dataArrayList, std::vector<float> &container ) {
+    if ( ddl_nullptr == dataArrayList ) {
+        return;
+    }
+    Value *val( dataArrayList->m_dataList );
+    if ( ddl_nullptr == val ) {
+        return;
+    }
+    while ( ddl_nullptr != val ) {
+        container.push_back( val->getFloat() );
+        val = val->m_next;
+    }
+}
+
 TEST_F( OpenDDLIntegrationTest, parseTransformDataTest ) {
     char token[] =
-        "    Transform\n"
+        "Transform\n"
+        "{\n"
+        "    float[ 16 ]\n"
         "    {\n"
-        "        float[ 16 ]\n"
-        "        {\n"
-        "            {0x3F800000, 0x00000000, 0x00000000, 0x00000000,		// {1, 0, 0, 0\n"
-        "             0x00000000, 0x3F800000, 0x00000000, 0x00000000,		//  0, 1, 0, 0\n"
-        "             0x00000000, 0x00000000, 0x3F800000, 0x00000000,		//  0, 0, 1, 0\n"
-        "             0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
-        "        }\n"
-        "    }\n";
+        "        {0x3F800000, 0x00000000, 0x00000000, 0x00000000,		// {1, 0, 0, 0\n"
+        "         0x00000000, 0x3F800000, 0x00000000, 0x00000000,		//  0, 1, 0, 0\n"
+        "         0x00000000, 0x00000000, 0x3F800000, 0x00000000,		//  0, 0, 1, 0\n"
+        "         0xBEF33B00, 0x411804DE, 0x00000000, 0x3F800000}		//  -0.47506, 9.50119, 0, 1}\n"
+        "    }\n"
+        "}\n";
     bool result( false );
     OpenDDLParser theParser;
     theParser.setBuffer( token, strlen( token ) );
     result = theParser.parse();
     EXPECT_TRUE( result );
+
+    DDLNode *root( theParser.getRoot() );
+    EXPECT_TRUE( ddl_nullptr != root );
+
+    const DDLNode::DllNodeList &childs( root->getChildNodeList() );
+    EXPECT_EQ( 1, childs.size() );
+    DDLNode *transform( childs[ 0 ] );
+    EXPECT_TRUE( ddl_nullptr != transform );
+    DataArrayList *transformData( transform->getDataArrayList() );
+    EXPECT_TRUE( ddl_nullptr != transformData );
+    EXPECT_EQ( 16, transformData->m_numItems );
+
+    std::vector<float> container;
+    dataArrayList2StdVector( transformData, container );
+    EXPECT_FLOAT_EQ( 1.0f, container[ 0 ] );
+    EXPECT_FLOAT_EQ( 0.0f, container[ 1 ] );
+    EXPECT_FLOAT_EQ( 0.0f, container[ 2 ] );
+    EXPECT_FLOAT_EQ( 0.0f, container[ 3 ] );
 }
 
 TEST_F( OpenDDLIntegrationTest, exportDataTest ) {

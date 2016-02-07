@@ -240,10 +240,16 @@ void Value::setDouble( double value ) {
 }
 
 double Value::getDouble() const {
-    assert( ddl_double == m_type );
-    double v;
-    ::memcpy( &v, m_data, m_size );
-    return v;
+    if ( m_type == ddl_double ) {
+        double v;
+        ::memcpy( &v, m_data, m_size );
+        return ( float ) v;
+    }
+    else {
+        double tmp;
+        ::memcpy( &tmp, m_data, 4 );
+        return ( double ) tmp;
+    }
 }
 
 void Value::setString( const std::string &str ) {

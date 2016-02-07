@@ -505,6 +505,15 @@ TEST_F( OpenDDLParserTest, parseHexaLiteralTest ) {
     registerValueForDeletion( data );
 }
 
+TEST_F( OpenDDLParserTest, parseFloatHexaLiteralTest ) {
+    size_t len( 0 );
+    char token1[] = "0x3F800000", *end( findEnd( token1, len ) );
+    Value *data( ddl_nullptr );
+    char *in = OpenDDLParser::parseHexaLiteral( token1, end, &data );
+    const float value( data->getFloat() );
+    EXPECT_FLOAT_EQ( 1.0f, value );
+}
+
 TEST_F( OpenDDLParserTest, parsePropertyTest ) {
     char *in( ddl_nullptr );
     size_t len( 0 );
