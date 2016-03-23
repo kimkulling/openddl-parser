@@ -950,7 +950,7 @@ char *OpenDDLParser::parseDataList( char *in, char *end, Value::ValueType type, 
 
 static DataArrayList *createDataArrayList( Value *currentValue, size_t numValues, 
                                            Reference *refs, size_t numRefs ) {
-    DataArrayList *dataList = new DataArrayList;
+    DataArrayList *dataList( new DataArrayList );
     dataList->m_dataList = currentValue;
     dataList->m_numItems = numValues;
     dataList->m_refs     = refs;
@@ -959,7 +959,8 @@ static DataArrayList *createDataArrayList( Value *currentValue, size_t numValues
     return dataList;
 }
 
-char *OpenDDLParser::parseDataArrayList( char *in, char *end,Value::ValueType type, DataArrayList **dataArrayList ) {
+char *OpenDDLParser::parseDataArrayList( char *in, char *end,Value::ValueType type, 
+                                         DataArrayList **dataArrayList ) {
     if ( ddl_nullptr == dataArrayList ) {
         return in;
     }

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <openddlparser/OpenDDLCommon.h>
 #include <openddlparser/OpenDDLParser.h>
+#include <openddlparser/Value.h>
 #include "UnitTestCommon.h"
 
 BEGIN_ODDLPARSER_NS
@@ -167,6 +168,14 @@ TEST_F( OpenDDLDefectsTest, parse_hexa_float_issue ) {
     EXPECT_TRUE( ddl_nullptr != root );
     DDLNode::DllNodeList childs = root->getChildNodeList();
     EXPECT_EQ( 1, childs.size() );
+}
+
+TEST_F( OpenDDLDefectsTest, invalid_size_dataarraylist_issue_41 ) {
+    DataArrayList *list = new DataArrayList;
+    EXPECT_EQ( 0, list->size() );
+    
+    list->m_dataList = new Value( Value::ddl_bool );
+    EXPECT_EQ( 1, list->size() );
 }
 
 END_ODDLPARSER_NS
