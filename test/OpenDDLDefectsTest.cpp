@@ -45,6 +45,8 @@ TEST_F( OpenDDLDefectsTest, Issue20_WrongColorNodeParsing ) {
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == data );
     ASSERT_EQ( 3, numValues );
+    delete data;
+    delete refs;
 }
 
 TEST_F( OpenDDLDefectsTest, assimp_issues_665 ) {
@@ -176,6 +178,7 @@ TEST_F( OpenDDLDefectsTest, invalid_size_dataarraylist_issue_41 ) {
     
     list->m_dataList = new Value( Value::ddl_bool );
     EXPECT_EQ( 1, list->size() );
+    delete list;
 }
 
 END_ODDLPARSER_NS

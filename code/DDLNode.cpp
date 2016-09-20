@@ -68,14 +68,17 @@ DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, 
 }
 
 DDLNode::~DDLNode() {
-    releaseDataType<Property>( m_properties );
-    releaseDataType<Value>( m_value );
+    delete m_properties;
+    delete m_value;
     releaseReferencedNames( m_references );
 
     delete m_dtArrayList;
     m_dtArrayList = ddl_nullptr;
     if( s_allocatedNodes[ m_idx ] == this ) {
         s_allocatedNodes[ m_idx ] = ddl_nullptr;
+    }
+    for(DDLNode* child: m_children){
+        delete child;
     }
 }
 
@@ -126,6 +129,8 @@ const std::string &DDLNode::getName() const {
 }
 
 void DDLNode::setProperties( Property *prop ) {
+    if(m_properties!=ddl_nullptr)
+        delete m_properties;
     m_properties = prop;
 }
 

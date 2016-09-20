@@ -35,12 +35,8 @@ protected:
     }
 
     virtual void TearDown() {
-        Value *current( m_start ), *tmp( ddl_nullptr );
-        while( ddl_nullptr != current ) {
-            tmp = current;
-            current = current->m_next;
-            delete tmp;
-        }
+        if(m_start!=ddl_nullptr)
+            delete m_start;
     }
 
     Value *createValueList() {
@@ -83,6 +79,7 @@ TEST_F( ValueTest, ValueAccessStringTest ) {
     data->setString( text );
     int res = ::strncmp( text.c_str(), data->getString(), text.size() );
     EXPECT_EQ( 0, res );
+    delete data;
 }
 
 TEST_F( ValueTest, ValueAccessNextTest ) {
@@ -95,6 +92,7 @@ TEST_F( ValueTest, ValueAccessNextTest ) {
 
     data->setNext( dataNext );
     EXPECT_EQ( dataNext, data->getNext() );
+    delete data;
 }
 
 TEST_F( ValueTest, InitIteratorTest ) {
@@ -213,7 +211,7 @@ TEST_F( ValueTest, accessReferenceTest ) {
     Reference *ref = new Reference;
     Name *name = new Name( GlobalName, new Text( "hello", 4 ) );
     ref->m_numRefs = 1;
-    ref->m_referencedName = &name;
+    ref->m_referencedName = new Name*[1]{name};
 
     Value *data = ValueAllocator::allocPrimData( Value::ddl_ref );
     data->setRef( ref );
@@ -224,6 +222,9 @@ TEST_F( ValueTest, accessReferenceTest ) {
         EXPECT_EQ( orig->m_type, newName->m_type );
         EXPECT_EQ( *orig->m_id, *newName->m_id );
     }
+    delete ref;
+    delete data;
+
 }
 
 TEST_F(ValueTest, sizeTest) {
@@ -236,8 +237,7 @@ TEST_F(ValueTest, sizeTest) {
     size = data1->size();
     EXPECT_EQ(2, size);
 
-    ValueAllocator::releasePrimData(&data2);
-    ValueAllocator::releasePrimData(&data1);
+    delete data1;
 }
 
 END_ODDLPARSER_NS

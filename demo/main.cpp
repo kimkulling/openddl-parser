@@ -119,7 +119,8 @@ int main( int argc, char *argv[] ) {
                 theExporter.exportContext( theParser.getContext(), exportFilename );
             }
         }
+        delete [] buffer;
     }
-
+    fclose(fileStream);
     return 0;
 }
