@@ -211,7 +211,8 @@ TEST_F( ValueTest, accessReferenceTest ) {
     Reference *ref = new Reference;
     Name *name = new Name( GlobalName, new Text( "hello", 4 ) );
     ref->m_numRefs = 1;
-    ref->m_referencedName = new Name*[1]{name};
+    ref->m_referencedName = new Name*[1];
+    ref->m_referencedName[0]=name;
 
     Value *data = ValueAllocator::allocPrimData( Value::ddl_ref );
     data->setRef( ref );

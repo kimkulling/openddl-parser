@@ -77,8 +77,8 @@ DDLNode::~DDLNode() {
     if( s_allocatedNodes[ m_idx ] == this ) {
         s_allocatedNodes[ m_idx ] = ddl_nullptr;
     }
-    for(DDLNode* child: m_children){
-        delete child;
+    for(size_t i = 0 ; i<m_children.size();i++){
+        delete m_children[i];
     }
 }
 
