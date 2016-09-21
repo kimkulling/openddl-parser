@@ -134,7 +134,6 @@ TEST_F( OpenDDLCommonTest, sizeAdatArrayListTest ) {
     EXPECT_EQ( 1, list->size() );
 
     delete list;
-    delete listNext;
 }
 
 TEST_F( OpenDDLCommonTest, sizeInBytesReferenceTest ) {
@@ -143,10 +142,12 @@ TEST_F( OpenDDLCommonTest, sizeInBytesReferenceTest ) {
     Reference *ref1( new Reference( 1, &name ) );
     size_t size( ref1->sizeInBytes() );
     EXPECT_EQ( 4, size );
+    delete ref1;
 
     Reference *ref2( new Reference( 0, ddl_nullptr ) );
     size = ref2->sizeInBytes();
     EXPECT_EQ( 0, size );
+    delete ref2;
 }
 
 END_ODDLPARSER_NS

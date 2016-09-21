@@ -105,7 +105,6 @@ static DDLNode *createDDLNode( Text *id, OpenDDLParser *parser ) {
     const std::string type( id->m_buffer );
     DDLNode *parent( parser->top() );
     DDLNode *node = DDLNode::create( type, "", parent );
-
     return node;
 }
 
@@ -193,10 +192,11 @@ size_t OpenDDLParser::getBufferSize() const {
 void OpenDDLParser::clear() {
     m_buffer.resize( 0 );
     if( ddl_nullptr != m_context ) {
-        m_context->m_root = ddl_nullptr;
+        delete m_context;
+        m_context=ddl_nullptr;
     }
 
-    DDLNode::releaseNodes();
+//    DDLNode::releaseNodes();
 }
 
 bool OpenDDLParser::parse() {
@@ -212,7 +212,7 @@ bool OpenDDLParser::parse() {
 
     // do the main parsing
     char *current( &m_buffer[ 0 ] );
-    char *end( &m_buffer[ m_buffer.size() - 1 ] + 1 );
+    char *end( &m_buffer[m_buffer.size() - 1 ] + 1 );
     size_t pos( current - &m_buffer[ 0 ] );
     while( pos < m_buffer.size() ) {
         current = parseNextNode( current, end );
@@ -271,13 +271,16 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
         } else {
             std::cerr << "nullptr returned by creating DDLNode." << std::endl;
         }
+        delete id;
 
 		Name *name(ddl_nullptr);
 		in = OpenDDLParser::parseName(in, end, &name);
         if( ddl_nullptr != name && ddl_nullptr != node ) {
             const std::string nodeName( name->m_id->m_buffer );
             node->setName( nodeName );
+            delete name;
         }
+
 
 		Property *first(ddl_nullptr);
 		in = lookForNextToken(in, end);
@@ -431,7 +434,6 @@ DDLNode *OpenDDLParser::popNode() {
 
     DDLNode *topNode( top() );
     m_stack.pop_back();
-
     return topNode;
 }
 
@@ -535,8 +537,7 @@ char *OpenDDLParser::parseIdentifier( char *in, char *end, Text **id ) {
     }
 
     const size_t len( idLen );
-    Text *newId = new Text( start, len );
-    *id = newId;
+    *id = new Text( start, len );
 
     return in;
 }
@@ -862,7 +863,8 @@ char *OpenDDLParser::parseProperty( char *in, char *end, Property **prop ) {
                     ( *prop )->m_ref = ref;
                 }
             }
-        }
+        } else
+            delete id;
     }
 
     return in;

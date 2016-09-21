@@ -223,7 +223,8 @@ TEST_F( OpenDDLExportTest, writeFloatTest ) {
 
 TEST_F( OpenDDLExportTest, writeStringTest ) {
     OpenDDLExportMock myExport;
-    Value *v = ValueAllocator::allocPrimData( Value::ddl_string );
+    char tempString[] ="huhu";
+    Value *v = ValueAllocator::allocPrimData( Value::ddl_string,sizeof(tempString) );
     v->setString( "huhu" );
     bool ok( true );
     std::string statement;
@@ -246,11 +247,13 @@ TEST_F( OpenDDLExportTest, writeValueTypeTest ) {
     EXPECT_TRUE( ok );
     EXPECT_EQ( "int32", statement );
     statement.clear();
+    delete v_int32;
 
     Value *v_int32_array = ValueAllocator::allocPrimData( Value::ddl_int32 );
     ok = myExporter.writeValueTypeTester( v_int32_array->m_type, 10, statement );
     EXPECT_TRUE( ok );
     EXPECT_EQ( "int32[10]", statement );
+    delete v_int32_array;
 }
 
 TEST_F( OpenDDLExportTest, writePropertiesTest ) {
@@ -273,6 +276,7 @@ TEST_F( OpenDDLExportTest, writePropertiesTest ) {
     ok = myExporter.writePropertiesTester( m_root, statement );
     EXPECT_TRUE( ok );
     EXPECT_EQ( "(id.0 = 0, id.1 = 1)", statement );
+
 }
 
 TEST_F( OpenDDLExportTest, writeValueArrayTest ) {
@@ -303,6 +307,7 @@ TEST_F( OpenDDLExportTest, writeValueArrayTest ) {
     ok = myExporter.writeValueArrayTester( dataArrayList, statement );
     EXPECT_TRUE( ok );
     EXPECT_EQ( "{ 1, 2, 3 }", statement );
+    delete dataArrayList;
 }
 
 END_ODDLPARSER_NS

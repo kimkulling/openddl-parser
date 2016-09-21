@@ -43,6 +43,7 @@ TEST_F( DDLNodeTest, createDDLNodeTest ) {
     }
     EXPECT_TRUE( ddl_nullptr != myNode );
     EXPECT_TRUE( success );
+    delete myNode;
 }
 
 TEST_F( DDLNodeTest, accessTypeTest ) {
@@ -55,6 +56,7 @@ TEST_F( DDLNodeTest, accessTypeTest ) {
     static const std::string type2 = "type2";
     myNode->setType( type2 );
     EXPECT_EQ( type2, myNode->getType() );
+    delete myNode;
 }
 
 TEST_F( DDLNodeTest, accessNameTest ) {
@@ -67,6 +69,7 @@ TEST_F( DDLNodeTest, accessNameTest ) {
     static const std::string name2 = "test";
     myNode->setName( name2 );
     EXPECT_EQ( name2, myNode->getName() );
+    delete myNode;
 }
 
 TEST_F( DDLNodeTest, accessParentTest ) {
@@ -90,6 +93,9 @@ TEST_F( DDLNodeTest, accessParentTest ) {
     // check if the child node is not the parent node ( bug )
     EXPECT_EQ( name1, myChilds[ 0 ]->getName() );
     EXPECT_EQ( name1, myChilds[ 1 ]->getName() );
+
+    delete parentNode;
+
 }
 
 TEST_F( DDLNodeTest, accessPropertiesDDLNodeTest ) {
@@ -100,6 +106,7 @@ TEST_F( DDLNodeTest, accessPropertiesDDLNodeTest ) {
     Property *first = new Property( id );
     node->setProperties( first );
     EXPECT_EQ( first, node->getProperties() );
+    delete node;
 }
 
 TEST_F( DDLNodeTest, hasPropertyTest ) {
@@ -114,6 +121,7 @@ TEST_F( DDLNodeTest, hasPropertyTest ) {
     node->setProperties( first );
     found = node->hasProperty( "test" );
     EXPECT_TRUE( found );
+    delete node;
 }
 
 TEST_F( DDLNodeTest, hasPropertiesTest ) {
@@ -125,7 +133,7 @@ TEST_F( DDLNodeTest, hasPropertiesTest ) {
     Property *first = new Property( id );
     node->setProperties( first );
     EXPECT_TRUE( node->hasProperties() );
-
+    delete node;
 }
 
 TEST_F( DDLNodeTest, findPropertyByNameTest ) {
@@ -140,6 +148,7 @@ TEST_F( DDLNodeTest, findPropertyByNameTest ) {
     node->setProperties( first );
     prop = node->findPropertyByName( "test" );
     EXPECT_EQ( first, prop );
+    delete node;
 }
 
 TEST_F( DDLNodeTest, accessValueTest ) {
@@ -150,6 +159,7 @@ TEST_F( DDLNodeTest, accessValueTest ) {
     Value *myValue( new Value( Value::ddl_bool ) );
     myNode->setValue( myValue );
     EXPECT_EQ( myValue, myNode->getValue() );
+    delete myNode;
 }
 
 TEST_F( DDLNodeTest, accessDataArrayListTest ) {
@@ -160,6 +170,7 @@ TEST_F( DDLNodeTest, accessDataArrayListTest ) {
     DataArrayList *dtArrayList( new DataArrayList );
     myNode->setDataArrayList( dtArrayList );
     EXPECT_EQ( dtArrayList, myNode->getDataArrayList() );
+    delete myNode;
 }
 
 TEST_F( DDLNodeTest, accessReferencesTest ) {
@@ -170,6 +181,7 @@ TEST_F( DDLNodeTest, accessReferencesTest ) {
     Reference *ref = new Reference;
     myNode->setReferences( ref );
     EXPECT_EQ( ref, myNode->getReferences() );
+    delete myNode;
 }
 
 END_ODDLPARSER_NS
