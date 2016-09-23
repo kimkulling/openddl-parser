@@ -26,8 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "UnitTestCommon.h"
 
-#include <iostream>
-
 BEGIN_ODDLPARSER_NS
 
 class OpenDDLParserTest : public testing::Test {
@@ -406,7 +404,7 @@ TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     in = OpenDDLParser::parseBooleanLiteral( token1, end1, &data );
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == data );
-    EXPECT_EQ( Value::ddl_bool, data->m_type );
+    EXPECT_EQ( Value::ddl_bool, data->getType() );
     EXPECT_EQ( true, data->getBool() );
     registerValueForDeletion( data );
 
@@ -414,7 +412,7 @@ TEST_F( OpenDDLParserTest, parseBooleanLiteralTest ) {
     char token2[] = "false", *end2( findEnd( token2, len2 ) );
     in = OpenDDLParser::parseBooleanLiteral( token2, end2, &data );
     ASSERT_FALSE( ddl_nullptr == data );
-    EXPECT_EQ( Value::ddl_bool, data->m_type );
+    EXPECT_EQ( Value::ddl_bool, data->getType() );
     EXPECT_EQ( false, data->getBool() );
     registerValueForDeletion( data );
 
@@ -433,7 +431,7 @@ TEST_F( OpenDDLParserTest, parseIntegerLiteralTest ) {
     in = OpenDDLParser::parseIntegerLiteral( token1, end1, &data );
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == data );
-    EXPECT_EQ( Value::ddl_int32, data->m_type );
+    EXPECT_EQ( Value::ddl_int32, data->getType() );
     EXPECT_EQ( 1, data->getInt32() );
     registerValueForDeletion( data );
 
@@ -460,7 +458,7 @@ TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
     char *out = OpenDDLParser::parseFloatingLiteral( token1, end1, &data );
     EXPECT_NE( out, token1 );
     ASSERT_FALSE( ddl_nullptr == data );
-    EXPECT_EQ( Value::ddl_float, data->m_type );
+    EXPECT_EQ( Value::ddl_float, data->getType() );
     EXPECT_EQ(1.0f, data->getFloat() );
     registerValueForDeletion(data);
 
@@ -468,7 +466,7 @@ TEST_F( OpenDDLParserTest, parseFloatingLiteralTest ) {
     out = OpenDDLParser::parseFloatingLiteral( token2, end2, &data );
     EXPECT_NE( out, token2 );
     ASSERT_FALSE( ddl_nullptr == data );
-    EXPECT_EQ( Value::ddl_float, data->m_type );
+    EXPECT_EQ( Value::ddl_float, data->getType() );
     EXPECT_EQ( -1.0f, data->getFloat() );
     registerValueForDeletion(data);
 }
@@ -482,8 +480,8 @@ TEST_F( OpenDDLParserTest, parseStringLiteralTest ) {
     char *out = OpenDDLParser::parseStringLiteral( token1, end1, &data );
     EXPECT_NE( in, out );
     EXPECT_FALSE( ddl_nullptr == data );
-    EXPECT_EQ( Value::ddl_string, data->m_type );
-    std::string str( (char*) data->m_data );
+    EXPECT_EQ( Value::ddl_string, data->getType() );
+    std::string str( (char*) data->getString() );
     int res( ::strncmp( "teststring", str.c_str(), str.size() ) );
     EXPECT_EQ( 0, res );
     registerValueForDeletion( data );
@@ -553,9 +551,9 @@ TEST_F( OpenDDLParserTest, parsePropertyTest ) {
     res = strncmp( "key", prop->m_key->m_buffer, prop->m_key->m_len );
     EXPECT_EQ( 0, res );
 
-    EXPECT_EQ( Value::ddl_string, prop->m_value->m_type );
-    EXPECT_FALSE( ddl_nullptr == prop->m_value->m_data );
-    res = strncmp( "angle", ( char* ) prop->m_value->m_data, prop->m_value->m_size );
+    EXPECT_EQ( Value::ddl_string, prop->m_value->getType() );
+    EXPECT_FALSE( ddl_nullptr == prop->m_value->getString() );
+    res = strcmp( "angle",prop->m_value->getString() );
     EXPECT_EQ( 0, res );
     delete prop;
 }
@@ -600,13 +598,13 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     ASSERT_FALSE( ddl_nullptr == data );
 
     // check intrinsic list with integers
-    std::list<int> expValues;
+    std::list<int32> expValues;
     expValues.push_back( 1 );
     expValues.push_back( 2 );
     expValues.push_back( 3 );
     expValues.push_back( 4 );
     EXPECT_EQ( 4, countItems( data ) );
-    EXPECT_TRUE( testValues( Value::ddl_int32, data, expValues ) );
+    EXPECT_TRUE( testValues( Value::ddl_int32, data, expValues ,&Value::getInt32) );
     registerValueForDeletion( data );
     delete refs;
 
@@ -616,20 +614,22 @@ TEST_F( OpenDDLParserTest, parseDataListTest ) {
     ASSERT_FALSE( ddl_nullptr == data );
 
     // check intrinsic list with strings
-    EXPECT_EQ( 2, countItems( data ) );
+    EXPECT_EQ( 2u,data->size() );
     std::string expStrings[ 2 ] = {
         "string1",
         "string2"
     };
     size_t i( 0 );
-    while ( ddl_nullptr != data ) {
-        const int res( strncmp( expStrings[ i ].c_str(), (char*) data->m_data, data->m_size ) );
+    Value *item=data;
+    while ( ddl_nullptr != item ) {
+        const int res( strcmp( expStrings[ i ].c_str(), item->getString() ) );
         EXPECT_EQ( 0, res );
-        data = data->m_next;
+        item = item->getNext();
         i++;
     }
     registerValueForDeletion( data );
     delete refs;
+
 }
 
 TEST_F( OpenDDLParserTest, parseDataArrayListWithArrayTest ) {
@@ -686,7 +686,7 @@ static void validateDataArray( Value *value, size_t expectedNumItems  ) {
     while( ddl_nullptr != value ) {
         std::cout << "value = " << value->getFloat() << std::endl;
         countedItems++;
-        value = value->m_next;
+        value = value->getNext();
     }
     EXPECT_EQ( expectedNumItems, countedItems );
 }

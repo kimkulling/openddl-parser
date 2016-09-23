@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #include <openddlparser/OpenDDLExport.h>
 #include <openddlparser/DDLNode.h>
-#include <openddlparser/Value.h>
 #include <openddlparser/OpenDDLParser.h>
 
 #include <sstream>
@@ -199,12 +198,12 @@ bool OpenDDLExport::writeNode( DDLNode *node, std::string &statement ) {
     statement = "}";
     DataArrayList *al( node->getDataArrayList() );
     if ( ddl_nullptr != al ) {
-        writeValueType( al->m_dataList->m_type, al->m_numItems, statement );
+        writeValueType( al->m_dataList->getType(), al->m_numItems, statement );
         writeValueArray( al, statement );
     }
     Value *v( node->getValue() );
     if (ddl_nullptr != v ) {
-        writeValueType( v->m_type, 1, statement );
+        writeValueType( v->getType(), 1, statement );
         statement = "{";
         writeLineEnd( statement );
         writeValue( v, statement );
@@ -293,9 +292,9 @@ bool OpenDDLExport::writeValue( Value *val, std::string &statement ) {
         return false;
     }
 
-    switch ( val->m_type ) {
+    switch ( val->getType() ) {
         case Value::ddl_bool:
-            if ( true == val->getBool() ) {
+            if ( val->getBool() ) {
                 statement += "true";
             } else {
                 statement += "false";
@@ -425,7 +424,7 @@ bool OpenDDLExport::writeValueArray( DataArrayList *al, std::string &statement )
                     statement += ", ";
                 }
                 writeValue( nextValue, statement );
-                nextValue = nextValue->m_next;
+                nextValue = nextValue->getNext();
                 idx++;
             }
             statement += " }";

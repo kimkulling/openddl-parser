@@ -27,74 +27,35 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BEGIN_ODDLPARSER_NS
 
 class ValueTest : public testing::Test {
-protected:
-    Value *m_start;
 
     virtual void SetUp() {
-        m_start = ddl_nullptr;
     }
 
     virtual void TearDown() {
-        if(m_start!=ddl_nullptr)
-            delete m_start;
-    }
-
-    Value *createValueList() {
-        Value *current( ValueAllocator::allocPrimData( Value::ddl_bool ) );
-        m_start = current;
-        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
-        current = current->m_next;
-        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
-        current = current->m_next;
-        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
-        current = current->m_next;
-
-        return m_start; 
     }
 };
 
-TEST_F( ValueTest, ValueDataAllocTest ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    EXPECT_FALSE( ddl_nullptr == data );
-    ValueAllocator::releasePrimData( &data );
-    EXPECT_EQ( ddl_nullptr, data );
-}
-
-TEST_F( ValueTest, ValueAccessBoolTest ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    ASSERT_FALSE( ddl_nullptr == data );
-    data->setBool( true );
-    EXPECT_EQ( true, data->getBool() );
-    data->setBool( false );
-    EXPECT_EQ( false, data->getBool() );
-    ValueAllocator::releasePrimData( &data );
-    EXPECT_EQ( ddl_nullptr, data );
-}
 
 TEST_F( ValueTest, ValueAccessStringTest ) {
     std::string text = "hallo";
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_string, text.size() );
-    ASSERT_FALSE( ddl_nullptr == data );
-
-    data->setString( text );
-    int res = ::strncmp( text.c_str(), data->getString(), text.size() );
+    Value data(text);
+    int res = ::strncmp( text.c_str(), data.getString(), text.size() );
     EXPECT_EQ( 0, res );
-    delete data;
+
 }
 
 TEST_F( ValueTest, ValueAccessNextTest ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    ASSERT_FALSE( ddl_nullptr == data );
-    EXPECT_EQ( ddl_nullptr, data->getNext() );
 
-    Value *dataNext = ValueAllocator::allocPrimData( Value::ddl_bool );
-    EXPECT_EQ( ddl_nullptr, dataNext->getNext() );
+    Value data;
+    EXPECT_EQ( ddl_nullptr, data.getNext() );
 
-    data->setNext( dataNext );
-    EXPECT_EQ( dataNext, data->getNext() );
-    delete data;
+    Value *dataNext = new Value;
+
+    data.setNext(dataNext);
+    EXPECT_EQ( dataNext, data.getNext() );
 }
 
+    /*
 TEST_F( ValueTest, InitIteratorTest ) {
     Value::Iterator it1;
     EXPECT_FALSE(it1.hasNext() );
@@ -143,69 +104,48 @@ TEST_F( ValueTest, IteratePostIncTest ) {
         it++;
     }
 }
+*/
 
 TEST_F( ValueTest, accessInt8Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_int8 );
-    data->setInt8( 10 );
-    EXPECT_EQ( 10, data->getInt8() ); 
-    ValueAllocator::releasePrimData( &data );
+    Value data((int8)0x12);
+    EXPECT_EQ( 0x12, data.getInt8() );
 }
 
 TEST_F( ValueTest, accessInt16Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_int16 );
-    data->setInt16( 10 );
-    EXPECT_EQ( 10, data->getInt16() );
-
-    ValueAllocator::releasePrimData( &data );
+    Value data((int16)0x1234);
+    EXPECT_EQ(0x1234, data.getInt16() );
 }
 
 TEST_F( ValueTest, accessInt32Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_int32 );
-    data->setInt32( 10 );
-    EXPECT_EQ( 10, data->getInt32() );
-
-    ValueAllocator::releasePrimData( &data );
+    Value data((int32)0x12345678);
+    EXPECT_EQ(0x12345678 , data.getInt32() );
 }
 
 TEST_F( ValueTest, accessInt64Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_int64 );
-    data->setInt64( 10 );
-    EXPECT_EQ( 10, data->getInt64() );
-
-    ValueAllocator::releasePrimData( &data );
+    Value data( 0x0123456789ABCDEFL );
+    EXPECT_EQ( 0x0123456789ABCDEFL, data.getInt64() );
 }
 
 TEST_F( ValueTest, accessUInt8Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int8 );
-    data->setUnsignedInt8( 10 );
-    EXPECT_EQ( 10, data->getUnsignedInt8() );
-    
-    ValueAllocator::releasePrimData( &data );
+    Value data((uint8)0x12);
+    EXPECT_EQ( 0x12, data.getInt8() );
 }
 
 TEST_F( ValueTest, accessUInt16Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int16 );
-    data->setUnsignedInt16( 10 );
-    EXPECT_EQ( 10, data->getUnsignedInt16() );
-
-    ValueAllocator::releasePrimData( &data );
+    Value data((uint16)0x1234);
+    EXPECT_EQ(0x1234, data.getInt16() );
 }
 
 TEST_F( ValueTest, accessUInt32Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int32 );
-    data->setUnsignedInt32( 10 );
-    EXPECT_EQ( 10, data->getUnsignedInt32() );
-
-    ValueAllocator::releasePrimData( &data );
+    Value data((int32)0x12345678);
+    EXPECT_EQ(0x12345678 , data.getInt32() );
 }
 
 TEST_F( ValueTest, accessUInt64Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
-    data->setUnsignedInt64( 10 );
-    EXPECT_EQ( 10, data->getUnsignedInt64() );
-
-    ValueAllocator::releasePrimData( &data );
+    Value data((uint64) 0x0123456789ABCDEFL );
+    EXPECT_EQ( 0x0123456789ABCDEFL, data.getInt64() );
 }
+
 
 TEST_F( ValueTest, accessReferenceTest ) {
     Reference *ref = new Reference;
@@ -214,9 +154,8 @@ TEST_F( ValueTest, accessReferenceTest ) {
     ref->m_referencedName = new Name*[1];
     ref->m_referencedName[0]=name;
 
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_ref );
-    data->setRef( ref );
-    Reference *newRef( data->getRef() );
+    Value data(ref);
+    Reference *newRef( data.getRef() );
     EXPECT_EQ( ref->m_numRefs, newRef->m_numRefs );
     for ( size_t i = 0; i < ref->m_numRefs; i++ ) {
         Name *orig( ref->m_referencedName[ i ] ), *newName( newRef->m_referencedName[ i ] );
@@ -224,21 +163,29 @@ TEST_F( ValueTest, accessReferenceTest ) {
         EXPECT_EQ( *orig->m_id, *newName->m_id );
     }
     delete ref;
-    delete data;
 
 }
 
-TEST_F(ValueTest, sizeTest) {
-    Value *data1 = ValueAllocator::allocPrimData( Value::ddl_ref );
-    size_t size( data1->size() );
-    EXPECT_EQ( 1, size );
+static Value *createValueList(const int length) {
+    Value *head = new Value;
+    Value *parent=head,*child= ddl_nullptr;
+    for(int i=0;i<length-1;i++){
+        child= new Value;
+        parent->setNext(child);
+        parent=child;
+    }
+    return head;
+}
 
-    Value *data2 = ValueAllocator::allocPrimData(Value::ddl_ref);
-    data1->setNext( data2 );
-    size = data1->size();
-    EXPECT_EQ(2, size);
+TEST_F(ValueTest, sizeTest) {
+    Value *data1 = createValueList(0);
+    EXPECT_EQ( 1,data1->size() );
+
+    Value *data2 = createValueList(10);
+    EXPECT_EQ(10,data2->size());
 
     delete data1;
+    delete data2;
 }
 
 END_ODDLPARSER_NS

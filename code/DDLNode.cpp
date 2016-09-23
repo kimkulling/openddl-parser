@@ -27,22 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-DDLNode::DllNodeList DDLNode::s_allocatedNodes;
-
-template<class T>
-inline
-static void releaseDataType( T *ptr ) {
-    if( ddl_nullptr == ptr ) {
-        return;
-    }
-
-    T *current( ddl_nullptr );
-    while( ptr ) {
-        current = ptr;
-        ptr = ptr->m_next;
-        delete current;
-    }
-}
 
 static void releaseReferencedNames( Reference *ref ) {
     if( ddl_nullptr == ref ) {
@@ -52,7 +36,7 @@ static void releaseReferencedNames( Reference *ref ) {
     delete ref;
 }
 
-DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, DDLNode *parent )
+DDLNode::DDLNode( const std::string &type, const std::string &name, DDLNode *parent )
 : m_type( type )
 , m_name( name )
 , m_parent( parent )
@@ -60,8 +44,7 @@ DDLNode::DDLNode( const std::string &type, const std::string &name, size_t idx, 
 , m_properties( ddl_nullptr )
 , m_value( ddl_nullptr )
 , m_dtArrayList( ddl_nullptr )
-, m_references( ddl_nullptr )
-, m_idx( idx ) {
+, m_references( ddl_nullptr ) {
     if( m_parent ) {
         m_parent->m_children.push_back( this );
     }
@@ -74,9 +57,6 @@ DDLNode::~DDLNode() {
 
     delete m_dtArrayList;
     m_dtArrayList = ddl_nullptr;
-    if( s_allocatedNodes[ m_idx ] == this ) {
-        s_allocatedNodes[ m_idx ] = ddl_nullptr;
-    }
     for(size_t i = 0 ; i<m_children.size();i++){
         delete m_children[i];
     }
@@ -193,22 +173,7 @@ Reference *DDLNode::getReferences() const {
 }
 
 DDLNode *DDLNode::create( const std::string &type, const std::string &name, DDLNode *parent ) {
-    const size_t idx( s_allocatedNodes.size() );
-    DDLNode *node = new DDLNode( type, name, idx, parent );
-    s_allocatedNodes.push_back( node );
-    
-    return node;
-}
-
-void DDLNode::releaseNodes() {
-    if( s_allocatedNodes.size() > 0 ) {
-        for( DllNodeList::iterator it = s_allocatedNodes.begin(); it != s_allocatedNodes.end(); it++ ) {
-            if( *it ) {
-                delete *it;
-            }
-        }
-        s_allocatedNodes.clear();
-    }
+    return new DDLNode(type, name, parent);
 }
 
 END_ODDLPARSER_NS
