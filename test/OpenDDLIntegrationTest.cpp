@@ -48,25 +48,25 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     ASSERT_FALSE( ddl_nullptr == ctx );
 
     DDLNode::DllNodeList myList = myNode->getChildNodeList();
-    ASSERT_EQ( 2, myList.size() );
+    ASSERT_EQ( 2u, myList.size() );
     DDLNode *child = myList[ 0 ];
     ASSERT_FALSE( ddl_nullptr == child );
     EXPECT_EQ( "Metric", child->getType() );
     Property *prop = child->getProperties();
     ASSERT_FALSE( ddl_nullptr == prop );
 
-    const char *data1 = ( const char * ) prop->m_value->m_data;
+    const char *data1 = ( const char * ) prop->m_value->getString();
     int res( ::strncmp( "distance", data1, strlen( "distance" ) ) );
-    EXPECT_EQ( Value::ddl_string, prop->m_value->m_type );
+    EXPECT_EQ( Value::ddl_string, prop->m_value->getType() );
     EXPECT_EQ( 0, res );
 
     child = myList[ 1 ];
     ASSERT_FALSE( ddl_nullptr == child );
     EXPECT_EQ( "Metric", child->getType() );
     prop = child->getProperties();
-    const char *data2 = ( const char * ) prop->m_value->m_data;
+    const char *data2 = ( const char * ) prop->m_value->getString();
     res = ::strncmp( "up", data2, strlen( "up" ) );
-    EXPECT_EQ( Value::ddl_string, prop->m_value->m_type );
+    EXPECT_EQ( Value::ddl_string, prop->m_value->getType() );
     EXPECT_EQ( 0, res );
 }
 
@@ -133,7 +133,7 @@ static void dataArrayList2StdVector( DataArrayList *dataArrayList, std::vector<f
     }
     while ( ddl_nullptr != val ) {
         container.push_back( val->getFloat() );
-        val = val->m_next;
+        val = val->getNext();
     }
 }
 

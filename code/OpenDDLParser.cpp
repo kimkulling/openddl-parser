@@ -635,11 +635,9 @@ char *OpenDDLParser::parseBooleanLiteral( char *in, char *end, Value **boolean )
             *boolean = ddl_nullptr;
             return in;
         }
-        *boolean = ValueAllocator::allocPrimData( Value::ddl_bool );
-        (*boolean)->setBool( false );
+        *boolean = new Value(false);
     } else {
-        *boolean = ValueAllocator::allocPrimData( Value::ddl_bool );
-        (*boolean)->setBool( true );
+        *boolean = new Value(true);
     }
 
     return in;
@@ -669,31 +667,31 @@ char *OpenDDLParser::parseIntegerLiteral( char *in, char *end, Value **integer, 
         const int64 value( atoll( start ) );
         const uint64 uvalue( strtoull( start,ddl_nullptr,10 ) );
 #endif
-        *integer = ValueAllocator::allocPrimData( integerType );
+
         switch( integerType ) {
             case Value::ddl_int8:
-                    ( *integer )->setInt8( (int8) value );
+                    *integer = new Value((int8)value);
                     break;
             case Value::ddl_int16:
-                    ( *integer )->setInt16( ( int16 ) value );
+                    *integer = new Value((int16)value);
                     break;
             case Value::ddl_int32:
-                    ( *integer )->setInt32( ( int32 ) value );
+                    *integer = new Value((int32)value);
                     break;
             case Value::ddl_int64:
-                    ( *integer )->setInt64( ( int64 ) value );
+                    *integer = new Value((int64)value);
                     break;
             case Value::ddl_unsigned_int8:
-                    ( *integer )->setUnsignedInt8( (uint8) uvalue );
+                    *integer = new Value((uint8)uvalue);
                     break;
             case Value::ddl_unsigned_int16:
-                    ( *integer )->setUnsignedInt16( ( uint16 ) uvalue );
+                    *integer = new Value((uint16)uvalue);
                     break;
             case Value::ddl_unsigned_int32:
-                    ( *integer )->setUnsignedInt32( ( uint32 ) uvalue );
+                    *integer = new Value((uint32)uvalue);
                     break;
             case Value::ddl_unsigned_int64:
-                    ( *integer )->setUnsignedInt64( ( uint64 ) uvalue );
+                    *integer = new Value((uint64)uvalue);
                     break;
             default:
                 break;
@@ -736,12 +734,10 @@ char *OpenDDLParser::parseFloatingLiteral( char *in, char *end, Value **floating
         if(floatType == Value::ddl_double)
         {
             const double value( atof( start ) );
-            *floating = ValueAllocator::allocPrimData( Value::ddl_double );
-            ( *floating )->setDouble( value );
+            *floating = new Value(value);
         } else {
             const float value( ( float ) atof( start ) );
-            *floating = ValueAllocator::allocPrimData( Value::ddl_float );
-            ( *floating )->setFloat( value );
+            *floating = new Value( value );
         }
     }
 
@@ -765,9 +761,7 @@ char *OpenDDLParser::parseStringLiteral( char *in, char *end, Value **stringData
             len++;
         }
 
-        *stringData = ValueAllocator::allocPrimData( Value::ddl_string, len );
-        ::strncpy( ( char* ) ( *stringData )->m_data, start, len );
-        ( *stringData )->m_data[len] = '\0';
+        *stringData = new Value(start,len);
         in++;
     }
 
@@ -814,7 +808,7 @@ char *OpenDDLParser::parseHexaLiteral( char *in, char *end, Value **data ) {
         return in;
     }
 
-    int value( 0 );
+    uint64 value( 0 );
     while( pos > 0 ) {
         int v = hex2Decimal( *start );
         pos--;
@@ -822,10 +816,7 @@ char *OpenDDLParser::parseHexaLiteral( char *in, char *end, Value **data ) {
         start++;
     }
 
-    *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
-    if( ddl_nullptr != *data ) {
-        ( *data )->setUnsignedInt64( value );
-    }
+    *data = new Value(value);
 
     return in;
 }

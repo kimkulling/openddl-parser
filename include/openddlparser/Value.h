@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <openddlparser/OpenDDLCommon.h>
 
 #include <string>
+#include <cassert>
 
 BEGIN_ODDLPARSER_NS
 
@@ -117,153 +118,332 @@ public:
         ddl_types_max           ///< Upper limit.
     };
 
-    ///	@brief  The class constructor.
-    /// @param  type        [in] The value type.
-    Value( ValueType type );
+
+    Value():m_type(ddl_none),
+            m_next(ddl_nullptr){}
+
+    Value(bool value):
+        m_type(ddl_bool),
+        booleanValue(value),
+        m_next(ddl_nullptr){}
+
+    Value(int8 value):
+            m_type(ddl_int8),
+            int8Value(value),
+            m_next(ddl_nullptr){}
+
+    Value(int16 value):
+            m_type(ddl_int16),
+            int16Value(value),
+            m_next(ddl_nullptr){}
+
+    Value(int32 value):
+            m_type(ddl_int32),
+            int32Value(value),
+            m_next(ddl_nullptr){}
+
+    Value(int64 value):
+            m_type(ddl_int64),
+            int64Value(value),
+            m_next(ddl_nullptr){}
+
+    Value(uint8 value):
+            m_type(ddl_unsigned_int8),
+            uint8Value(value),
+            m_next(ddl_nullptr){}
+
+    Value(uint16 value):
+            m_type(ddl_unsigned_int16),
+            uint16Value(value),
+            m_next(ddl_nullptr){}
+
+    Value(uint32 value):
+            m_type(ddl_unsigned_int32),
+            uint32Value(value),
+            m_next(ddl_nullptr){}
+
+    Value(uint64 value):
+            m_type(ddl_unsigned_int64),
+            uint64Value(value),
+            m_next(ddl_nullptr){}
+
+    Value(float value):
+            m_type(ddl_float),
+            floatValue(value),
+            m_next(ddl_nullptr){}
+
+    Value(double value):
+            m_type(ddl_double),
+            doubleValue(value),
+            m_next(ddl_nullptr){}
+
+    Value(const std::string &value):
+            m_type(ddl_string),
+            strValue(ddl_nullptr),
+            m_next(ddl_nullptr){
+        setString(value);
+    }
+
+    Value(const char* str,const size_t len):
+            m_type(ddl_string),
+            strValue(new char[len+1]),
+            m_next(ddl_nullptr) {
+        ::strncpy(strValue,str,len);
+        strValue[len]='\0'; //since str can be a buffer bigger than len
+    }
+
+    /**
+     * It will store a copy of the reference!
+     * @param value
+     * @return
+     */
+    Value(Reference *value):
+            m_type(ddl_ref),
+            referenceValue(new Reference(*value)),
+            m_next(ddl_nullptr){}
+
 
     ///	@brief  The class destructor.
     ~Value();
 
+    ValueType getType()const{
+        return m_type;
+    }
+
     ///	@brief  Assigns a boolean to the value.
     /// @param  value       [in9 The value.
-    void setBool( bool value );
+    void setBool(const bool value ){
+        freeAllocatedMemory();
+        m_type=ddl_bool;
+        booleanValue=value;
+    }
 
     ///	@brief  Returns the boolean value.
     /// @return The boolean value.
-    bool getBool();
+    bool getBool() const{
+        return booleanValue;
+    }
 
     ///	@brief  Assigns a int8 to the value.
     /// @param  value       [in] The value.
-    void setInt8( int8 value );
+    void setInt8(const int8 value ){
+        freeAllocatedMemory();
+        m_type=ddl_int8;
+        int8Value=value;
+    }
 
     ///	@brief  Returns the int8 value.
     /// @return The int8 value.
-    int8 getInt8();
+    int8 getInt8()const{
+        return int8Value;
+    }
 
     ///	@brief  Assigns a int16 to the value.
     /// @param  value       [in] The value.
-    void setInt16( int16 value );
+    void setInt16(const int16 value ){
+        freeAllocatedMemory();
+        m_type=ddl_int16;
+        int16Value=value;
+    }
 
     ///	@brief  Returns the int16 value.
     /// @return The int16 value.
-    int16 getInt16();
+    int16 getInt16()const{
+        return int16Value;
+    }
 
     ///	@brief  Assigns a int32 to the value.
     /// @param  value       [in] The value.
-    void setInt32( int32 value );
+    void setInt32(const int32 value ){
+        freeAllocatedMemory();
+        m_type=ddl_int32;
+        int32Value=value;
+    }
 
     ///	@brief  Returns the int16 value.
     /// @return The int32 value.
-    int32 getInt32();
+    int32 getInt32()const{
+        return int32Value;
+    }
 
     ///	@brief  Assigns a int64 to the value.
     /// @param  value       [in] The value.
-    void setInt64( int64 value );
+    void setInt64(const int64 value ){
+        freeAllocatedMemory();
+        m_type=ddl_int64;
+        int64Value=value;
+    }
 
     ///	@brief  Returns the int16 value.
     /// @return The int64 value.
-    int64 getInt64();
+    int64 getInt64()const{
+        return int64Value;
+    }
 
     ///	@brief  Assigns a unsigned int8 to the value.
     /// @param  value       [in] The value.
-    void setUnsignedInt8( uint8 value );
+    void setUnsignedInt8(const uint8 value ){
+        freeAllocatedMemory();
+        m_type=ddl_unsigned_int8;
+        uint8Value=value;
+    }
 
     ///	@brief  Returns the unsigned int8 value.
     /// @return The unsigned int8 value.
-    uint8 getUnsignedInt8() const;
+    uint8 getUnsignedInt8() const{
+        return uint8Value;
+    }
 
     ///	@brief  Assigns a unsigned int16 to the value.
     /// @param  value       [in] The value.
-    void setUnsignedInt16( uint16 value );
+    void setUnsignedInt16(const uint16 value ){
+        freeAllocatedMemory();
+        m_type=ddl_unsigned_int16;
+        uint16Value=value;
+    }
 
     ///	@brief  Returns the unsigned int16 value.
     /// @return The unsigned int16 value.
-    uint16 getUnsignedInt16() const;
+    uint16 getUnsignedInt16() const{
+        return uint16Value;
+    }
 
     ///	@brief  Assigns a unsigned int32 to the value.
     /// @param  value       [in] The value.
-    void setUnsignedInt32( uint32 value );
+    void setUnsignedInt32(const uint32 value ){
+        freeAllocatedMemory();
+        m_type=ddl_unsigned_int32;
+        uint32Value=value;
+    }
 
     ///	@brief  Returns the unsigned int8 value.
     /// @return The unsigned int32 value.
-    uint32 getUnsignedInt32() const;
+    uint32 getUnsignedInt32() const{
+        return uint32Value;
+    }
 
     ///	@brief  Assigns a unsigned int64 to the value.
     /// @param  value       [in] The value.
-    void setUnsignedInt64( uint64 value );
+    void setUnsignedInt64(const uint64 value ){
+        freeAllocatedMemory();
+        m_type=ddl_unsigned_int64;
+        uint64Value=value;
+    }
 
     ///	@brief  Returns the unsigned int64 value.
     /// @return The unsigned int64 value.
-    uint64 getUnsignedInt64() const;
+    uint64 getUnsignedInt64() const{
+        return uint64Value;
+    }
 
     ///	@brief  Assigns a float to the value.
     /// @param  value       [in] The value.
-    void setFloat( float value );
+    void setFloat(const float value ){
+        freeAllocatedMemory();
+        m_type=ddl_float;
+        floatValue=value;
+    }
 
     ///	@brief  Returns the float value.
     /// @return The float value.
-    float getFloat() const;
+    float getFloat() const{
+        return floatValue;
+    }
 
     ///	@brief  Assigns a double to the value.
     /// @param  value       [in] The value.
-    void setDouble( double value );
+    void setDouble(const double value ){
+        freeAllocatedMemory();
+        m_type=ddl_double;
+        doubleValue=value;
+    }
 
     ///	@brief  Returns the double value.
     /// @return The double value.
-    double getDouble() const;
+    double getDouble() const{
+        return doubleValue;
+    }
 
     ///	@brief  Assigns a std::string to the value.
     /// @param  value       [in] The value.
-    void setString( const std::string &str );
+    void setString( const std::string &str ){
+        freeAllocatedMemory();
+        m_type=ddl_string;
+        strValue = new char[str.size()+1];
+        ::strncpy(strValue,str.c_str(),str.size());
+        strValue[str.size()]='\0';
+    }
 
     ///	@brief  Returns the std::string value.
     /// @return The std::string value.
-    const char *getString() const;
+    const char *getString() const{
+        assert( ddl_string == m_type );
+        return strValue;
+    }
 
     /// @brief  Set the reference.
     /// @param  ref     [in] Pointer showing to the reference.
-    void setRef( Reference *ref );
-
-    /// @brief  Returns the pointer showing to the reference.
-    /// @return Pointer showing to the reference.
-    Reference *getRef() const;
+    void setRef(const Reference *const ref ){
+        freeAllocatedMemory();
+        m_type=ddl_ref;
+        referenceValue=new Reference(*ref);
+    }
 
     ///	@brief  Dumps the value.
     void dump();
 
+    /// @brief  Returns the pointer showing to the reference.
+    /// @return Pointer showing to the reference.
+    Reference *getRef() const{
+        assert( ddl_ref == m_type );
+        return referenceValue;
+    }
+
     ///	@brief  Assigns the next value.
     ///	@param  next        [n] The next value.
-    void setNext( Value *next );
+    void setNext( Value *next ){
+        m_next=next;
+    }
 
     ///	@brief  Returns the next value.
     /// @return The next value.s
-    Value *getNext() const;
+    Value *getNext() const{
+        return m_next;
+    }
 
     /// @brief  Gets the length of the array.
     /// @return The number of items in the array.
     size_t size();
 
-    ValueType m_type;
-    size_t m_size;
-    unsigned char *m_data;
-    Value *m_next;
-
 private:
     Value &operator =( const Value & ) ddl_no_copy;
     Value( const Value  & ) ddl_no_copy;
-};
 
-///------------------------------------------------------------------------------------------------
-///	@brief  This class implements the value allocator.
-///------------------------------------------------------------------------------------------------
-struct DLL_ODDLPARSER_EXPORT ValueAllocator {
-    static Value *allocPrimData( Value::ValueType type, size_t len = 1 );
-    static void releasePrimData( Value **data );
+    void freeAllocatedMemory(){
+        if(m_type==ddl_string)
+            delete [] strValue;
+        else if(m_type==ddl_ref)
+            delete referenceValue;
+    }
 
-private:
-    ValueAllocator() ddl_no_copy;
-    ValueAllocator( const ValueAllocator  & ) ddl_no_copy;
-    ValueAllocator &operator = ( const ValueAllocator & ) ddl_no_copy;
+    ValueType m_type;
+    union{
+        bool booleanValue;
+        int8  int8Value;
+        int16 int16Value;
+        int32 int32Value;
+        int64 int64Value;
+        uint8  uint8Value;
+        uint16 uint16Value;
+        uint32 uint32Value;
+        uint64 uint64Value;
+        float floatValue;
+        double doubleValue;
+        char *strValue;
+        Reference *referenceValue;
+    };
+    Value *m_next;
+
 };
 
 END_ODDLPARSER_NS
