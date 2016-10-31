@@ -158,7 +158,7 @@ if (COVERALLS)
     coveralls_setup(
         "${COVERAGE_SRCS}" # The source files.
         ON                 # If we should upload.
-        "${PROJECT_SOURCE_DIR}/CMakeModules/") # (Optional) Alternate project cmake module path.
+        "${PROJECT_SOURCE_DIR}/cmake/") # (Optional) Alternate project cmake module path.
 endif()
 
 ADD_EXECUTABLE( openddl_parser_demo
