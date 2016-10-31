@@ -1,5 +1,5 @@
 before_install:
-  - pip install --user cpp-coveralls
+  - sudo pip install cpp-coveralls
 
 install:
   - sudo apt-get install cmake
