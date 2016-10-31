@@ -6,8 +6,8 @@ env:
     - TRAVIS_NO_EXPORT=YES
     - TRAVIS_NO_EXPORT=NO
   matrix:
-      - CHECK_CODE_COVERAGE=ON
-      - CHECK_CODE_COVERAGE=OFF
+      - ENABLE_COVERALLS=ON
+      - ENABLE_COVERALLS=OFF
       - CHECK_USE_CPP11=ON
       - CHECK_USE_CPP11=OFF
 language: cpp
@@ -15,7 +15,7 @@ compiler:
   - gcc
   - clang
 script:
-    - cmake -DDDL_CHECK_CODE_COVERAGE=$CHECK_CODE_COVERAGE -DDDL_USE_CPP11=$CHECK_USE_CPP11 -G "Unix Makefiles" ;
+    - cmake -DCOVERALLS=$ENABLE_COVERALLS -DDDL_USE_CPP11=$CHECK_USE_CPP11 -G "Unix Makefiles" ;
       make ;
       ls ;
       cd bin ;
