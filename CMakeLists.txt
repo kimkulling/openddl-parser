@@ -7,9 +7,10 @@ SET ( OPENDDL_PARSER_VERSION ${CPPCORE_VERSION_MAJOR}.${CPPCORE_VERSION_MINOR}.$
 SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
 
 option( DDL_CHECK_CODE_COVERAGE "Set to ON to track code coverage in unit tests ( only supported for gcc ). " OFF )
-option( DDL_USE_CPP11           "Set to ON to use C++11 features ( always on on windows )." ON )
-option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts" OFF )
-option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser." ON)
+option( DDL_USE_CPP11           "Set to ON to use C++11 features ( always on on windows )."                   ON )
+option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts"                                         OFF )
+option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser."                         ON )
+option( COVERALLS               "Generate coveralls data"                                                     OFF )
 
 if ( DDL_USE_CPP11 )
     if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
@@ -53,6 +54,10 @@ SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/lib )
 SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/lib )
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin )
 
+if (COVERALLS)
+    include(Coveralls)
+endif()
+
 if( WIN32 AND NOT CYGWIN )
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc" )  # Force to always compile with W4
   if( CMAKE_CXX_FLAGS MATCHES "/W[0-4]" )
@@ -69,6 +74,12 @@ elseif( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
   endif( DDL_CHECK_CODE_COVERAGE )
 elseif ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic ${OPENDDL_CXXFLAGS} -Wwrite-strings")
+endif()
+
+if (COVERALLS)
+    include(Coveralls)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
 
 # Include the doc component.
@@ -147,6 +158,16 @@ target_link_libraries( openddl_parser_unittest openddl_parser ${CMAKE_THREAD_LIB
 SET( openddl_parser_demo_src  
     demo/main.cpp 
 )
+
+if (COVERALLS)
+    set(COVERAGE_SRCS     ${gtest_src} ${openddl_parser_unittest_src} )
+
+    # Create the coveralls target.
+    coveralls_setup(
+        "${COVERAGE_SRCS}" # The source files.
+        ON                 # If we should upload.
+        "${PROJECT_SOURCE_DIR}/CMakeModules/") # (Optional) Alternate project cmake module path.
+endif()
 
 ADD_EXECUTABLE( openddl_parser_demo
     ${openddl_parser_demo_src}
