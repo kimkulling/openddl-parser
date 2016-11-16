@@ -32,7 +32,6 @@ script:
       cd bin ;
       chmod 755 openddl_parser_unittest ;
       ./openddl_parser_unittest ;
-      make coveralls ;
       
 after_success:
 - cd ${TRAVIS_BUILD_DIR}
