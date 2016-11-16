@@ -18,7 +18,6 @@ env:
     - TRAVIS_NO_EXPORT=NO
   matrix:
       - ENABLE_COVERALLS=ON
-      - ENABLE_COVERALLS=OFF
       - CHECK_USE_CPP11=ON
       - CHECK_USE_CPP11=OFF
 language: cpp
