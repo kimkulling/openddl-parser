@@ -46,6 +46,22 @@ TEST_F( DDLNodeTest, createDDLNodeTest ) {
     delete myNode;
 }
 
+TEST_F( DDLNodeTest, attach_detach_parent_Test ) {
+    DDLNode *myParent = DDLNode::create( "parent", "" );
+    DDLNode *myChild  = DDLNode::create( "child", "" );
+    EXPECT_EQ( nullptr, myParent->getParent() );
+    myChild->attachParent( myParent );
+    EXPECT_EQ( myParent, myChild->getParent() );
+
+    myChild->detachParent();
+    EXPECT_EQ( nullptr, myChild->getParent() );
+
+    // must not fail
+    myChild->detachParent();
+    myParent->detachParent();
+    myParent->attachParent( nullptr );
+}
+
 TEST_F( DDLNodeTest, accessTypeTest ) {
     static const std::string type1 = "type";
     static const std::string name1 = "test";
