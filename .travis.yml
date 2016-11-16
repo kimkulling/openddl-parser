@@ -34,7 +34,7 @@ script:
     - export COVERALLS_SERVICE_NAME=travis-ci
     - export COVERALLS_REPO_TOKEN=abc12345
     - cmake -DCOVERALLS=$ENABLE_COVERALLS -DDDL_USE_CPP11=$CHECK_USE_CPP11 -G "Unix Makefiles" ;
-      make ;
+      make -j4;
       ls ;
       cd bin ;
       chmod 755 openddl_parser_unittest ;
