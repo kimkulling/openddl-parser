@@ -49,17 +49,17 @@ TEST_F( DDLNodeTest, createDDLNodeTest ) {
 TEST_F( DDLNodeTest, attach_detach_parent_Test ) {
     DDLNode *myParent = DDLNode::create( "parent", "" );
     DDLNode *myChild  = DDLNode::create( "child", "" );
-    EXPECT_EQ( nullptr, myParent->getParent() );
+    EXPECT_EQ( ddl_nullptr, myParent->getParent() );
     myChild->attachParent( myParent );
     EXPECT_EQ( myParent, myChild->getParent() );
 
     myChild->detachParent();
-    EXPECT_EQ( nullptr, myChild->getParent() );
+    EXPECT_EQ( ddl_nullptr, myChild->getParent() );
 
     // must not fail
     myChild->detachParent();
     myParent->detachParent();
-    myParent->attachParent( nullptr );
+    myParent->attachParent( ddl_nullptr );
 }
 
 TEST_F( DDLNodeTest, accessTypeTest ) {
