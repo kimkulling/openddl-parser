@@ -17,6 +17,12 @@ language: cpp
 compiler:
   - gcc
   - clang
+
+before_script:
+- cd ${TRAVIS_BUILD_DIR}
+# init coverage to 0 (optional)
+- lcov --directory . --zerocounters
+
 script:
     - export COVERALLS_SERVICE_NAME=travis-ci
     - export COVERALLS_REPO_TOKEN=abc12345
@@ -29,4 +35,8 @@ script:
       make coveralls ;
       
 after_success:
-  - coveralls --exclude lib --exclude tests --gcov-options '\-lp'
+- cd ${TRAVIS_BUILD_DIR}
+- lcov --directory . --capture --output-file coverage.info
+- lcov --remove coverage.info 'tests/*' '/usr/*' --output-file coverage.info
+- lcov --list coverage.info
+- coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info
