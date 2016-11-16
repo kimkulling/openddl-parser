@@ -11,7 +11,7 @@ Current coverity check status:
   <img alt="Coverity Scan Build Status"
        src="https://scan.coverity.com/projects/5606/badge.svg"/>
 </a>
-[![Coverage Status](https://coveralls.io/repos/github/kimkulling/openddl-parser/badge.svg?branch=cpp_coveralls)](https://coveralls.io/github/kimkulling/openddl-parser?branch=cpp_coveralls)
+[![Coverage Status](https://coveralls.io/repos/github/kimkulling/openddl-parser/badge.svg?branch=master)](https://coveralls.io/github/kimkulling/openddl-parser?branch=cpp_coveralls)
 Get the source code
 ===================
 You can get the code from our git repository, which is located at GitHub. You can clone the repository with the following command:
