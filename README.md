@@ -25,7 +25,7 @@ After installing it you can open a console and enter:
 
 > cmake CMakeLists.txt
 
-This command will generate a build environment for your installed build enrironment ( for Visual-Studio-users the project files will be generated, for gcc-users the makefiles will be generated ).
+This command will generate a build environment for your preferred build tool ( for Visual-Studio-users the project files will be generated, for gcc-users the makefiles will be generated ).
 When using an IDE open the IDE and run the build. When using GNU-make type in your console:
 
 > make
