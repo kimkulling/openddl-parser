@@ -36,7 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-static const char *Version = "0.3.0";
+static const char *Version = "0.4.0";
 
 namespace Grammar {
     static const char *OpenBracketToken   = "{";
