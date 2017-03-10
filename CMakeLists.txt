@@ -14,7 +14,7 @@ option( COVERALLS               "Generate coveralls data"                       
 if ( DDL_USE_CPP11 )
     if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
         set( OPENDDL_CXXFLAGS -std=c++0x )
-    elseif()
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set( OPENDDL_CXXFLAGS --std=c++11 )
     endif()
 else( DDL_USE_CPP11 )
