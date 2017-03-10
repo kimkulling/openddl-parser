@@ -46,7 +46,7 @@ INCLUDE_DIRECTORIES(
 )
 
 link_directories(
-    ./
+    ${CMAKE_HOME_DIRECTORY}/lib
 )
 
 set( CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake )
@@ -75,7 +75,6 @@ if (COVERALLS)
 endif()
 
 # Include the doc component.
-ADD_SUBDIRECTORY( doc )
 FIND_PACKAGE( doxygen )
 IF ( DOXYGEN_FOUND )
     CONFIGURE_FILE( doc/openddlparser_doc.in doc/doxygenfile @ONLY )
