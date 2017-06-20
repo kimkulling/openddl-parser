@@ -42,9 +42,47 @@ static void showhelp() {
     std::cout << "\t--dump   : The content of the loaded file will be dumped." << std::endl;
 }
 
-static void dumpDDLNodeTree( DDLNode *root ) {
+static const std::string Intention = "  ";
+
+static std::string createIntention( unsigned int level ) {
+    std::string intention;
+    for (unsigned int i = 0; i<level; ++i) {
+        intention += Intention;
+    }
+    
+    return intention;
+}
+
+static void dumpDllNode(DDLNode *node, unsigned int level ) {
+    if ( ddl_nullptr == node ) {
+        return;
+    }
+
+    const std::string intent( createIntention( level ) );
+    std::cout << intent << "Node   " << node->getName() << "\n";
+    std::cout << intent << "- type " << node->getType() << "\n";
+    std::cout << intent << "- value " << node->getType() << "\n";
+    Value *value = node->getValue();
+    if ( ddl_nullptr != value ) {
+        value->dump();
+    }
+}
+
+static void dumpDDLNodeTree( DDLNode *root, unsigned int level) {
     if (ddl_nullptr == root) {
         return;
+    }
+
+    dumpDllNode(root, level);
+
+    const DDLNode::DllNodeList &children = root->getChildNodeList();
+    if ( children.empty() ) {
+        return;
+    }
+
+    level++;
+    for ( auto node : children ) {
+        dumpDDLNodeTree( node, level );
     }
 }
 
@@ -112,7 +150,7 @@ int main( int argc, char *argv[] ) {
         } else {
             DDLNode *root = theParser.getRoot();
             if ( dump ) {
-                dumpDDLNodeTree(root);
+                dumpDDLNodeTree(root, 0);
             }
             if ( exportToFile ) {
                 OpenDDLExport theExporter;
@@ -121,6 +159,7 @@ int main( int argc, char *argv[] ) {
         }
         delete [] buffer;
     }
-    fclose(fileStream);
+    fclose( fileStream );
+
     return 0;
 }
