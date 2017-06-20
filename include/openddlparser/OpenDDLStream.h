@@ -32,8 +32,15 @@ BEGIN_ODDLPARSER_NS
 //-------------------------------------------------------------------------------------------------
 class DLL_ODDLPARSER_EXPORT StreamFormatterBase {
 public:
+    /// @brief  The class constructor.
     StreamFormatterBase();
+
+    /// @brief  The class destructor, virtual.
     virtual ~StreamFormatterBase();
+
+    /// @brief  Will format the sring and return the new formatted result.
+    /// @param  statement   [in] The string to reformat.
+    /// @return The reformatted result.
     virtual std::string format(const std::string &statement);
 };
 
@@ -43,10 +50,35 @@ public:
 //-------------------------------------------------------------------------------------------------
 class DLL_ODDLPARSER_EXPORT IOStreamBase {
 public:
-    IOStreamBase(StreamFormatterBase *formatter = ddl_nullptr);
+    /// @brief  The class constructor with the formatter.
+    /// @param  formatter   [in] The formatter to use.
+    explicit IOStreamBase(StreamFormatterBase *formatter = ddl_nullptr);
+
+    /// @brief  The class destructor, virtual.
     virtual ~IOStreamBase();
-    virtual bool open(const std::string &anme);
+
+    /// @brief  Will open the stream.
+    /// @param  name        [in] The name for the stream.
+    /// @return true, if the stream was opened successfully, false if not.
+    virtual bool open(const std::string &name);
+
+    /// @brief  Will close the stream.
+    /// @return true, if the stream was closed successfully, false if not.
     virtual bool close();
+
+    /// @brief  Returns true, if the stream is open.
+    /// @return true, if the stream is open, false if not.
+    virtual bool isOpen() const;
+
+    /// @brief  Will read a string from the stream.
+    /// @param  sizeToRead  [in] The size to read in bytes.
+    /// @param  statement   [out] The read statements.
+    /// @return The bytes read from the stream.
+    virtual size_t read( size_t sizeToRead, std::string &statement );
+
+    /// @brief  Will write a string into the stream.
+    /// @param  statement  [in] The string to write.
+    /// @return The bytes written into the stream.
     virtual size_t write(const std::string &statement);
 
 private:

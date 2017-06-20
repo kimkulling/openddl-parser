@@ -70,6 +70,21 @@ bool IOStreamBase::close() {
     return true;
 }
 
+bool IOStreamBase::isOpen() const {
+    return ( ddl_nullptr != m_file );
+}
+
+size_t IOStreamBase::read( size_t sizeToRead, std::string &statement ) {
+    if (ddl_nullptr == m_file) {
+        return 0;
+    }
+    
+    statement.resize(sizeToRead);
+    const size_t readBytes = ::fread( &statement[0], 1, sizeToRead, m_file );
+
+    return readBytes;
+}
+
 size_t IOStreamBase::write(const std::string &statement) {
     if (ddl_nullptr == m_file) {
         return 0;
