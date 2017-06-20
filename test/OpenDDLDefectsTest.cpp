@@ -183,21 +183,14 @@ TEST_F( OpenDDLDefectsTest, invalid_size_dataarraylist_issue_41 ) {
 
 TEST_F( OpenDDLDefectsTest, invalid_handling_of_embedded_comments ) {
     char token[] = {
-        "GeometryObject /*mesh*/ {\n"
+        "GeometryObject $name/*mesh*/ {\n"
         "    Mesh (primitive = \"triangle_strip\") {\n"
-        "        VertexArray (attrib = \"position\") { float[3] {\n"
-        "            {0.0, 1.0, 3.0}, {-1.0, 2.0, 2.0}, {3.0, 3.0, 1.0}\n"
-        "    }}\n"
-        "    VertexArray (attrib = \"normal\") { float[3] {\n"
-        "        {0.0, 1.0, 0.0}, {-1.0, 0.0, 0.0}, {0.0, 0.0, 1.0}\n"
-        "    }}\n"
-        "    VertexArray (attrib = \"texcoord\") { float[2] {\n"
-        "        {0.5, 0.5}, {0.5, 1.0}, {1.0, 1.0}\n"
-        "    }}\n"
-        "    VertexArray (attrib = \"texcoord\") { float[2] {\n"
-        "        {0.5, 1.0}, {1.0, 0.5}, {0.5, 0.5}\n"
-        "    }}\n"
-        "    VertexArray (attrib = \"color\") { float {} }\n"
+        "        VertexArray (attrib = \"position\") {\n"
+        "            float[3] {\n"
+        "                {0.0, 1.0, 3.0}, {-1.0, 2.0, 2.0}, {3.0, 3.0, 1.0}\n"
+        "            }\n"
+        "        }\n"
+        "    }\n"
         "}\n"
     };	
     OpenDDLParser myParser;
