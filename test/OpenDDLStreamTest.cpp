@@ -33,7 +33,7 @@ class OpenDDLStreamTest : public testing::Test {
 TEST_F(OpenDDLStreamTest, createFormatter_success) {
     bool ok(true);
     try {
-        StreamFormatterBase base();
+        StreamFormatterBase baseStream;
     } catch (...) {
         ok = false;
     }
@@ -43,7 +43,7 @@ TEST_F(OpenDDLStreamTest, createFormatter_success) {
 TEST_F( OpenDDLStreamTest, createStream_success ) {
     bool ok( true );
     try {
-        IOStreamBase base();
+        IOStreamBase baseStream;
     } catch( ... ) {
         ok = false;
     }
