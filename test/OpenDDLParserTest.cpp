@@ -530,7 +530,6 @@ TEST_F( OpenDDLParserTest, parseFloatHexaLiteralTest ) {
     const float value( data->getFloat() );
     EXPECT_FLOAT_EQ( 1.0f, value );
     registerValueForDeletion( data );
-
 }
 
 TEST_F( OpenDDLParserTest, parsePropertyTest ) {
