@@ -105,7 +105,7 @@ TEST_F( OpenDDLCommonTest, clearTextTest ) {
     ASSERT_TRUE( ddl_nullptr != theText );
 
     theText->clear();
-    EXPECT_EQ( 0, theText->m_len );
+    EXPECT_EQ( 0U, theText->m_len );
     EXPECT_TRUE( ddl_nullptr == theText->m_buffer );
 }
 
@@ -128,10 +128,10 @@ TEST_F( OpenDDLCommonTest, CompareIdentifierTest ) {
 
 TEST_F( OpenDDLCommonTest, sizeAdatArrayListTest ) {
     DataArrayList *list = new DataArrayList;
-    EXPECT_EQ( 0, list->size() );
+    EXPECT_EQ( 0U, list->size() );
     DataArrayList *listNext = new DataArrayList;
     list->m_next = listNext;
-    EXPECT_EQ( 1, list->size() );
+    EXPECT_EQ( 1U, list->size() );
 
     delete list;
 }
@@ -141,13 +141,14 @@ TEST_F( OpenDDLCommonTest, sizeInBytesReferenceTest ) {
     Name *name = new Name( GlobalName, id );
     Reference *ref1( new Reference( 1, &name ) );
     size_t size( ref1->sizeInBytes() );
-    EXPECT_EQ( 4, size );
+    EXPECT_EQ( 4U, size );
     delete ref1;
 
     Reference *ref2( new Reference( 0, ddl_nullptr ) );
     size = ref2->sizeInBytes();
-    EXPECT_EQ( 0, size );
+    EXPECT_EQ( 0U, size );
     delete ref2;
 }
 
 END_ODDLPARSER_NS
+

@@ -44,7 +44,7 @@ TEST_F( OpenDDLDefectsTest, Issue20_WrongColorNodeParsing ) {
     char *in = OpenDDLParser::parseDataList( token, end, type, &data, numValues, &refs, numRefs );
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == data );
-    ASSERT_EQ( 3, numValues );
+    ASSERT_EQ( 3U, numValues );
     delete data;
     delete refs;
 }
@@ -170,15 +170,15 @@ TEST_F( OpenDDLDefectsTest, parse_hexa_float_issue ) {
     DDLNode *root = myParser.getRoot();
     EXPECT_TRUE( ddl_nullptr != root );
     DDLNode::DllNodeList childs = root->getChildNodeList();
-    EXPECT_EQ( 1, childs.size() );
+    EXPECT_EQ( 1U, childs.size() );
 }
 
 TEST_F( OpenDDLDefectsTest, invalid_size_dataarraylist_issue_41 ) {
     DataArrayList *list = new DataArrayList;
-    EXPECT_EQ( 0, list->size() );
+    EXPECT_EQ( 0U, list->size() );
     
     list->m_dataList = new Value( Value::ddl_bool );
-    EXPECT_EQ( 1, list->size() );
+    EXPECT_EQ( 1U, list->size() );
     delete list;
 }
 
@@ -197,6 +197,7 @@ TEST_F( OpenDDLDefectsTest, invalid_handling_of_embedded_comments ) {
     OpenDDLParser myParser;
     myParser.setBuffer( token, strlen( token ) );
     const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
 }
 
 END_ODDLPARSER_NS
