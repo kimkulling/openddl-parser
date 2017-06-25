@@ -275,4 +275,70 @@ TEST_F( OpenDDLParserUtilsTest, isSeparatorTest ) {
     EXPECT_TRUE( isSeparator( val ) );
 }
 
+TEST_F( OpenDDLParserUtilsTest, isCommendOpenTag_Success ) {
+    size_t len(0);
+    bool result(false);
+    char *end(ddl_nullptr);
+    char token1[] = "/*";
+    end = findEnd(token1, len);
+    result = isCommentOpenTag( token1, end );
+    EXPECT_TRUE(result);
+}
+
+
+TEST_F(OpenDDLParserUtilsTest, isCommendOpenTag_False) {
+    size_t len(0);
+    bool result(false);
+    char *end( ddl_nullptr );
+    char token1[] = "*/";
+    end = findEnd( token1, len );
+    result = isCommentOpenTag( token1, end );
+    EXPECT_FALSE(result);
+
+    char token2[] = "//";
+    end = findEnd( token2, len );
+    result = isCommentOpenTag( token2, end );
+    EXPECT_FALSE(result);
+
+    char token3[] = "/ *";
+    end = findEnd( token3, len);
+    result = isCommentOpenTag(token3, end);
+    EXPECT_FALSE(result);
+
+    char token4[] = "*/";
+    end = findEnd( token4, len );
+    result = isCommentOpenTag( token4, end );
+    EXPECT_FALSE(result);
+}
+
+TEST_F( OpenDDLParserUtilsTest, isCommendCloseTag_Success ) {
+    size_t len( 0 );
+    bool result(false);
+    char *end(ddl_nullptr);
+    char token1[] = "*/";
+    end = findEnd( token1, len );
+    result = isCommentCloseTag( token1, end );
+    EXPECT_TRUE(result);
+}
+
+TEST_F(OpenDDLParserUtilsTest, isCommendCloseTag_False) {
+    size_t len(0);
+    bool result(false);
+    char *end(ddl_nullptr);
+    char token1[] = "/*";
+    end = findEnd( token1, len );
+    result = isCommentCloseTag( token1, end );
+    EXPECT_FALSE( result );
+
+    char token2[] = "//";
+    end = findEnd(token2, len);
+    result = isCommentCloseTag(token2, end);
+    EXPECT_FALSE(result);
+
+    char token3[] = "/ *";
+    end = findEnd(token3, len);
+    result = isCommentCloseTag(token3, end);
+    EXPECT_FALSE(result);
+}
+
 END_ODDLPARSER_NS

@@ -42,9 +42,47 @@ static void showhelp() {
     std::cout << "\t--dump   : The content of the loaded file will be dumped." << std::endl;
 }
 
-static void dumpDDLNodeTree( DDLNode *root ) {
+static const std::string Intention = "  ";
+
+static std::string createIntention( unsigned int level ) {
+    std::string intention;
+    for (unsigned int i = 0; i<level; ++i) {
+        intention += Intention;
+    }
+    
+    return intention;
+}
+
+static void dumpDllNode(DDLNode *node, unsigned int level, IOStreamBase &stream) {
+    if ( ddl_nullptr == node ) {
+        return;
+    }
+
+    const std::string intent( createIntention( level ) );
+    std::cout << intent << "Node   " << node->getName() << "\n";
+    std::cout << intent << "- type " << node->getType() << "\n";
+    std::cout << intent << "- value " << node->getType() << "\n";
+    Value *value = node->getValue();
+    if ( ddl_nullptr != value ) {
+        value->dump( stream );
+    }
+}
+
+static void dumpDDLNodeTree( DDLNode *root, unsigned int level, IOStreamBase &stream) {
     if (ddl_nullptr == root) {
         return;
+    }
+
+    dumpDllNode( root, level, stream );
+
+    const DDLNode::DllNodeList &children = root->getChildNodeList();
+    if ( children.empty() ) {
+        return;
+    }
+
+    level++;
+    for ( auto node : children ) {
+        dumpDDLNodeTree( node, level, stream );
     }
 }
 
@@ -83,13 +121,13 @@ int main( int argc, char *argv[] ) {
 
     std::cout << "file to import: " << filename << std::endl;
 
-    if(ddl_nullptr == filename ) {
+    if ( ddl_nullptr == filename ) {
         std::cerr << "Invalid filename." << std::endl;
         return Error;
     }
 
     FILE *fileStream = fopen( filename, "rb+" );
-    if(ddl_nullptr == fileStream ) {
+    if ( ddl_nullptr == fileStream ) {
         std::cerr << "Cannot open file " << filename << std::endl;
         return Error;
     }
@@ -112,7 +150,8 @@ int main( int argc, char *argv[] ) {
         } else {
             DDLNode *root = theParser.getRoot();
             if ( dump ) {
-                dumpDDLNodeTree(root);
+                IOStreamBase stream;
+                dumpDDLNodeTree( root, 0, stream );
             }
             if ( exportToFile ) {
                 OpenDDLExport theExporter;
@@ -121,6 +160,7 @@ int main( int argc, char *argv[] ) {
         }
         delete [] buffer;
     }
-    fclose(fileStream);
+    fclose( fileStream );
+
     return 0;
 }

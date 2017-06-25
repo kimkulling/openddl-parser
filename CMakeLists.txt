@@ -87,12 +87,14 @@ SET ( openddl_parser_src
     code/OpenDDLCommon.cpp
     code/OpenDDLExport.cpp
     code/OpenDDLParser.cpp
+    code/OpenDDLStream.cpp
     code/DDLNode.cpp
     code/Value.cpp
     include/openddlparser/OpenDDLCommon.h
     include/openddlparser/OpenDDLExport.h
     include/openddlparser/OpenDDLParser.h
     include/openddlparser/OpenDDLParserUtils.h
+    include/openddlparser/OpenDDLStream.h
     include/openddlparser/DDLNode.h
     include/openddlparser/Value.h
     README.md
@@ -131,6 +133,7 @@ SET( openddl_parser_unittest_src
     test/OpenDDLExportTest.cpp
     test/OpenDDLParserTest.cpp
     test/OpenDDLParserUtilsTest.cpp
+    test/OpenDDLStreamTest.cpp
     test/OpenDDLIntegrationTest.cpp
     test/ValueTest.cpp
     test/OpenDDLDefectsTest.cpp

@@ -225,7 +225,7 @@ TEST_F( OpenDDLExportTest, writeStringTest ) {
     OpenDDLExportMock myExport;
     char tempString[] ="huhu";
     Value *v = ValueAllocator::allocPrimData( Value::ddl_string,sizeof(tempString) );
-    v->setString( "huhu" );
+    v->setString( tempString );
     bool ok( true );
     std::string statement;
     ok = myExport.writeValueTester( v, statement );
