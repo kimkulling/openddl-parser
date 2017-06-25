@@ -119,11 +119,11 @@ int main( int argc, char *argv[] ) {
         }
     }
 
-    std::cout << "file to import: " << filename << std::endl;
-
     if ( ddl_nullptr == filename ) {
         std::cerr << "Invalid filename." << std::endl;
         return Error;
+    } else {
+        std::cout << "file to import: " << filename << std::endl;
     }
 
     FILE *fileStream = fopen( filename, "rb+" );
@@ -134,14 +134,17 @@ int main( int argc, char *argv[] ) {
 
     // obtain file size:
     fseek( fileStream, 0, SEEK_END );
-    const size_t size( ftell( fileStream ) );
+    const int size( ftell( fileStream ) );
+    if ( -1 == size ) {
+        std::cerr << "Error while obtaining filesize of file " << filename << ", aborting operation.\n";
+        return Error;
+    }
 
     ::rewind( fileStream );
-
     if( size > 0 ) {
         char *buffer = new char[ size ];
         const size_t readSize( fread( buffer, sizeof( char ), size, fileStream ) );
-        assert( readSize == size );
+        assert( readSize == static_cast<size_t>( size ) );
         OpenDDLParser theParser;
         theParser.setBuffer( buffer, size );
         const bool result( theParser.parse() );
