@@ -166,6 +166,7 @@ TEST_F( OpenDDLDefectsTest, parse_hexa_float_issue ) {
     OpenDDLParser myParser;
     myParser.setBuffer( token, strlen( token ) );
     const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
     DDLNode *root = myParser.getRoot();
     EXPECT_TRUE( ddl_nullptr != root );
     DDLNode::DllNodeList childs = root->getChildNodeList();

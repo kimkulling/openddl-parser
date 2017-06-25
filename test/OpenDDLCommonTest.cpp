@@ -57,15 +57,15 @@ public:
 };
 
 TEST_F( OpenDDLCommonTest, typeSizesTest ) {
-    EXPECT_EQ( 1, sizeof( int8 ) );
-    EXPECT_EQ( 2, sizeof( int16 ) );
-    EXPECT_EQ( 4, sizeof( int32 ) );
-    EXPECT_EQ( 8, sizeof( int64 ) );
+    EXPECT_EQ( 1U, sizeof( int8 ) );
+    EXPECT_EQ( 2U, sizeof( int16 ) );
+    EXPECT_EQ( 4U, sizeof( int32 ) );
+    EXPECT_EQ( 8U, sizeof( int64 ) );
 
-    EXPECT_EQ( 1, sizeof( uint8 ) );
-    EXPECT_EQ( 2, sizeof( uint16 ) );
-    EXPECT_EQ( 4, sizeof( uint32 ) );
-    EXPECT_EQ( 8, sizeof( uint64 ) );
+    EXPECT_EQ( 1U, sizeof( uint8 ) );
+    EXPECT_EQ( 2U, sizeof( uint16 ) );
+    EXPECT_EQ( 4U, sizeof( uint32 ) );
+    EXPECT_EQ( 8U, sizeof( uint64 ) );
 }
 
 TEST_F( OpenDDLCommonTest, createNameTest ) {

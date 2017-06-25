@@ -300,7 +300,7 @@ TEST_F( OpenDDLExportTest, writeValueArrayTest ) {
 
     char *in = OpenDDLParser::parsePrimitiveDataType( token, end, type, len );
     ASSERT_EQ( Value::ddl_float, type );
-    ASSERT_EQ( 3, len );
+    ASSERT_EQ( 3U, len );
     in = OpenDDLParser::parseDataArrayList( in, end, type, &dataArrayList );
     ASSERT_FALSE( ddl_nullptr == dataArrayList );
 

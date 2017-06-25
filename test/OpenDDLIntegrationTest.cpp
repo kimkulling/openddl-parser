@@ -48,7 +48,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     ASSERT_FALSE( ddl_nullptr == ctx );
 
     DDLNode::DllNodeList myList = myNode->getChildNodeList();
-    ASSERT_EQ( 2, myList.size() );
+    ASSERT_EQ( 2U, myList.size() );
     DDLNode *child = myList[ 0 ];
     ASSERT_FALSE( ddl_nullptr == child );
     EXPECT_EQ( "Metric", child->getType() );
