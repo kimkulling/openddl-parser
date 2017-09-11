@@ -477,7 +477,7 @@ void OpenDDLParser::normalizeBuffer( std::vector<char> &buffer) {
                 ++readIdx;
             }
             ++readIdx;
-            ++readIdx;
+            //++readIdx;
         } else if( !isComment<char>( c, end ) && !isNewLine( *c ) ) {
             newBuffer.push_back( buffer[ readIdx ] );
         } else {

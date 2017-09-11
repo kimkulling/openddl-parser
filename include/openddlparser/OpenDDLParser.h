@@ -48,7 +48,7 @@ template<class T>
 inline
 T *lookForNextToken( T *in, T *end ) {
     while( ( in != end ) && ( isSpace( *in ) || isNewLine( *in ) || ',' == *in ) ) {
-        in++;
+        ++in;
     }
     return in;
 }
@@ -64,7 +64,7 @@ T *getNextToken( T *in, T *end ) {
     T *tmp( in );
     in = lookForNextToken( in, end );
     if( tmp == in ) {
-        in++;
+        ++in;
     }
     return in;
 }
