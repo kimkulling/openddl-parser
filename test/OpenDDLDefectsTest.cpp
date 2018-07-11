@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BEGIN_ODDLPARSER_NS
 
 class OpenDDLDefectsTest : public testing::Test {
+    // empty
 };
 
 TEST_F( OpenDDLDefectsTest, Issue20_WrongColorNodeParsing ) {
