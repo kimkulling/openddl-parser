@@ -85,14 +85,13 @@ Name::~Name() {
     m_id = ddl_nullptr;
 }
 
-Name::Name( const Name &name ){
-    m_type=name.m_type;
-    m_id=new Text(name.m_id->m_buffer,name.m_id->m_len);
+Name::Name( const Name &name )
+: m_type( name.m_type )
+, m_id( new Text(name.m_id->m_buffer, name.m_id->m_len ) ) {
+    // empty
 }
 
-
-
-    Reference::Reference()
+Reference::Reference()
 : m_numRefs( 0 )
 , m_referencedName( ddl_nullptr ) {
     // empty
@@ -104,22 +103,23 @@ Reference::Reference( size_t numrefs, Name **names )
     if ( numrefs > 0 ) {
         m_referencedName = new Name *[ numrefs ];
         for ( size_t i = 0; i < numrefs; i++ ) {
-            m_referencedName[ i ] = names[i];
+            m_referencedName[ i ] = names[ i ];
         }
     }
 }
-Reference::Reference(const Reference &ref) {
-    m_numRefs=ref.m_numRefs;
-    if(m_numRefs!=0){
-        m_referencedName = new Name*[m_numRefs];
-        for ( size_t i = 0; i < m_numRefs; i++ ) {
-            m_referencedName[i] = new Name(*ref.m_referencedName[i]);
+Reference::Reference( const Reference &ref ) 
+: m_numRefs( ref.m_numRefs )
+, m_referencedName( ddl_nullptr ) {
+    if(m_numRefs !=0 ){
+        m_referencedName = new Name * [ m_numRefs ];
+        for ( size_t i = 0; i < m_numRefs; ++i ) {
+            m_referencedName[ i ] = new Name( *ref.m_referencedName[ i ] );
         }
     }
 }
 
 Reference::~Reference() {
-    for( size_t i = 0; i < m_numRefs; i++ ) {
+    for( size_t i = 0; i < m_numRefs; ++i ) {
         delete m_referencedName[ i ];
     }
     m_numRefs = 0;
@@ -133,7 +133,7 @@ size_t Reference::sizeInBytes() {
     }
 
     size_t size( 0 );
-    for ( size_t i = 0; i < m_numRefs; i++ ) {
+    for ( size_t i = 0; i < m_numRefs; ++i ) {
         Name *name( m_referencedName[ i ] );
         if ( ddl_nullptr != name ) {
             size += name->m_id->m_len;
@@ -153,12 +153,9 @@ Property::Property( Text *id )
 
 Property::~Property() {
     delete m_key;
-    if(m_value!=ddl_nullptr)
-        delete m_value;
-    if(m_ref!=ddl_nullptr)
-        delete(m_ref);
-    if(m_next!=ddl_nullptr)
-        delete m_next;
+    delete m_value;
+    delete m_ref;
+    delete m_next;
 }
 
 DataArrayList::DataArrayList()
@@ -172,10 +169,8 @@ DataArrayList::DataArrayList()
 
 DataArrayList::~DataArrayList() {
     delete m_dataList;
-    if(m_next!=ddl_nullptr)
-        delete m_next;
-    if(m_refs!=ddl_nullptr)
-        delete m_refs;
+    delete m_next;
+    delete m_refs;
 }
 
 size_t DataArrayList::size() {
@@ -192,6 +187,7 @@ size_t DataArrayList::size() {
         result++;
         n = n->m_next;
     }
+
     return result;
 }
 

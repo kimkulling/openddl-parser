@@ -34,7 +34,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #  include <windows.h>
 #endif // _WIN32
 
-
 BEGIN_ODDLPARSER_NS
 
 static const char *Version = "0.4.0";
@@ -289,7 +288,6 @@ char *OpenDDLParser::parseHeader( char *in, char *end ) {
             const std::string nodeName( name->m_id->m_buffer );
             node->setName( nodeName );
         }
-
 
 		std::unique_ptr<Property> first;
 		in = lookForNextToken(in, end);
