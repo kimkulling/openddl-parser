@@ -46,6 +46,22 @@ TEST_F( DDLNodeTest, createDDLNodeTest ) {
     delete myNode;
 }
 
+TEST_F( DDLNodeTest, attach_detach_parent_Test ) {
+    DDLNode *myParent = DDLNode::create( "parent", "" );
+    DDLNode *myChild  = DDLNode::create( "child", "" );
+    EXPECT_EQ( ddl_nullptr, myParent->getParent() );
+    myChild->attachParent( myParent );
+    EXPECT_EQ( myParent, myChild->getParent() );
+
+    myChild->detachParent();
+    EXPECT_EQ( ddl_nullptr, myChild->getParent() );
+
+    // must not fail
+    myChild->detachParent();
+    myParent->detachParent();
+    myParent->attachParent( ddl_nullptr );
+}
+
 TEST_F( DDLNodeTest, accessTypeTest ) {
     static const std::string type1 = "type";
     static const std::string name1 = "test";
@@ -80,7 +96,7 @@ TEST_F( DDLNodeTest, accessParentTest ) {
     static const std::string childType = "child";
     DDLNode *myNode = DDLNode::create( childType, name1, parentNode );
     EXPECT_EQ( parentNode, myNode->getParent() );
-    EXPECT_EQ( 1, parentNode->getChildNodeList().size() );
+    EXPECT_EQ( 1U, parentNode->getChildNodeList().size() );
 
     DDLNode *myNodeWithoutParent = DDLNode::create( childType, name1 );
     EXPECT_EQ( ddl_nullptr, myNodeWithoutParent->getParent() );
@@ -88,7 +104,7 @@ TEST_F( DDLNodeTest, accessParentTest ) {
     myNodeWithoutParent->attachParent( parentNode );
     EXPECT_EQ( parentNode, myNodeWithoutParent->getParent() );
     DDLNode::DllNodeList myChilds = parentNode->getChildNodeList();
-    EXPECT_EQ( 2, myChilds.size() );
+    EXPECT_EQ( 2U, myChilds.size() );
 
     // check if the child node is not the parent node ( bug )
     EXPECT_EQ( name1, myChilds[ 0 ]->getName() );

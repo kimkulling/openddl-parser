@@ -77,8 +77,8 @@ DDLNode::~DDLNode() {
     if( s_allocatedNodes[ m_idx ] == this ) {
         s_allocatedNodes[ m_idx ] = ddl_nullptr;
     }
-    for(size_t i = 0 ; i<m_children.size();i++){
-        delete m_children[i];
+    for ( size_t i = 0; i<m_children.size(); i++ ){
+        delete m_children[ i ];
     }
 }
 
@@ -94,9 +94,8 @@ void DDLNode::attachParent( DDLNode *parent ) {
 }
 
 void DDLNode::detachParent() {
-    if( m_parent ) {
-        std::vector<DDLNode*>::iterator it;
-        it = std::find( m_parent->m_children.begin(), m_parent->m_children.end(), this );
+    if( ddl_nullptr != m_parent ) {
+        DDLNodeIt it = std::find( m_parent->m_children.begin(), m_parent->m_children.end(), this );
         if( m_parent->m_children.end() != it ) {
             m_parent->m_children.erase( it );
         }
@@ -192,6 +191,10 @@ Reference *DDLNode::getReferences() const {
     return m_references;
 }
 
+void DDLNode::dump(IOStreamBase &stream) {
+    // Todo!    
+}
+
 DDLNode *DDLNode::create( const std::string &type, const std::string &name, DDLNode *parent ) {
     const size_t idx( s_allocatedNodes.size() );
     DDLNode *node = new DDLNode( type, name, idx, parent );
@@ -202,7 +205,7 @@ DDLNode *DDLNode::create( const std::string &type, const std::string &name, DDLN
 
 void DDLNode::releaseNodes() {
     if( s_allocatedNodes.size() > 0 ) {
-        for( DllNodeList::iterator it = s_allocatedNodes.begin(); it != s_allocatedNodes.end(); it++ ) {
+        for( DDLNodeIt it = s_allocatedNodes.begin(); it != s_allocatedNodes.end(); it++ ) {
             if( *it ) {
                 delete *it;
             }

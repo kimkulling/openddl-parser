@@ -64,9 +64,9 @@ TEST_F( ValueTest, ValueAccessBoolTest ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
     ASSERT_FALSE( ddl_nullptr == data );
     data->setBool( true );
-    EXPECT_EQ( true, data->getBool() );
+    EXPECT_TRUE( data->getBool() );
     data->setBool( false );
-    EXPECT_EQ( false, data->getBool() );
+    EXPECT_FALSE( data->getBool() );
     ValueAllocator::releasePrimData( &data );
     EXPECT_EQ( ddl_nullptr, data );
 }
@@ -193,16 +193,17 @@ TEST_F( ValueTest, accessUInt16Test ) {
 
 TEST_F( ValueTest, accessUInt32Test ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int32 );
-    data->setUnsignedInt32( 10 );
-    EXPECT_EQ( 10, data->getUnsignedInt32() );
+    const uint32 value = 10U;
+    data->setUnsignedInt32( value );
+    EXPECT_EQ( value, data->getUnsignedInt32() );
 
     ValueAllocator::releasePrimData( &data );
 }
 
 TEST_F( ValueTest, accessUInt64Test ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
-    data->setUnsignedInt64( 10 );
-    EXPECT_EQ( 10, data->getUnsignedInt64() );
+    data->setUnsignedInt64( 10U );
+    EXPECT_EQ( 10U, data->getUnsignedInt64() );
 
     ValueAllocator::releasePrimData( &data );
 }
@@ -231,12 +232,12 @@ TEST_F( ValueTest, accessReferenceTest ) {
 TEST_F(ValueTest, sizeTest) {
     Value *data1 = ValueAllocator::allocPrimData( Value::ddl_ref );
     size_t size( data1->size() );
-    EXPECT_EQ( 1, size );
+    EXPECT_EQ( 1U, size );
 
     Value *data2 = ValueAllocator::allocPrimData(Value::ddl_ref);
     data1->setNext( data2 );
     size = data1->size();
-    EXPECT_EQ(2, size);
+    EXPECT_EQ(2U, size);
 
     delete data1;
 }

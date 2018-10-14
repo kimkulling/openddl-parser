@@ -44,7 +44,7 @@ TEST_F( OpenDDLDefectsTest, Issue20_WrongColorNodeParsing ) {
     char *in = OpenDDLParser::parseDataList( token, end, type, &data, numValues, &refs, numRefs );
     ASSERT_FALSE( ddl_nullptr == in );
     ASSERT_FALSE( ddl_nullptr == data );
-    ASSERT_EQ( 3, numValues );
+    ASSERT_EQ( 3U, numValues );
     delete data;
     delete refs;
 }
@@ -166,19 +166,132 @@ TEST_F( OpenDDLDefectsTest, parse_hexa_float_issue ) {
     OpenDDLParser myParser;
     myParser.setBuffer( token, strlen( token ) );
     const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
     DDLNode *root = myParser.getRoot();
     EXPECT_TRUE( ddl_nullptr != root );
     DDLNode::DllNodeList childs = root->getChildNodeList();
-    EXPECT_EQ( 1, childs.size() );
+    EXPECT_EQ( 1U, childs.size() );
 }
 
 TEST_F( OpenDDLDefectsTest, invalid_size_dataarraylist_issue_41 ) {
     DataArrayList *list = new DataArrayList;
-    EXPECT_EQ( 0, list->size() );
+    EXPECT_EQ( 0U, list->size() );
     
     list->m_dataList = new Value( Value::ddl_bool );
-    EXPECT_EQ( 1, list->size() );
+    EXPECT_EQ( 1U, list->size() );
     delete list;
 }
 
+TEST_F( OpenDDLDefectsTest, invalid_handling_of_embedded_comments ) {
+    char token[] = {
+        "GeometryObject /*mesh*/ $geometry1 {\n"
+        "    Mesh (primitive = \"triangle_strip\") {\n"
+        "        VertexArray (attrib = \"position\") {\n" 
+        "            float[3] {\n"
+        "                {0.0, 1.0, 3.0},\n"
+        "                {-1.0, 2.0, 2.0},\n" 
+        "                {3.0, 3.0, 1.0}\n"
+        "            }\n"
+        "        }\n"
+        "    }\n"
+        "}\n"
+    };	
+    OpenDDLParser myParser;
+    myParser.setBuffer( token, strlen( token ) );
+    const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
+}
+
+TEST_F( OpenDDLDefectsTest, invalid_handling_of_unsigned_int_16 ) {
+    char token[] = {
+        "Metric( key = \"up\" ) { string{ \"y\" } }\n"
+        "\n"
+        "GeometryObject /*mesh*/{\n"
+        "   Mesh( primitive = \"triangle_strip\" ) {\n"
+        "       VertexArray( attrib = \"position\" ) {\n"
+        "           float[ 3 ]{\n"
+        "               { 0.0, 1.0, 3.0 },{ -1.0, 2.0, 2.0 },{ 3.0, 3.0, 1.0 }\n"
+        "           }\n"
+        "       }\n"
+        "       VertexArray( attrib = \"normal\" ) {\n"
+        "           float[ 3 ]{\n"
+        "               { 0.0, 1.0, 0.0 },{ -1.0, 0.0, 0.0 },{ 0.0, 0.0, 1.0 }\n"
+        "           }\n"
+        "       }\n"
+        "       VertexArray( attrib = \"texcoord\" ) {\n"
+        "           float[ 2 ]{\n"
+        "               { 0.5, 0.5 },{ 0.5, 1.0 },{ 1.0, 1.0 }\n"
+        "           }\n"
+        "       }\n"
+        "       VertexArray( attrib = \"texcoord\" ) {\n"
+        "           float[ 2 ]{\n"
+        "               { 0.5, 1.0 },{ 1.0, 0.5 },{ 0.5, 0.5 }\n"
+        "           }\n"
+        "       }\n"
+        "       VertexArray( attrib = \"color\" ) { float{} }\n"
+        "   }\n"
+        "}\n"
+        "\n"
+        "GeometryObject /*meshIndexed*/{\n"
+        "   Mesh( primitive = \"triangles\" ) {\n"
+        "       VertexArray( attrib = \"position\" ) {\n"
+        "           float[ 3 ]{\n"
+        "               { 0.0, 1.0, 3.0 },{ -1.0, 2.0, 2.0 },{ 3.0, 3.0, 1.0 },{ 5.0, 7.0, 0.5 }\n"
+        "           }\n"
+        "       }\n"
+        "\n"
+        "   IndexArray{ unsigned_int16[ 3 ]{\n"
+        "       { 2, 0, 1 },{ 1, 2, 3 }\n"
+        "   }\n" 
+        "}\n"
+        "}\n"
+        "}\n"
+        "\n"
+        "GeometryObject /*meshEnlargeShrink*/{\n"
+        "Mesh{\n"
+        "VertexArray( attrib = \"position\" ) {\n"
+        "float[ 4 ]{\n"
+        "    { 0.0, 1.0, 3.0, 0.5 },{ -1.0, 2.0, 2.0, 1.0 },{ 3.0, 3.0, 1.0, 1.0 }\n"
+        "}\n"
+        "}\n"
+        "VertexArray( attrib = \"normal\" ) {\n"
+        "float[ 2 ]{\n"
+        "    { 0.0, 1.0 },{ -1.0, 0.0 },{ 1.0, 0.0 }\n"
+        "}\n"
+        "}\n"
+        "VertexArray( attrib = \"texcoord\" ) {\n"
+        "    float[ 1 ]{\n"
+        "        { 0.5 },{ 0.0 },{ 1.0 }\n"
+        "    }\n"
+        "}\n"
+        "}\n"
+        "}\n" 
+    };
+    OpenDDLParser myParser;
+    myParser.setBuffer( token, strlen( token ) );
+    const bool ok( myParser.parse() );
+    //EXPECT_TRUE( ok );
+}
+
+TEST_F( OpenDDLDefectsTest, invalid_normalizing ) {
+    char token[] = {
+        "Metric( key = \"up\" ) { string{ \"y\" } }\n"
+        "\n"
+        "GeometryObject /*mesh*/{\n"
+        "   Mesh( primitive = \"triangle_strip\" ) {\n"
+        "       VertexArray( attrib = \"position\" ) {\n"
+        "           float[ 3 ]{\n"
+        "               { 0.0, 1.0, 3.0 },{ -1.0, 2.0, 2.0 },{ 3.0, 3.0, 1.0 }\n"
+        "           }\n"
+        "       }\n"
+        "   }\n"
+        "}\n"
+    };
+     
+    OpenDDLParser myParser;
+    myParser.setBuffer( token, strlen( token ) );
+    const bool ok( myParser.parse() );
+    EXPECT_TRUE( ok );
+}
+    
 END_ODDLPARSER_NS

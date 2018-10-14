@@ -3,7 +3,7 @@ PROJECT( OpenDDL-Parser )
 SET ( OPENDDL_PARSER_VERSION_MAJOR 0 )
 SET ( OPENDDL_PARSER_VERSION_MINOR 1 )
 SET ( OPENDDL_PARSER_VERSION_PATCH 0 )
-SET ( OPENDDL_PARSER_VERSION ${CPPCORE_VERSION_MAJOR}.${CPPCORE_VERSION_MINOR}.${CPPCORE_VERSION_PATCH} )
+SET ( OPENDDL_PARSER_VERSION ${OPENDDL_PARSER_VERSION_MAJOR}.${OPENDDL_PARSER_VERSION_MINOR}.${OPENDDL_PARSER_VERSION_PATCH} )
 SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
 
 option( DDL_USE_CPP11           "Set to ON to use C++11 features ( always on on windows )."                   ON )
@@ -14,7 +14,7 @@ option( COVERALLS               "Generate coveralls data"                       
 if ( DDL_USE_CPP11 )
     if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
         set( OPENDDL_CXXFLAGS -std=c++0x )
-    elseif ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" )
+    elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set( OPENDDL_CXXFLAGS --std=c++11 )
     endif()
 else( DDL_USE_CPP11 )
@@ -46,7 +46,7 @@ INCLUDE_DIRECTORIES(
 )
 
 link_directories(
-    ./
+    ${CMAKE_HOME_DIRECTORY}/lib
 )
 
 SET( CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake )
@@ -75,7 +75,6 @@ if (COVERALLS)
 endif()
 
 # Include the doc component.
-ADD_SUBDIRECTORY( doc )
 FIND_PACKAGE( doxygen )
 IF ( DOXYGEN_FOUND )
     CONFIGURE_FILE( doc/openddlparser_doc.in doc/doxygenfile @ONLY )
@@ -88,12 +87,14 @@ SET ( openddl_parser_src
     code/OpenDDLCommon.cpp
     code/OpenDDLExport.cpp
     code/OpenDDLParser.cpp
+    code/OpenDDLStream.cpp
     code/DDLNode.cpp
     code/Value.cpp
     include/openddlparser/OpenDDLCommon.h
     include/openddlparser/OpenDDLExport.h
     include/openddlparser/OpenDDLParser.h
     include/openddlparser/OpenDDLParserUtils.h
+    include/openddlparser/OpenDDLStream.h
     include/openddlparser/DDLNode.h
     include/openddlparser/Value.h
     README.md
@@ -132,6 +133,7 @@ SET( openddl_parser_unittest_src
     test/OpenDDLExportTest.cpp
     test/OpenDDLParserTest.cpp
     test/OpenDDLParserUtilsTest.cpp
+    test/OpenDDLStreamTest.cpp
     test/OpenDDLIntegrationTest.cpp
     test/ValueTest.cpp
     test/OpenDDLDefectsTest.cpp
