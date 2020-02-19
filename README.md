@@ -5,6 +5,7 @@ The OpenDDL-Parser is a small and easy to use library for OpenDDL-file-format-pa
 
 Build status
 ============
+
 Linux build status: [![Build Status](https://travis-ci.org/kimkulling/openddl-parser.png)](https://travis-ci.org/kimkulling/openddl-parser)
 Current coverity check status:
 <a href="https://scan.coverity.com/projects/5606">
@@ -12,6 +13,7 @@ Current coverity check status:
        src="https://scan.coverity.com/projects/5606/badge.svg"/>
 </a>
 Current test coverage:[![Coverage Status](https://coveralls.io/repos/github/kimkulling/openddl-parser/badge.svg?branch=master)](https://coveralls.io/github/kimkulling/openddl-parser?branch=cpp_coveralls)
+
 Get the source code
 ===================
 You can get the code from our git repository, which is located at GitHub. You can clone the repository with the following command:
