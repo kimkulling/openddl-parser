@@ -39,11 +39,11 @@ char *findEnd( char *in, size_t &len ) {
 
 inline
 size_t countItems( Value *data ) {
-    if (ddl_nullptr == data) {
+    if (nullptr == data) {
         return 0;
     }
     size_t numItems( 1 );
-    while (ddl_nullptr != data->getNext()) {
+    while (nullptr != data->getNext()) {
         numItems++;
         data = data->getNext();
     }

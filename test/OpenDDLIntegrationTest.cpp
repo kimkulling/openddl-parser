@@ -42,18 +42,18 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     EXPECT_TRUE( result );
 
     DDLNode *myNode = theParser.getRoot();
-    ASSERT_FALSE( ddl_nullptr == myNode );
+    ASSERT_FALSE(nullptr == myNode);
 
     Context *ctx = theParser.getContext();
-    ASSERT_FALSE( ddl_nullptr == ctx );
+    ASSERT_FALSE(nullptr == ctx);
 
     DDLNode::DllNodeList myList = myNode->getChildNodeList();
     ASSERT_EQ( 2U, myList.size() );
     DDLNode *child = myList[ 0 ];
-    ASSERT_FALSE( ddl_nullptr == child );
+    ASSERT_FALSE(nullptr == child);
     EXPECT_EQ( "Metric", child->getType() );
     Property *prop = child->getProperties();
-    ASSERT_FALSE( ddl_nullptr == prop );
+    ASSERT_FALSE(nullptr == prop);
 
     const char *data1 = ( const char * ) prop->m_value->m_data;
     int res( ::strncmp( "distance", data1, strlen( "distance" ) ) );
@@ -61,7 +61,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     EXPECT_EQ( 0, res );
 
     child = myList[ 1 ];
-    ASSERT_FALSE( ddl_nullptr == child );
+    ASSERT_FALSE(nullptr == child);
     EXPECT_EQ( "Metric", child->getType() );
     prop = child->getProperties();
     const char *data2 = ( const char * ) prop->m_value->m_data;
@@ -87,7 +87,7 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureTest ) {
     EXPECT_TRUE( result );
 
     DDLNode *root( theParser.getRoot() );
-    ASSERT_FALSE( ddl_nullptr == root );
+    ASSERT_FALSE(nullptr == root);
 }
 
 TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
@@ -106,7 +106,7 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
     EXPECT_TRUE( result );
 
     DDLNode *root( theParser.getRoot() );
-    ASSERT_FALSE( ddl_nullptr == root );
+    ASSERT_FALSE(nullptr == root);
 
     DDLNode::DllNodeList childs = root->getChildNodeList();
     ASSERT_EQ( 1U, childs.size() );
@@ -114,7 +114,7 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
     DDLNode::DllNodeList childChilds = childs[ 0 ]->getChildNodeList();
     ASSERT_EQ( 3U, childChilds.size() );
 
-    DDLNode *currentNode( ddl_nullptr );
+    DDLNode *currentNode = nullptr;
     currentNode = childChilds[ 0 ];
     EXPECT_EQ( "Name", currentNode->getType() );
     currentNode = childChilds[ 1 ];
@@ -124,14 +124,14 @@ TEST_F( OpenDDLIntegrationTest, parseEmbeddedStructureWithRefTest ) {
 }
 
 static void dataArrayList2StdVector( DataArrayList *dataArrayList, std::vector<float> &container ) {
-    if ( ddl_nullptr == dataArrayList ) {
+    if (nullptr == dataArrayList) {
         return;
     }
     Value *val( dataArrayList->m_dataList );
-    if ( ddl_nullptr == val ) {
+    if (nullptr == val) {
         return;
     }
-    while ( ddl_nullptr != val ) {
+    while (nullptr != val) {
         container.push_back( val->getFloat() );
         val = val->m_next;
     }
@@ -156,14 +156,14 @@ TEST_F( OpenDDLIntegrationTest, parseTransformDataTest ) {
     EXPECT_TRUE( result );
 
     DDLNode *root( theParser.getRoot() );
-    EXPECT_TRUE( ddl_nullptr != root );
+    EXPECT_TRUE(nullptr != root);
 
     const DDLNode::DllNodeList &childs( root->getChildNodeList() );
     EXPECT_EQ( 1U, childs.size() );
     DDLNode *transform( childs[ 0 ] );
-    EXPECT_TRUE( ddl_nullptr != transform );
+    EXPECT_TRUE(nullptr != transform);
     DataArrayList *transformData( transform->getDataArrayList() );
-    EXPECT_TRUE( ddl_nullptr != transformData );
+    EXPECT_TRUE(nullptr != transformData);
     EXPECT_EQ( 16U, transformData->m_numItems );
 
     std::vector<float> container;

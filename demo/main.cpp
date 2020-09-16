@@ -54,7 +54,7 @@ static std::string createIntention( unsigned int level ) {
 }
 
 static void dumpDllNode(DDLNode *node, unsigned int level, IOStreamBase &stream) {
-    if ( ddl_nullptr == node ) {
+    if (nullptr == node) {
         return;
     }
 
@@ -63,13 +63,13 @@ static void dumpDllNode(DDLNode *node, unsigned int level, IOStreamBase &stream)
     std::cout << intent << "- type " << node->getType() << "\n";
     std::cout << intent << "- value " << node->getType() << "\n";
     Value *value = node->getValue();
-    if ( ddl_nullptr != value ) {
+    if (nullptr != value) {
         value->dump( stream );
     }
 }
 
 static void dumpDDLNodeTree( DDLNode *root, unsigned int level, IOStreamBase &stream) {
-    if (ddl_nullptr == root) {
+    if (nullptr == root) {
         return;
     }
 
@@ -92,7 +92,7 @@ int main( int argc, char *argv[] ) {
         return Error;
     }
 
-    char *filename( ddl_nullptr ), *exportFilename( ddl_nullptr );
+    char *filename = nullptr, *exportFilename =nullptr;
     bool dump( false ), exportToFile( false );
     for ( int i = 1; i < argc; i++) {
         if (0 == strncmp(FileOption, argv[i], strlen(FileOption))) {
@@ -119,7 +119,7 @@ int main( int argc, char *argv[] ) {
         }
     }
 
-    if ( ddl_nullptr == filename ) {
+    if (nullptr == filename) {
         std::cerr << "Invalid filename." << std::endl;
         return Error;
     } else {
@@ -127,7 +127,7 @@ int main( int argc, char *argv[] ) {
     }
 
     FILE *fileStream = fopen( filename, "rb+" );
-    if ( ddl_nullptr == fileStream ) {
+    if (nullptr == fileStream) {
         std::cerr << "Cannot open file " << filename << std::endl;
         return Error;
     }
@@ -136,7 +136,7 @@ int main( int argc, char *argv[] ) {
     fseek( fileStream, 0, SEEK_END );
     const int size( ftell( fileStream ) );
     if ( -1 == size ) {
-        std::cerr << "Error while obtaining filesize of file " << filename << ", aborting operation.\n";
+        std::cerr << "Error while obtaining file-size of file " << filename << ", aborting operation.\n";
         return Error;
     }
 

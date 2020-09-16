@@ -30,12 +30,12 @@ class ValueTest : public testing::Test {
 protected:
     Value *m_start;
 
-    virtual void SetUp() {
-        m_start = ddl_nullptr;
+    void SetUp() override {
+        m_start = nullptr;
     }
 
-    virtual void TearDown() {
-        if(m_start!=ddl_nullptr)
+    void TearDown() override {
+        if (m_start != nullptr)
             delete m_start;
     }
 
@@ -55,26 +55,26 @@ protected:
 
 TEST_F( ValueTest, ValueDataAllocTest ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    EXPECT_FALSE( ddl_nullptr == data );
+    EXPECT_FALSE(nullptr == data);
     ValueAllocator::releasePrimData( &data );
-    EXPECT_EQ( ddl_nullptr, data );
+    EXPECT_EQ(nullptr, data);
 }
 
 TEST_F( ValueTest, ValueAccessBoolTest ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    ASSERT_FALSE( ddl_nullptr == data );
+    ASSERT_FALSE(nullptr == data);
     data->setBool( true );
     EXPECT_TRUE( data->getBool() );
     data->setBool( false );
     EXPECT_FALSE( data->getBool() );
     ValueAllocator::releasePrimData( &data );
-    EXPECT_EQ( ddl_nullptr, data );
+    EXPECT_EQ(nullptr, data);
 }
 
 TEST_F( ValueTest, ValueAccessStringTest ) {
     std::string text = "hallo";
     Value *data = ValueAllocator::allocPrimData( Value::ddl_string, text.size() );
-    ASSERT_FALSE( ddl_nullptr == data );
+    ASSERT_FALSE(nullptr == data);
 
     data->setString( text );
     int res = ::strncmp( text.c_str(), data->getString(), text.size() );
@@ -84,11 +84,11 @@ TEST_F( ValueTest, ValueAccessStringTest ) {
 
 TEST_F( ValueTest, ValueAccessNextTest ) {
     Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
-    ASSERT_FALSE( ddl_nullptr == data );
-    EXPECT_EQ( ddl_nullptr, data->getNext() );
+    ASSERT_FALSE(nullptr == data);
+    EXPECT_EQ(nullptr, data->getNext());
 
     Value *dataNext = ValueAllocator::allocPrimData( Value::ddl_bool );
-    EXPECT_EQ( ddl_nullptr, dataNext->getNext() );
+    EXPECT_EQ(nullptr, dataNext->getNext());
 
     data->setNext( dataNext );
     EXPECT_EQ( dataNext, data->getNext() );
@@ -107,10 +107,10 @@ TEST_F( ValueTest, IterateTest ) {
     Value::Iterator it( val );
     EXPECT_TRUE( it.hasNext() );
 
-    Value *v( ddl_nullptr );
+    Value *v = nullptr;
     while( it.hasNext() ) {
         v = it.getNext();
-        EXPECT_FALSE( ddl_nullptr == v );
+        EXPECT_FALSE(nullptr == v);
     }
 }
 
@@ -123,14 +123,14 @@ TEST_F( ValueTest, IteratePreIncTest ) {
 }
 
 TEST_F( ValueTest, IteratePreIncWithNullptrTest ) {
-    Value *val( ddl_nullptr );
+    Value *val= nullptr;
     Value::Iterator it( val );
     Value::Iterator tmp = ++it;
     EXPECT_FALSE( tmp.hasNext() );
 }
 
 TEST_F( ValueTest, IteratePostIncWithNullptrTest ) {
-    Value *val( ddl_nullptr );
+    Value *val = nullptr;
     Value::Iterator it( val );
     Value::Iterator tmp = it++;
     EXPECT_FALSE( tmp.hasNext() );

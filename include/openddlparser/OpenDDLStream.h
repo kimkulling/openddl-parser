@@ -52,7 +52,7 @@ class DLL_ODDLPARSER_EXPORT IOStreamBase {
 public:
     /// @brief  The class constructor with the formatter.
     /// @param  formatter   [in] The formatter to use.
-    explicit IOStreamBase(StreamFormatterBase *formatter = ddl_nullptr);
+    explicit IOStreamBase(StreamFormatterBase *formatter = nullptr);
 
     /// @brief  The class destructor, virtual.
     virtual ~IOStreamBase();
@@ -74,7 +74,7 @@ public:
     /// @param  sizeToRead  [in] The size to read in bytes.
     /// @param  statement   [out] The read statements.
     /// @return The bytes read from the stream.
-    virtual size_t read( size_t sizeToRead, std::string &statement );
+    virtual size_t read(size_t sizeToRead, std::string &statement);
 
     /// @brief  Will write a string into the stream.
     /// @param  statement  [in] The string to write.

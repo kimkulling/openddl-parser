@@ -37,13 +37,13 @@ TEST_F( OpenDDLDefectsTest, Issue20_WrongColorNodeParsing ) {
     size_t len( 0 );
     char *end = findEnd( token, len );
 
-    Value *data( ddl_nullptr );
-    Reference *refs( ddl_nullptr );
+    Value *data = nullptr;
+    Reference *refs(nullptr);
     size_t numRefs( 0 ), numValues( 0 );
     Value::ValueType type( Value::ddl_none );
     char *in = OpenDDLParser::parseDataList( token, end, type, &data, numValues, &refs, numRefs );
-    ASSERT_FALSE( ddl_nullptr == in );
-    ASSERT_FALSE( ddl_nullptr == data );
+    ASSERT_FALSE(nullptr == in);
+    ASSERT_FALSE(nullptr == data);
     ASSERT_EQ( 3U, numValues );
     delete data;
     delete refs;
@@ -147,7 +147,7 @@ TEST_F( OpenDDLDefectsTest, parse_light_object_issue38 ) {
     const bool ok( myParser.parse() );
     EXPECT_TRUE( ok );
     DDLNode *root = myParser.getRoot();
-    EXPECT_TRUE( ddl_nullptr != root );
+    EXPECT_TRUE(nullptr != root);
 
 }
 
@@ -168,7 +168,7 @@ TEST_F( OpenDDLDefectsTest, parse_hexa_float_issue ) {
     const bool ok( myParser.parse() );
     EXPECT_TRUE( ok );
     DDLNode *root = myParser.getRoot();
-    EXPECT_TRUE( ddl_nullptr != root );
+    EXPECT_TRUE(nullptr != root);
     DDLNode::DllNodeList childs = root->getChildNodeList();
     EXPECT_EQ( 1U, childs.size() );
 }

@@ -31,6 +31,11 @@ if ( DDL_STATIC_LIBRARY )
 	add_definitions( -DOPENDDL_STATIC_LIBARY )
 endif()
 
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
+    add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
+endif()
+
 add_definitions( -DOPENDDLPARSER_BUILD )
 add_definitions( -D_VARIADIC_MAX=10 )
 add_definitions( -DGTEST_HAS_PTHREAD=0 )

@@ -22,13 +22,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -----------------------------------------------------------------------------------------------*/
 #pragma once
 
-#include <openddlparser/OpenDDLCommon.h>
 #include <openddlparser/DDLNode.h>
+#include <openddlparser/OpenDDLCommon.h>
 #include <openddlparser/OpenDDLParserUtils.h>
 #include <openddlparser/Value.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 BEGIN_ODDLPARSER_NS
 
@@ -39,10 +39,9 @@ struct Identifier;
 struct Reference;
 struct Property;
 
-template<class T>
-inline
-bool isEmbeddedCommentOpenTag( T *in, T *end ) {
-    if ( in == '/' && in+1 == '*' ) {
+template <class T>
+inline bool isEmbeddedCommentOpenTag(T *in, T *end) {
+    if (in == '/' && in + 1 == '*') {
         return true;
     }
 
@@ -54,10 +53,9 @@ bool isEmbeddedCommentOpenTag( T *in, T *end ) {
 /// @param  end     [in] The end position in the buffer.
 ///	@return Pointer showing to the next token or the end of the buffer.
 ///	@detail Will not increase buffer when already a valid buffer was found.
-template<class T>
-inline
-T *lookForNextToken( T *in, T *end ) {
-    while( ( in != end ) && ( isSpace( *in ) || isNewLine( *in ) || ',' == *in ) ) {
+template <class T>
+inline T *lookForNextToken(T *in, T *end) {
+    while ((in != end) && (isSpace(*in) || isNewLine(*in) || ',' == *in)) {
         ++in;
     }
     return in;
@@ -68,12 +66,11 @@ T *lookForNextToken( T *in, T *end ) {
 /// @param  end     [in] The end position in the buffer.
 ///	@return Pointer showing to the next token or the end of the buffer.
 ///	@detail Will  increase buffer by a minimum of one.
-template<class T>
-inline
-T *getNextToken( T *in, T *end ) {
-    T *tmp( in );
-    in = lookForNextToken( in, end );
-    if( tmp == in ) {
+template <class T>
+inline T *getNextToken(T *in, T *end) {
+    T *tmp(in);
+    in = lookForNextToken(in, end);
+    if (tmp == in) {
         ++in;
     }
     return in;
@@ -81,13 +78,13 @@ T *getNextToken( T *in, T *end ) {
 
 ///	@brief  Defines the log severity.
 enum LogSeverity {
-    ddl_debug_msg = 0,  ///< Debug message, for debugging
-    ddl_info_msg,       ///< Info messages, normal mode
-    ddl_warn_msg,       ///< Parser warnings
-    ddl_error_msg       ///< Parser errors
+    ddl_debug_msg = 0, ///< Debug message, for debugging
+    ddl_info_msg, ///< Info messages, normal mode
+    ddl_warn_msg, ///< Parser warnings
+    ddl_error_msg ///< Parser errors
 };
 
-DLL_ODDLPARSER_EXPORT const char *getTypeToken( Value::ValueType  type );
+DLL_ODDLPARSER_EXPORT const char *getTypeToken(Value::ValueType type);
 
 //-------------------------------------------------------------------------------------------------
 ///	@class		OpenDDLParser
@@ -101,7 +98,7 @@ DLL_ODDLPARSER_EXPORT const char *getTypeToken( Value::ValueType  type );
 class DLL_ODDLPARSER_EXPORT OpenDDLParser {
 public:
     ///	@brief  The log callback function pointer.
-    typedef void( *logCallback )( LogSeverity severity, const std::string &msg );
+    typedef void (*logCallback)(LogSeverity severity, const std::string &msg);
 
 public:
     ///	@brief  The default class constructor.
@@ -110,14 +107,14 @@ public:
     ///	@brief  The class constructor.
     ///	@param  buffer      [in] The buffer
     ///	@param  len         [in] Size of the buffer
-    OpenDDLParser( const char *buffer, size_t len );
+    OpenDDLParser(const char *buffer, size_t len);
 
     ///	@brief  The class destructor.
     ~OpenDDLParser();
 
     ///	@brief  Setter for an own log callback function.
     /// @param  callback    [in] The own callback.
-    void setLogCallback( logCallback callback );
+    void setLogCallback(logCallback callback);
 
     ///	@brief  Getter for the log callback.
     /// @return The current log callback.
@@ -126,11 +123,11 @@ public:
     ///	@brief  Assigns a new buffer to parse.
     ///	@param  buffer      [in] The buffer
     ///	@param  len         [in] Size of the buffer
-    void setBuffer( const char *buffer, size_t len );
+    void setBuffer(const char *buffer, size_t len);
 
     ///	@brief  Assigns a new buffer to parse.
     /// @param  buffer      [in] The buffer as a std::vector.
-    void setBuffer( const std::vector<char> &buffer );
+    void setBuffer(const std::vector<char> &buffer);
 
     ///	@brief  Returns the buffer pointer.
     /// @return The buffer pointer.
@@ -148,7 +145,7 @@ public:
     /// @remark In case of errors check log.
     bool parse();
 
-    bool exportContext( Context *ctx, const std::string &filename );
+    bool exportContext(Context *ctx, const std::string &filename);
 
     ///	@brief  Returns the root node.
     /// @return The root node.
@@ -159,37 +156,37 @@ public:
     Context *getContext() const;
 
 public: // parser helpers
-    char *parseNextNode( char *current, char *end );
-    char *parseHeader( char *in, char *end );
-    char *parseStructure( char *in, char *end );
-    char *parseStructureBody( char *in, char *end, bool &error );
-    void pushNode( DDLNode *node );
+    char *parseNextNode(char *current, char *end);
+    char *parseHeader(char *in, char *end);
+    char *parseStructure(char *in, char *end);
+    char *parseStructureBody(char *in, char *end, bool &error);
+    void pushNode(DDLNode *node);
     DDLNode *popNode();
     DDLNode *top();
-    static void normalizeBuffer( std::vector<char> &buffer );
-    static char *parseName( char *in, char *end, Name **name );
-    static char *parseIdentifier( char *in, char *end, Text **id );
-    static char *parsePrimitiveDataType( char *in, char *end, Value::ValueType &type, size_t &len );
-    static char *parseReference( char *in, char *end, std::vector<Name*> &names );
-    static char *parseBooleanLiteral( char *in, char *end, Value **boolean );
-    static char *parseIntegerLiteral( char *in, char *end, Value **integer, Value::ValueType integerType = Value::ddl_int32 );
-    static char *parseFloatingLiteral( char *in, char *end, Value **floating, Value::ValueType floatType= Value::ddl_float );
-    static char *parseStringLiteral( char *in, char *end, Value **stringData );
-    static char *parseHexaLiteral( char *in, char *end, Value **data );
-    static char *parseProperty( char *in, char *end, Property **prop );
-    static char *parseDataList( char *in, char *end, Value::ValueType type, Value **data, size_t &numValues, Reference **refs, size_t &numRefs );
-    static char *parseDataArrayList( char *in, char *end, Value::ValueType type, DataArrayList **dataList );
+    static void normalizeBuffer(std::vector<char> &buffer);
+    static char *parseName(char *in, char *end, Name **name);
+    static char *parseIdentifier(char *in, char *end, Text **id);
+    static char *parsePrimitiveDataType(char *in, char *end, Value::ValueType &type, size_t &len);
+    static char *parseReference(char *in, char *end, std::vector<Name *> &names);
+    static char *parseBooleanLiteral(char *in, char *end, Value **boolean);
+    static char *parseIntegerLiteral(char *in, char *end, Value **integer, Value::ValueType integerType = Value::ddl_int32);
+    static char *parseFloatingLiteral(char *in, char *end, Value **floating, Value::ValueType floatType = Value::ddl_float);
+    static char *parseStringLiteral(char *in, char *end, Value **stringData);
+    static char *parseHexaLiteral(char *in, char *end, Value **data);
+    static char *parseProperty(char *in, char *end, Property **prop);
+    static char *parseDataList(char *in, char *end, Value::ValueType type, Value **data, size_t &numValues, Reference **refs, size_t &numRefs);
+    static char *parseDataArrayList(char *in, char *end, Value::ValueType type, DataArrayList **dataList);
     static const char *getVersion();
 
 private:
-    OpenDDLParser( const OpenDDLParser & ) ddl_no_copy;
-    OpenDDLParser &operator = ( const OpenDDLParser & ) ddl_no_copy;
+    OpenDDLParser(const OpenDDLParser &) ddl_no_copy;
+    OpenDDLParser &operator=(const OpenDDLParser &) ddl_no_copy;
 
 private:
     logCallback m_logCallback;
     std::vector<char> m_buffer;
 
-    typedef std::vector<DDLNode*> DDLNodeStack;
+    typedef std::vector<DDLNode *> DDLNodeStack;
     DDLNodeStack m_stack;
     Context *m_context;
 };
