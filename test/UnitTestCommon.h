@@ -53,7 +53,7 @@ size_t countItems( Value *data ) {
 template<class T>
 inline
 bool testValues( Value::ValueType expValue, Value *inData, const std::list<T> &expData ) {
-    if(ddl_nullptr == inData ) {
+    if (nullptr == inData) {
         return false;
     }
 
@@ -64,7 +64,7 @@ bool testValues( Value::ValueType expValue, Value *inData, const std::list<T> &e
     typename std::list<T>::const_iterator it( expData.begin() );
     Value *tmp( inData );
     bool equal( true );
-    while(ddl_nullptr != tmp ) {
+    while (nullptr != tmp) {
         if( 0 != ::memcmp( (void*) tmp->m_data, &(*it), tmp->m_size ) ) {
             equal = false;
             break;
