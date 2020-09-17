@@ -6,7 +6,7 @@ The OpenDDL-Parser is a small and easy to use library for OpenDDL-file-format-pa
 Build status
 ============
 
-Linux build status: [![Build Status](https://travis-ci.org/kimkulling/openddl-parser.png)](https://travis-ci.org/kimkulling/openddl-parser)
+Linux build status: [![Build Status](https://travis-ci.com/kimkulling/openddl-parser.svg?branch=master)](https://travis-ci.com/kimkulling/openddl-parser)
 Current coverity check status:
 <a href="https://scan.coverity.com/projects/5606">
   <img alt="Coverity Scan Build Status"
