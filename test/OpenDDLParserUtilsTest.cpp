@@ -34,7 +34,7 @@ class OpenDDLParserUtilsTest : public testing::Test {
 TEST_F( OpenDDLParserUtilsTest, isCommentTest ) {
     size_t len( 0 );
     bool result( false );
-    char *end( ddl_nullptr );
+    char *end(nullptr);
     char token1[] = "//";
     end = findEnd( token1, len );
     result = isComment( token1, end );
@@ -278,7 +278,7 @@ TEST_F( OpenDDLParserUtilsTest, isSeparatorTest ) {
 TEST_F( OpenDDLParserUtilsTest, isCommendOpenTag_Success ) {
     size_t len(0);
     bool result(false);
-    char *end(ddl_nullptr);
+    char *end(nullptr);
     char token1[] = "/*";
     end = findEnd(token1, len);
     result = isCommentOpenTag( token1, end );
@@ -289,7 +289,7 @@ TEST_F( OpenDDLParserUtilsTest, isCommendOpenTag_Success ) {
 TEST_F(OpenDDLParserUtilsTest, isCommendOpenTag_False) {
     size_t len(0);
     bool result(false);
-    char *end( ddl_nullptr );
+    char *end(nullptr);
     char token1[] = "*/";
     end = findEnd( token1, len );
     result = isCommentOpenTag( token1, end );
@@ -314,7 +314,7 @@ TEST_F(OpenDDLParserUtilsTest, isCommendOpenTag_False) {
 TEST_F( OpenDDLParserUtilsTest, isCommendCloseTag_Success ) {
     size_t len( 0 );
     bool result(false);
-    char *end(ddl_nullptr);
+    char *end(nullptr);
     char token1[] = "*/";
     end = findEnd( token1, len );
     result = isCommentCloseTag( token1, end );
@@ -324,7 +324,7 @@ TEST_F( OpenDDLParserUtilsTest, isCommendCloseTag_Success ) {
 TEST_F(OpenDDLParserUtilsTest, isCommendCloseTag_False) {
     size_t len(0);
     bool result(false);
-    char *end(ddl_nullptr);
+    char *end(nullptr);
     char token1[] = "/*";
     end = findEnd( token1, len );
     result = isCommentCloseTag( token1, end );
