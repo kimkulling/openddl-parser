@@ -275,7 +275,7 @@ char *OpenDDLParser::parseHeader(char *in, char *end) {
 
         Name *name(nullptr);
         in = OpenDDLParser::parseName(in, end, &name);
-        if (nullptr != name && nullptr != node) {
+        if (nullptr != name && nullptr != node && nullptr != name->m_id->m_buffer) {
             const std::string nodeName(name->m_id->m_buffer);
             node->setName(nodeName);
             delete name;
