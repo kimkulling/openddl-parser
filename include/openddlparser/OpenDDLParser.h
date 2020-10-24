@@ -172,8 +172,8 @@ public: // parser helpers
     static char *parsePrimitiveDataType(char *in, char *end, Value::ValueType &type, size_t &len);
     static char *parseReference(char *in, char *end, std::vector<Name *> &names);
     static char *parseBooleanLiteral(char *in, char *end, Value **boolean);
-    static char *parseIntegerLiteral(char *in, char *end, Value **integer, Value::ValueType integerType = Value::ddl_int32);
-    static char *parseFloatingLiteral(char *in, char *end, Value **floating, Value::ValueType floatType = Value::ddl_float);
+    static char *parseIntegerLiteral(char *in, char *end, Value **integer, Value::ValueType integerType = Value::ValueType::ddl_int32);
+    static char *parseFloatingLiteral(char *in, char *end, Value **floating, Value::ValueType floatType = Value::ValueType::ddl_float);
     static char *parseStringLiteral(char *in, char *end, Value **stringData);
     static char *parseHexaLiteral(char *in, char *end, Value **data);
     static char *parseProperty(char *in, char *end, Property **prop);

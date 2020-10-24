@@ -97,7 +97,7 @@ protected:
             ::memset(buffer, 0, Size);
             sprintf(buffer, "id.%d", static_cast<int>(i));
             Text *id = new Text(buffer, strlen(buffer));
-            Value *v = ValueAllocator::allocPrimData(Value::ddl_int32);
+            Value *v = ValueAllocator::allocPrimData(Value::ValueType::ddl_int32);
             v->setInt32(static_cast<int>(i));
             prop = new Property(id);
             prop->m_value = v;
@@ -155,7 +155,7 @@ TEST_F(OpenDDLExportTest, writeNodeHeaderTest) {
 
 TEST_F(OpenDDLExportTest, writeBoolTest) {
     OpenDDLExportMock myExport;
-    Value *v = ValueAllocator::allocPrimData(Value::ddl_bool);
+    Value *v = ValueAllocator::allocPrimData(Value::ValueType::ddl_bool);
     v->setBool(true);
 
     std::string statement;
@@ -175,7 +175,7 @@ TEST_F(OpenDDLExportTest, writeBoolTest) {
 
 TEST_F(OpenDDLExportTest, writeIntegerTest) {
     OpenDDLExportMock myExport;
-    Value *v = ValueAllocator::allocPrimData(Value::ddl_int8);
+    Value *v = ValueAllocator::allocPrimData(Value::ValueType::ddl_int8);
     v->setInt8(10);
     bool ok(true);
     std::string statement;
@@ -185,7 +185,7 @@ TEST_F(OpenDDLExportTest, writeIntegerTest) {
     ValueAllocator::releasePrimData(&v);
 
     statement.clear();
-    v = ValueAllocator::allocPrimData(Value::ddl_int16);
+    v = ValueAllocator::allocPrimData(Value::ValueType::ddl_int16);
     v->setInt16(655);
     ok = myExport.writeValueTester(v, statement);
     EXPECT_TRUE(ok);
@@ -193,7 +193,7 @@ TEST_F(OpenDDLExportTest, writeIntegerTest) {
     ValueAllocator::releasePrimData(&v);
 
     statement.clear();
-    v = ValueAllocator::allocPrimData(Value::ddl_int32);
+    v = ValueAllocator::allocPrimData(Value::ValueType::ddl_int32);
     v->setInt32(65501);
     ok = myExport.writeValueTester(v, statement);
     EXPECT_TRUE(ok);
@@ -201,7 +201,7 @@ TEST_F(OpenDDLExportTest, writeIntegerTest) {
     ValueAllocator::releasePrimData(&v);
 
     statement.clear();
-    v = ValueAllocator::allocPrimData(Value::ddl_int64);
+    v = ValueAllocator::allocPrimData(Value::ValueType::ddl_int64);
     v->setInt64(65502);
     ok = myExport.writeValueTester(v, statement);
     EXPECT_TRUE(ok);
@@ -211,7 +211,7 @@ TEST_F(OpenDDLExportTest, writeIntegerTest) {
 
 TEST_F(OpenDDLExportTest, writeFloatTest) {
     OpenDDLExportMock myExport;
-    Value *v = ValueAllocator::allocPrimData(Value::ddl_float);
+    Value *v = ValueAllocator::allocPrimData(Value::ValueType::ddl_float);
     v->setFloat(1.1f);
     bool ok(true);
     std::string statement;
@@ -224,7 +224,7 @@ TEST_F(OpenDDLExportTest, writeFloatTest) {
 TEST_F(OpenDDLExportTest, writeStringTest) {
     OpenDDLExportMock myExport;
     char tempString[] = "huhu";
-    Value *v = ValueAllocator::allocPrimData(Value::ddl_string, sizeof(tempString));
+    Value *v = ValueAllocator::allocPrimData(Value::ValueType::ddl_string, sizeof(tempString));
     v->setString(tempString);
     bool ok(true);
     std::string statement;
@@ -238,18 +238,18 @@ TEST_F(OpenDDLExportTest, writeValueTypeTest) {
     OpenDDLExportMock myExporter;
     bool ok(true);
     std::string statement;
-    ok = myExporter.writeValueTypeTester(Value::ddl_types_max, 1, statement);
+    ok = myExporter.writeValueTypeTester(Value::ValueType::ddl_types_max, 1, statement);
     EXPECT_FALSE(ok);
     EXPECT_TRUE(statement.empty());
 
-    Value *v_int32 = ValueAllocator::allocPrimData(Value::ddl_int32);
+    Value *v_int32 = ValueAllocator::allocPrimData(Value::ValueType::ddl_int32);
     ok = myExporter.writeValueTypeTester(v_int32->m_type, 1, statement);
     EXPECT_TRUE(ok);
     EXPECT_EQ("int32", statement);
     statement.clear();
     delete v_int32;
 
-    Value *v_int32_array = ValueAllocator::allocPrimData(Value::ddl_int32);
+    Value *v_int32_array = ValueAllocator::allocPrimData(Value::ValueType::ddl_int32);
     ok = myExporter.writeValueTypeTester(v_int32_array->m_type, 10, statement);
     EXPECT_TRUE(ok);
     EXPECT_EQ("int32[10]", statement);
@@ -298,7 +298,7 @@ TEST_F(OpenDDLExportTest, writeValueArrayTest) {
     Value::ValueType type;
 
     char *in = OpenDDLParser::parsePrimitiveDataType(token, end, type, len);
-    ASSERT_EQ(Value::ddl_float, type);
+    ASSERT_EQ(Value::ValueType::ddl_float, type);
     ASSERT_EQ(3U, len);
     in = OpenDDLParser::parseDataArrayList(in, end, type, &dataArrayList);
     ASSERT_FALSE(nullptr == dataArrayList);

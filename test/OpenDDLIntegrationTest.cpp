@@ -58,7 +58,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
 
     const char *data1 = ( const char * ) prop->m_value->m_data;
     int res( ::strncmp( "distance", data1, strlen( "distance" ) ) );
-    EXPECT_EQ( Value::ddl_string, prop->m_value->m_type );
+    EXPECT_EQ(Value::ValueType::ddl_string, prop->m_value->m_type);
     EXPECT_EQ( 0, res );
 
     child = myList[ 1 ];
@@ -67,7 +67,7 @@ TEST_F( OpenDDLIntegrationTest, parseMetricTest ) {
     prop = child->getProperties();
     const char *data2 = ( const char * ) prop->m_value->m_data;
     res = ::strncmp( "up", data2, strlen( "up" ) );
-    EXPECT_EQ( Value::ddl_string, prop->m_value->m_type );
+    EXPECT_EQ(Value::ValueType::ddl_string, prop->m_value->m_type);
     EXPECT_EQ( 0, res );
 }
 

@@ -172,7 +172,7 @@ TEST_F(DDLNodeTest, accessValueTest) {
     ASSERT_FALSE(nullptr == myNode);
     EXPECT_TRUE(nullptr == myNode->getValue());
 
-    Value *myValue(new Value(Value::ddl_bool));
+    Value *myValue(new Value(Value::ValueType::ddl_bool));
     myNode->setValue(myValue);
     EXPECT_EQ(myValue, myNode->getValue());
     delete myNode;

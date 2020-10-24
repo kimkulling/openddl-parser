@@ -41,7 +41,7 @@ TEST_F( OpenDDLDefectsTest, Issue20_WrongColorNodeParsing ) {
     Value *data = nullptr;
     Reference *refs(nullptr);
     size_t numRefs( 0 ), numValues( 0 );
-    Value::ValueType type( Value::ddl_none );
+    Value::ValueType type(Value::ValueType::ddl_none);
     char *in = OpenDDLParser::parseDataList( token, end, type, &data, numValues, &refs, numRefs );
     ASSERT_FALSE(nullptr == in);
     ASSERT_FALSE(nullptr == data);
@@ -178,7 +178,7 @@ TEST_F( OpenDDLDefectsTest, invalid_size_dataarraylist_issue_41 ) {
     DataArrayList *list = new DataArrayList;
     EXPECT_EQ( 0U, list->size() );
     
-    list->m_dataList = new Value( Value::ddl_bool );
+    list->m_dataList = new Value(Value::ValueType::ddl_bool);
     EXPECT_EQ( 1U, list->size() );
     delete list;
 }

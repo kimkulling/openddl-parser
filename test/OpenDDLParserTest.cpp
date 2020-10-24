@@ -275,19 +275,19 @@ TEST_F(OpenDDLParserTest, parsePrimitiveDataTypeTest) {
     size_t len(0);
     char *in = OpenDDLParser::parsePrimitiveDataType(nullptr, nullptr, type, len);
     ASSERT_EQ(nullptr, in);
-    EXPECT_EQ(Value::ddl_none, type);
+    EXPECT_EQ(Value::ValueType::ddl_none, type);
     EXPECT_EQ(0U, len);
 
     size_t len1(0);
     char token1[] = "float", *end1(findEnd(token1, len1));
     in = OpenDDLParser::parsePrimitiveDataType(token1, end1, type, len);
-    EXPECT_EQ(Value::ddl_float, type);
+    EXPECT_EQ(Value::ValueType::ddl_float, type);
     EXPECT_EQ(1U, len);
 
     size_t len2(0);
     char invalidToken[] = "foat", *end2(findEnd(token1, len2));
     in = OpenDDLParser::parsePrimitiveDataType(invalidToken, end2, type, len);
-    EXPECT_EQ(Value::ddl_none, type);
+    EXPECT_EQ(Value::ValueType::ddl_none, type);
     EXPECT_EQ(0U, len);
 }
 
@@ -299,7 +299,7 @@ TEST_F(OpenDDLParserTest, parsePrimitiveDataTypeWithArrayTest) {
     size_t arrayLen(0);
 
     char *in = OpenDDLParser::parsePrimitiveDataType(token, end, type, arrayLen);
-    EXPECT_EQ(Value::ddl_float, type);
+    EXPECT_EQ(Value::ValueType::ddl_float, type);
     EXPECT_EQ(3U, arrayLen);
     EXPECT_NE(in, token);
 }
@@ -310,7 +310,7 @@ TEST_F(OpenDDLParserTest, parsePrimitiveArrayWithSpacesTest) {
     char token[] = "float[ 16 ]", *end(findEnd(token, len));
     char *in = OpenDDLParser::parsePrimitiveDataType(token, end, type, arrayLen);
     EXPECT_NE(in, token);
-    EXPECT_EQ(Value::ddl_float, type);
+    EXPECT_EQ(Value::ValueType::ddl_float, type);
     EXPECT_EQ(16U, arrayLen);
 }
 
@@ -322,7 +322,7 @@ TEST_F(OpenDDLParserTest, parsePrimitiveArrayHexTest) {
     Value *data(nullptr);
     Reference *refs(nullptr);
     size_t numRefs(0), numValues(0);
-    Value::ValueType type(Value::ddl_none);
+    Value::ValueType type(Value::ValueType::ddl_none);
     char *in = OpenDDLParser::parseDataList(token, end, type, &data, numValues, &refs, numRefs);
     EXPECT_NE(in, token);
     registerValueForDeletion(data);
@@ -334,7 +334,7 @@ TEST_F(OpenDDLParserTest, parsePrimitiveDataTypeWithInvalidArrayTest) {
     Value::ValueType type;
     size_t arrayLen(0);
     char *in = OpenDDLParser::parsePrimitiveDataType(token1, end, type, arrayLen);
-    EXPECT_EQ(Value::ddl_none, type);
+    EXPECT_EQ(Value::ValueType::ddl_none, type);
     EXPECT_EQ(0U, arrayLen);
     EXPECT_NE(in, token1);
 }
@@ -405,7 +405,7 @@ TEST_F(OpenDDLParserTest, parseBooleanLiteralTest) {
     in = OpenDDLParser::parseBooleanLiteral(token1, end1, &data);
     ASSERT_FALSE(nullptr == in);
     ASSERT_FALSE(nullptr == data);
-    EXPECT_EQ(Value::ddl_bool, data->m_type);
+    EXPECT_EQ(Value::ValueType::ddl_bool, data->m_type);
     EXPECT_EQ(true, data->getBool());
     registerValueForDeletion(data);
 
@@ -413,7 +413,7 @@ TEST_F(OpenDDLParserTest, parseBooleanLiteralTest) {
     char token2[] = "false", *end2(findEnd(token2, len2));
     in = OpenDDLParser::parseBooleanLiteral(token2, end2, &data);
     ASSERT_FALSE(nullptr == data);
-    EXPECT_EQ(Value::ddl_bool, data->m_type);
+    EXPECT_EQ(Value::ValueType::ddl_bool, data->m_type);
     EXPECT_FALSE(data->getBool());
     registerValueForDeletion(data);
 
@@ -432,7 +432,7 @@ TEST_F(OpenDDLParserTest, parseIntegerLiteralTest) {
     in = OpenDDLParser::parseIntegerLiteral(token1, end1, &data);
     ASSERT_FALSE(nullptr == in);
     ASSERT_FALSE(nullptr == data);
-    EXPECT_EQ(Value::ddl_int32, data->m_type);
+    EXPECT_EQ(Value::ValueType::ddl_int32, data->m_type);
     EXPECT_EQ(1, data->getInt32());
     registerValueForDeletion(data);
 
@@ -447,7 +447,7 @@ TEST_F(OpenDDLParserTest, parseInvalidIntegerLiteralTest) {
     Value *data(nullptr);
     char token1[] = "1", *end1(findEnd(token1, len1));
     char *in(token1);
-    char *out = OpenDDLParser::parseIntegerLiteral(token1, end1, &data, Value::ddl_float);
+    char *out = OpenDDLParser::parseIntegerLiteral(token1, end1, &data, Value::ValueType::ddl_float);
     EXPECT_EQ(out, in);
     ASSERT_EQ(nullptr, data);
 }
@@ -459,7 +459,7 @@ TEST_F(OpenDDLParserTest, parseFloatingLiteralTest) {
     char *out = OpenDDLParser::parseFloatingLiteral(token1, end1, &data);
     EXPECT_NE(out, token1);
     ASSERT_FALSE(nullptr == data);
-    EXPECT_EQ(Value::ddl_float, data->m_type);
+    EXPECT_EQ(Value::ValueType::ddl_float, data->m_type);
     EXPECT_EQ(1.0f, data->getFloat());
     registerValueForDeletion(data);
 
@@ -467,7 +467,7 @@ TEST_F(OpenDDLParserTest, parseFloatingLiteralTest) {
     out = OpenDDLParser::parseFloatingLiteral(token2, end2, &data);
     EXPECT_NE(out, token2);
     ASSERT_FALSE(nullptr == data);
-    EXPECT_EQ(Value::ddl_float, data->m_type);
+    EXPECT_EQ(Value::ValueType::ddl_float, data->m_type);
     EXPECT_EQ(-1.0f, data->getFloat());
     registerValueForDeletion(data);
 }
@@ -481,7 +481,7 @@ TEST_F(OpenDDLParserTest, parseStringLiteralTest) {
     char *out = OpenDDLParser::parseStringLiteral(token1, end1, &data);
     EXPECT_NE(in, out);
     EXPECT_FALSE(nullptr == data);
-    EXPECT_EQ(Value::ddl_string, data->m_type);
+    EXPECT_EQ(Value::ValueType::ddl_string, data->m_type);
     std::string str((char *)data->m_data);
     int res(::strncmp("teststring", str.c_str(), str.size()));
     EXPECT_EQ(0, res);
@@ -551,7 +551,7 @@ TEST_F(OpenDDLParserTest, parsePropertyTest) {
     res = strncmp("key", prop->m_key->m_buffer, prop->m_key->m_len);
     EXPECT_EQ(0, res);
 
-    EXPECT_EQ(Value::ddl_string, prop->m_value->m_type);
+    EXPECT_EQ(Value::ValueType::ddl_string, prop->m_value->m_type);
     EXPECT_FALSE(nullptr == prop->m_value->m_data);
     res = strncmp("angle", (char *)prop->m_value->m_data, prop->m_value->m_size);
     EXPECT_EQ(0, res);
@@ -569,7 +569,7 @@ TEST_F(OpenDDLParserTest, parseDataArrayListTest) {
     char *end(findEnd(token, len));
     DataArrayList *dtArrayList(nullptr);
 
-    char *in = OpenDDLParser::parseDataArrayList(token, end, Value::ddl_none, &dtArrayList);
+    char *in = OpenDDLParser::parseDataArrayList(token, end, Value::ValueType::ddl_none, &dtArrayList);
     ASSERT_FALSE(nullptr == dtArrayList);
     const size_t numItems(countItems(dtArrayList->m_dataList));
     EXPECT_NE(token, in);
@@ -592,7 +592,7 @@ TEST_F(OpenDDLParserTest, parseDataListTest) {
     end = findEnd(token1, len);
     Reference *refs(nullptr);
     size_t numRefs(0), numValues(0);
-    Value::ValueType type(Value::ddl_none);
+    Value::ValueType type(Value::ValueType::ddl_none);
     in = OpenDDLParser::parseDataList(token1, end, type, &data, numValues, &refs, numRefs);
     ASSERT_FALSE(nullptr == in);
     ASSERT_FALSE(nullptr == data);
@@ -604,7 +604,7 @@ TEST_F(OpenDDLParserTest, parseDataListTest) {
     expValues.push_back(3);
     expValues.push_back(4);
     EXPECT_EQ(4U, countItems(data));
-    EXPECT_TRUE(testValues(Value::ddl_int32, data, expValues));
+    EXPECT_TRUE(testValues(Value::ValueType::ddl_int32, data, expValues));
     registerValueForDeletion(data);
     delete refs;
 
@@ -645,7 +645,7 @@ TEST_F(OpenDDLParserTest, parseDataArrayListWithArrayTest) {
     Value::ValueType type;
 
     char *in = OpenDDLParser::parsePrimitiveDataType(token, end, type, len);
-    ASSERT_EQ(Value::ddl_float, type);
+    ASSERT_EQ(Value::ValueType::ddl_float, type);
     ASSERT_EQ(16U, len);
 
     in = OpenDDLParser::parseDataArrayList(in, end, type, &dataArrayList);
@@ -665,7 +665,7 @@ TEST_F(OpenDDLParserTest, parseDataArrayListWithRefsTest) {
 
     Value::ValueType type;
     char *in = OpenDDLParser::parsePrimitiveDataType(token, end, type, len);
-    ASSERT_EQ(Value::ddl_ref, type);
+    ASSERT_EQ(Value::ValueType::ddl_ref, type);
     ASSERT_EQ(1U, len);
     Value *val(nullptr);
     size_t numRefs(0), numValues(0);
@@ -704,7 +704,7 @@ TEST_F(OpenDDLParserTest, parseDataArrayListWithMultibleArrayTest) {
     Value::ValueType type;
 
     char *in = OpenDDLParser::parsePrimitiveDataType(token, end, type, len);
-    ASSERT_EQ(Value::ddl_float, type);
+    ASSERT_EQ(Value::ValueType::ddl_float, type);
     ASSERT_EQ(3U, len);
 
     in = OpenDDLParser::parseDataArrayList(in, end, type, &dataArrayList);

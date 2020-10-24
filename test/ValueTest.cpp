@@ -40,13 +40,13 @@ protected:
     }
 
     Value *createValueList() {
-        Value *current( ValueAllocator::allocPrimData( Value::ddl_bool ) );
+        Value *current(ValueAllocator::allocPrimData(Value::ValueType::ddl_bool));
         m_start = current;
-        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
+        current->m_next = ValueAllocator::allocPrimData(Value::ValueType::ddl_bool);
         current = current->m_next;
-        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
+        current->m_next = ValueAllocator::allocPrimData(Value::ValueType::ddl_bool);
         current = current->m_next;
-        current->m_next = ValueAllocator::allocPrimData( Value::ddl_bool );
+        current->m_next = ValueAllocator::allocPrimData(Value::ValueType::ddl_bool);
         current = current->m_next;
 
         return m_start; 
@@ -54,14 +54,14 @@ protected:
 };
 
 TEST_F( ValueTest, ValueDataAllocTest ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_bool);
     EXPECT_FALSE(nullptr == data);
     ValueAllocator::releasePrimData( &data );
     EXPECT_EQ(nullptr, data);
 }
 
 TEST_F( ValueTest, ValueAccessBoolTest ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_bool);
     ASSERT_FALSE(nullptr == data);
     data->setBool( true );
     EXPECT_TRUE( data->getBool() );
@@ -73,7 +73,7 @@ TEST_F( ValueTest, ValueAccessBoolTest ) {
 
 TEST_F( ValueTest, ValueAccessStringTest ) {
     std::string text = "hallo";
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_string, text.size() );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_string, text.size());
     ASSERT_FALSE(nullptr == data);
 
     data->setString( text );
@@ -83,11 +83,11 @@ TEST_F( ValueTest, ValueAccessStringTest ) {
 }
 
 TEST_F( ValueTest, ValueAccessNextTest ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_bool );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_bool);
     ASSERT_FALSE(nullptr == data);
     EXPECT_EQ(nullptr, data->getNext());
 
-    Value *dataNext = ValueAllocator::allocPrimData( Value::ddl_bool );
+    Value *dataNext = ValueAllocator::allocPrimData(Value::ValueType::ddl_bool);
     EXPECT_EQ(nullptr, dataNext->getNext());
 
     data->setNext( dataNext );
@@ -145,14 +145,14 @@ TEST_F( ValueTest, IteratePostIncTest ) {
 }
 
 TEST_F( ValueTest, accessInt8Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_int8 );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_int8);
     data->setInt8( 10 );
     EXPECT_EQ( 10, data->getInt8() ); 
     ValueAllocator::releasePrimData( &data );
 }
 
 TEST_F( ValueTest, accessInt16Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_int16 );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_int16);
     data->setInt16( 10 );
     EXPECT_EQ( 10, data->getInt16() );
 
@@ -160,7 +160,7 @@ TEST_F( ValueTest, accessInt16Test ) {
 }
 
 TEST_F( ValueTest, accessInt32Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_int32 );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_int32);
     data->setInt32( 10 );
     EXPECT_EQ( 10, data->getInt32() );
 
@@ -168,7 +168,7 @@ TEST_F( ValueTest, accessInt32Test ) {
 }
 
 TEST_F( ValueTest, accessInt64Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_int64 );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_int64);
     data->setInt64( 10 );
     EXPECT_EQ( 10, data->getInt64() );
 
@@ -176,7 +176,7 @@ TEST_F( ValueTest, accessInt64Test ) {
 }
 
 TEST_F( ValueTest, accessUInt8Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int8 );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_unsigned_int8);
     data->setUnsignedInt8( 10 );
     EXPECT_EQ( 10, data->getUnsignedInt8() );
     
@@ -184,7 +184,7 @@ TEST_F( ValueTest, accessUInt8Test ) {
 }
 
 TEST_F( ValueTest, accessUInt16Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int16 );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_unsigned_int16);
     data->setUnsignedInt16( 10 );
     EXPECT_EQ( 10, data->getUnsignedInt16() );
 
@@ -192,7 +192,7 @@ TEST_F( ValueTest, accessUInt16Test ) {
 }
 
 TEST_F( ValueTest, accessUInt32Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int32 );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_unsigned_int32);
     const uint32 value = 10U;
     data->setUnsignedInt32( value );
     EXPECT_EQ( value, data->getUnsignedInt32() );
@@ -201,7 +201,7 @@ TEST_F( ValueTest, accessUInt32Test ) {
 }
 
 TEST_F( ValueTest, accessUInt64Test ) {
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_unsigned_int64 );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_unsigned_int64);
     data->setUnsignedInt64( 10U );
     EXPECT_EQ( 10U, data->getUnsignedInt64() );
 
@@ -215,7 +215,7 @@ TEST_F( ValueTest, accessReferenceTest ) {
     ref->m_referencedName = new Name*[1];
     ref->m_referencedName[0]=name;
 
-    Value *data = ValueAllocator::allocPrimData( Value::ddl_ref );
+    Value *data = ValueAllocator::allocPrimData(Value::ValueType::ddl_ref);
     data->setRef( ref );
     Reference *newRef( data->getRef() );
     EXPECT_EQ( ref->m_numRefs, newRef->m_numRefs );
@@ -230,11 +230,11 @@ TEST_F( ValueTest, accessReferenceTest ) {
 }
 
 TEST_F(ValueTest, sizeTest) {
-    Value *data1 = ValueAllocator::allocPrimData( Value::ddl_ref );
+    Value *data1 = ValueAllocator::allocPrimData(Value::ValueType::ddl_ref);
     size_t size( data1->size() );
     EXPECT_EQ( 1U, size );
 
-    Value *data2 = ValueAllocator::allocPrimData(Value::ddl_ref);
+    Value *data2 = ValueAllocator::allocPrimData(Value::ValueType::ddl_ref);
     data1->setNext( data2 );
     size = data1->size();
     EXPECT_EQ(2U, size);
