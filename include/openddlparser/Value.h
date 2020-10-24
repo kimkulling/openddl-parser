@@ -101,7 +101,7 @@ public:
     };
 
     ///	@brief  This enum describes the data type stored in the value.
-    enum ValueType {
+    enum class ValueType {
         ddl_none = -1,          ///< Nothing specified
         ddl_bool = 0,           ///< A boolean type
         ddl_int8,               ///< Integer type, 8 bytes

@@ -38,7 +38,7 @@ public:
     /// @brief  The class destructor, virtual.
     virtual ~StreamFormatterBase();
 
-    /// @brief  Will format the sring and return the new formatted result.
+    /// @brief  Will format the string and return the new formatted result.
     /// @param  statement   [in] The string to reformat.
     /// @return The reformatted result.
     virtual std::string format(const std::string &statement);

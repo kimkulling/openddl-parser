@@ -214,7 +214,7 @@ bool OpenDDLExport::writeProperties(DDLNode *node, std::string &statement) {
 }
 
 bool OpenDDLExport::writeValueType(Value::ValueType type, size_t numItems, std::string &statement) {
-    if (Value::ddl_types_max == type) {
+    if (Value::ValueType::ddl_types_max == type) {
         return false;
     }
 
@@ -239,27 +239,27 @@ bool OpenDDLExport::writeValue(Value *val, std::string &statement) {
     }
 
     switch (val->m_type) {
-        case Value::ddl_bool:
+        case Value::ValueType::ddl_bool:
             if (true == val->getBool()) {
                 statement += "true";
             } else {
                 statement += "false";
             }
             break;
-        case Value::ddl_int8: {
+        case Value::ValueType::ddl_int8 : {
             std::stringstream stream;
             const int i = static_cast<int>(val->getInt8());
             stream << i;
             statement += stream.str();
         } break;
-        case Value::ddl_int16: {
+        case Value::ValueType::ddl_int16: {
             std::stringstream stream;
             char buffer[256];
             ::memset(buffer, '\0', 256 * sizeof(char));
             sprintf(buffer, "%d", val->getInt16());
             statement += buffer;
         } break;
-        case Value::ddl_int32: {
+        case Value::ValueType::ddl_int32: {
             std::stringstream stream;
             char buffer[256];
             ::memset(buffer, '\0', 256 * sizeof(char));
@@ -267,59 +267,59 @@ bool OpenDDLExport::writeValue(Value *val, std::string &statement) {
             sprintf(buffer, "%d", i);
             statement += buffer;
         } break;
-        case Value::ddl_int64: {
+        case Value::ValueType::ddl_int64: {
             std::stringstream stream;
             const int i = static_cast<int>(val->getInt64());
             stream << i;
             statement += stream.str();
         } break;
-        case Value::ddl_unsigned_int8: {
+        case Value::ValueType::ddl_unsigned_int8: {
             std::stringstream stream;
             const int i = static_cast<unsigned int>(val->getUnsignedInt8());
             stream << i;
             statement += stream.str();
         } break;
-        case Value::ddl_unsigned_int16: {
+        case Value::ValueType::ddl_unsigned_int16: {
             std::stringstream stream;
             const int i = static_cast<unsigned int>(val->getUnsignedInt16());
             stream << i;
             statement += stream.str();
         } break;
-        case Value::ddl_unsigned_int32: {
+        case Value::ValueType::ddl_unsigned_int32: {
             std::stringstream stream;
             const int i = static_cast<unsigned int>(val->getUnsignedInt32());
             stream << i;
             statement += stream.str();
         } break;
-        case Value::ddl_unsigned_int64: {
+        case Value::ValueType::ddl_unsigned_int64: {
             std::stringstream stream;
             const int i = static_cast<unsigned int>(val->getUnsignedInt64());
             stream << i;
             statement += stream.str();
         } break;
-        case Value::ddl_half:
+        case Value::ValueType::ddl_half:
             break;
-        case Value::ddl_float: {
+        case Value::ValueType::ddl_float: {
             std::stringstream stream;
             stream << val->getFloat();
             statement += stream.str();
         } break;
-        case Value::ddl_double: {
+        case Value::ValueType::ddl_double: {
             std::stringstream stream;
             stream << val->getDouble();
             statement += stream.str();
         } break;
-        case Value::ddl_string: {
+        case Value::ValueType::ddl_string: {
             std::stringstream stream;
             stream << val->getString();
             statement += "\"";
             statement += stream.str();
             statement += "\"";
         } break;
-        case Value::ddl_ref:
+        case Value::ValueType::ddl_ref:
             break;
-        case Value::ddl_none:
-        case Value::ddl_types_max:
+        case Value::ValueType::ddl_none:
+        case Value::ValueType::ddl_types_max:
         default:
             break;
     }
