@@ -45,4 +45,24 @@ TEST_F(OssFuzzTest, fuzz24806_undefinedBahavior) {
     EXPECT_TRUE(success);
 }
 
+TEST_F(OssFuzzTest, fuzz24587_undefinedBahavior) {
+    bool success(true);
+    try {
+        FILE *fileStream = ::fopen(OPENDDL_TEST_DATA"/clusterfuzz-testcase-minimized-assimp_fuzzer-5699047558742016", "rb");
+        fseek(fileStream, 0, SEEK_END);
+        const int size(ftell(fileStream));
+        std::vector<char> buffer;
+        buffer.resize(size);
+        ::fread(&buffer[0], size, sizeof(char), fileStream);
+        OpenDDLParser myParser;
+        myParser.setBuffer(&buffer[0], buffer.size());
+        bool ok = myParser.parse();
+        EXPECT_FALSE(ok);
+        ::fclose(fileStream);
+    } catch (...) {
+        success = false;
+    }
+    EXPECT_TRUE(success);
+}
+
 END_ODDLPARSER_NS

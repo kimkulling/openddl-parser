@@ -789,4 +789,40 @@ TEST_F(OpenDDLParserTest, parseHexValueLiteralTest) {
     registerValueForDeletion(data);
 }
 
+TEST_F(OpenDDLParserTest, validateTest) {
+    OpenDDLParser parser;
+
+    FILE *fileStream = ::fopen(OPENDDL_TEST_DATA "/clusterfuzz-testcase-minimized-assimp_fuzzer-5699047558742016", "rb");
+    fseek(fileStream, 0, SEEK_END);
+    const size_t size = ::ftell(fileStream);
+    std::vector<char> buffer;
+    buffer.resize(size);
+    ::fread(&buffer[0], size, sizeof(char), fileStream);
+    ::fclose(fileStream);
+
+    parser.setBuffer(buffer);
+    bool result = parser.validate();
+    EXPECT_FALSE(result);
+
+    buffer.clear();
+    parser.clear();
+    parser.setBuffer(buffer);
+    result = parser.validate();
+    EXPECT_TRUE(result);
+
+    parser.clear();
+    char token[] =
+            "GeometryNode $node1\n"
+            "{\n"
+            "    string\n"
+            "    {\n"
+            "        \"test\"\n"
+            "    }\n"
+            "}";
+
+    parser.setBuffer(token, strlen(token));
+    result = parser.validate();
+    EXPECT_TRUE(result);
+}
+
 END_ODDLPARSER_NS
