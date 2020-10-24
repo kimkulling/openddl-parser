@@ -202,10 +202,6 @@ void OpenDDLParser::clear() {
 
 bool OpenDDLParser::validate() {
     if (m_buffer.empty()) {
-        return false;
-    }
-
-    if (m_buffer.empty()) {
         return true;
     }
 
