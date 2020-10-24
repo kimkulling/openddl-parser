@@ -94,6 +94,7 @@ SET ( openddl_parser_src
     include/openddlparser/OpenDDLStream.h
     include/openddlparser/DDLNode.h
     include/openddlparser/Value.h
+    include/openddlparser/TPoolAllocator.h
     README.md
 )
  
@@ -120,7 +121,6 @@ SET ( gtest_src
     ${GTEST_PATH}/src/gtest-test-part.cc
     ${GTEST_PATH}/src/gtest-typed-test.cc
     ${GTEST_PATH}/src/gtest.cc
-    ${GTEST_PATH}/src/gtest_main.cc
 )
 
 SET( openddl_parser_unittest_src  
@@ -135,7 +135,9 @@ SET( openddl_parser_unittest_src
     test/ValueTest.cpp
     test/OpenDDLDefectsTest.cpp
 	test/OssFuzzTest.cpp
+    test/main.cpp
 )
+add_definitions(-DOPENDDL_TEST_DATA="${CMAKE_CURRENT_LIST_DIR}/test/TestData")
 
 SOURCE_GROUP( code  FILES ${openddl_parser_unittest_src} )
 SOURCE_GROUP( gtest FILES ${gtest_src} )

@@ -29,20 +29,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-inline
-char *findEnd( char *in, size_t &len ) {
-    len = strlen( in );
-    char *end( &in[ len ] );
+inline char *findEnd(char *in, size_t &len) {
+    len = strlen(in);
+    char *end(&in[len]);
 
     return end;
 }
 
-inline
-size_t countItems( Value *data ) {
+inline size_t countItems(Value *data) {
     if (nullptr == data) {
         return 0;
     }
-    size_t numItems( 1 );
+    size_t numItems(1);
     while (nullptr != data->getNext()) {
         numItems++;
         data = data->getNext();
@@ -50,22 +48,21 @@ size_t countItems( Value *data ) {
     return numItems;
 }
 
-template<class T>
-inline
-bool testValues( Value::ValueType expValue, Value *inData, const std::list<T> &expData ) {
+template <class T>
+inline bool testValues(Value::ValueType expValue, Value *inData, const std::list<T> &expData) {
     if (nullptr == inData) {
         return false;
     }
 
-    if( expValue != inData->m_type ) {
+    if (expValue != inData->m_type) {
         return false;
     }
 
-    typename std::list<T>::const_iterator it( expData.begin() );
-    Value *tmp( inData );
-    bool equal( true );
+    typename std::list<T>::const_iterator it(expData.begin());
+    Value *tmp(inData);
+    bool equal(true);
     while (nullptr != tmp) {
-        if( 0 != ::memcmp( (void*) tmp->m_data, &(*it), tmp->m_size ) ) {
+        if (0 != ::memcmp((void *)tmp->m_data, &(*it), tmp->m_size)) {
             equal = false;
             break;
         }

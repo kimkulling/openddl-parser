@@ -140,6 +140,8 @@ public:
     ///	@brief  Clears all parser data, including buffer and active context.
     void clear();
 
+    bool validate();
+
     ///	@brief  Starts the parsing of the OpenDDL-file.
     /// @return True in case of success, false in case of an error.
     /// @remark In case of errors check log.

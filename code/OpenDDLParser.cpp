@@ -38,6 +38,7 @@ BEGIN_ODDLPARSER_NS
 static const char *Version = "0.4.0";
 
 namespace Grammar {
+
 static const char *OpenBracketToken = "{";
 static const char *CloseBracketToken = "}";
 static const char *OpenPropertyToken = "(";
@@ -199,12 +200,31 @@ void OpenDDLParser::clear() {
     //    DDLNode::releaseNodes();
 }
 
+bool OpenDDLParser::validate() {
+    if (m_buffer.empty()) {
+        return false;
+    }
+
+    if (m_buffer.empty()) {
+        return true;
+    }
+
+    if (!isCharacter(m_buffer[0]) && !isNumeric(m_buffer[0])) {
+        return false;
+    }
+
+    return true;
+}
+
 bool OpenDDLParser::parse() {
     if (m_buffer.empty()) {
         return false;
     }
 
     normalizeBuffer(m_buffer);
+    if (!validate()) {
+        return false;
+    }
 
     m_context = new Context;
     m_context->m_root = DDLNode::create("root", "", nullptr);

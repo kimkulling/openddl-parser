@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 BEGIN_ODDLPARSER_NS
 
 class OpenDDLParserUtilsTest : public testing::Test {
+    // empty
 };
 
 TEST_F( OpenDDLParserUtilsTest, isCommentTest ) {
