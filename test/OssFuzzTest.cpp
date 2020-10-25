@@ -30,7 +30,16 @@ char *data = "�$$indexarray";
 BEGIN_ODDLPARSER_NS
 
 class OssFuzzTest : public testing::Test {
-    // empty
+public: 
+    static void readFile(const char *name, std::vector<char> &buffer) {
+        std::string fn = std::string(OPENDDL_TEST_DATA "/") + std::string(name);
+        FILE *fileStream = ::fopen(fn.c_str(), "rb");
+        fseek(fileStream, 0, SEEK_END);
+        const size_t size = ftell(fileStream);
+        buffer.resize(size);
+        ::fread(&buffer[0], size, sizeof(char), fileStream);
+        ::fclose(fileStream);
+    }
 };
 
 TEST_F(OssFuzzTest, fuzz24806_undefinedBahavior) {
@@ -48,21 +57,32 @@ TEST_F(OssFuzzTest, fuzz24806_undefinedBahavior) {
 TEST_F(OssFuzzTest, fuzz24587_undefinedBahavior) {
     bool success(true);
     try {
-        FILE *fileStream = ::fopen(OPENDDL_TEST_DATA"/clusterfuzz-testcase-minimized-assimp_fuzzer-5699047558742016", "rb");
-        fseek(fileStream, 0, SEEK_END);
-        const int size(ftell(fileStream));
         std::vector<char> buffer;
-        buffer.resize(size);
-        ::fread(&buffer[0], size, sizeof(char), fileStream);
+        OssFuzzTest::readFile("clusterfuzz-testcase-minimized-assimp_fuzzer-5699047558742016", buffer);
         OpenDDLParser myParser;
         myParser.setBuffer(&buffer[0], buffer.size());
         bool ok = myParser.parse();
         EXPECT_FALSE(ok);
-        ::fclose(fileStream);
     } catch (...) {
         success = false;
     }
     EXPECT_TRUE(success);
 }
+
+TEST_F(OssFuzzTest, fuzz24463_undefinedBahavior) {
+    bool success(true);
+    try {
+        std::vector<char> buffer;
+        OssFuzzTest::readFile("clusterfuzz-testcase-minimized-assimp_fuzzer-5161012492500992", buffer);
+        OpenDDLParser myParser;
+        myParser.setBuffer(&buffer[0], buffer.size());
+        bool ok = myParser.parse();
+        EXPECT_FALSE(ok);
+    } catch (...) {
+        success = false;
+    }
+    EXPECT_TRUE(success);
+}
+    
 
 END_ODDLPARSER_NS
