@@ -543,7 +543,7 @@ char *OpenDDLParser::parseIdentifier(char *in, char *end, Text **id) {
 
     // ignore blanks
     in = lookForNextToken(in, end);
-    if (nullptr == in) {
+    if (in == end) {
         return in;
     }
 
