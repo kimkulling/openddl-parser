@@ -43,45 +43,27 @@ public:
 };
 
 TEST_F(OssFuzzTest, fuzz24806_undefinedBahavior) {
-    bool success(true);
-    try {
-        OpenDDLParser myParser;
-        myParser.setBuffer(data, 14);
-        myParser.parse();
-    } catch (...) {
-        success = false;
-    }
-    EXPECT_TRUE(success);
+    OpenDDLParser myParser;
+    myParser.setBuffer(data, 14);
+    EXPECT_TRUE(myParser.parse());
 }
 
 TEST_F(OssFuzzTest, fuzz24587_undefinedBahavior) {
-    bool success(true);
-    try {
-        std::vector<char> buffer;
-        OssFuzzTest::readFile("clusterfuzz-testcase-minimized-assimp_fuzzer-5699047558742016", buffer);
-        OpenDDLParser myParser;
-        myParser.setBuffer(&buffer[0], buffer.size());
-        bool ok = myParser.parse();
-        EXPECT_FALSE(ok);
-    } catch (...) {
-        success = false;
-    }
-    EXPECT_TRUE(success);
+    std::vector<char> buffer;
+    OssFuzzTest::readFile("clusterfuzz-testcase-minimized-assimp_fuzzer-5699047558742016", buffer);
+    OpenDDLParser myParser;
+    myParser.setBuffer(&buffer[0], buffer.size());
+    bool ok = myParser.parse();
+    EXPECT_FALSE(ok);
 }
 
 TEST_F(OssFuzzTest, fuzz24463_undefinedBahavior) {
-    bool success(true);
-    try {
-        std::vector<char> buffer;
-        OssFuzzTest::readFile("clusterfuzz-testcase-minimized-assimp_fuzzer-5161012492500992", buffer);
-        OpenDDLParser myParser;
-        myParser.setBuffer(&buffer[0], buffer.size());
-        bool ok = myParser.parse();
-        EXPECT_FALSE(ok);
-    } catch (...) {
-        success = false;
-    }
-    EXPECT_TRUE(success);
+    std::vector<char> buffer;
+    OssFuzzTest::readFile("clusterfuzz-testcase-minimized-assimp_fuzzer-5161012492500992", buffer);
+    OpenDDLParser myParser;
+    myParser.setBuffer(&buffer[0], buffer.size());
+    bool ok = myParser.parse();
+    EXPECT_FALSE(ok);
 }
     
 
