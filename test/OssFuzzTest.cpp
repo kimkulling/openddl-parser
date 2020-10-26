@@ -45,7 +45,7 @@ public:
 TEST_F(OssFuzzTest, fuzz24806_undefinedBahavior) {
     OpenDDLParser myParser;
     myParser.setBuffer(data, 14);
-    EXPECT_TRUE(myParser.parse());
+    EXPECT_FALSE(myParser.parse());
 }
 
 TEST_F(OssFuzzTest, fuzz24587_undefinedBahavior) {
