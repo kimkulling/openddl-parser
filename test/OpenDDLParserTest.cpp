@@ -242,6 +242,9 @@ TEST_F(OpenDDLParserTest, parseIdentifierTest) {
     res = strncmp(id->m_buffer, name1, id->m_len);
     EXPECT_EQ(0, res);
     delete id;
+
+    in = OpenDDLParser::parseIdentifier(name2, name2+1, &id);
+    EXPECT_EQ(nullptr, id);
 }
 
 TEST_F(OpenDDLParserTest, parseIdentifierWithLineBreakTest) {
