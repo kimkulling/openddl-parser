@@ -35,8 +35,7 @@ protected:
     }
 
     void TearDown() override {
-        if (m_start != nullptr)
-            delete m_start;
+        delete m_start;
     }
 
     Value *createValueList() {
