@@ -132,15 +132,38 @@ TEST_F(OpenDDLParserTest, createTest) {
     EXPECT_TRUE(success);
 }
 
+
 TEST_F(OpenDDLParserTest, setLogCallbackTest) {
     OpenDDLParser myParser;
+    EXPECT_EQ(nullptr, myParser.getLogCallback());
+    EXPECT_THROW(myParser.getLogCallback()(ddl_info_msg, ""), std::bad_function_call);
 
+    typedef decltype(&OpenDDLParserTest::testLogCallback) cbType;
     myParser.setLogCallback(OpenDDLParserTest::testLogCallback);
-    EXPECT_EQ(&OpenDDLParserTest::testLogCallback, myParser.getLogCallback());
+    EXPECT_EQ(&OpenDDLParserTest::testLogCallback, *myParser.getLogCallback().target<cbType>());
+    EXPECT_NE(nullptr, myParser.getLogCallback());
+    EXPECT_TRUE((bool)myParser.getLogCallback());
 
     myParser.setLogCallback(nullptr);
-    EXPECT_NE(&OpenDDLParserTest::testLogCallback, myParser.getLogCallback());
+    EXPECT_EQ(nullptr, myParser.getLogCallback());
+    EXPECT_FALSE((bool)myParser.getLogCallback());
+    EXPECT_THROW(myParser.getLogCallback()(ddl_info_msg, ""), std::bad_function_call);
 }
+
+
+TEST_F(OpenDDLParserTest, stdLogCallbackTest) {
+    OpenDDLParser myParser;
+    EXPECT_EQ(nullptr, myParser.getLogCallback());
+
+    myParser.setLogCallback(OpenDDLParser::StdLogCallback(stdout));
+    EXPECT_NE(nullptr, myParser.getLogCallback());
+    myParser.getLogCallback()(ddl_info_msg, "ddl_info_msg to stdout");
+
+    myParser.setLogCallback(OpenDDLParser::StdLogCallback(stderr));
+    EXPECT_NE(nullptr, myParser.getLogCallback());
+    myParser.getLogCallback()(ddl_info_msg, "ddl_info_msg to stderr");
+}
+
 
 TEST_F(OpenDDLParserTest, accessBufferTest) {
     static const size_t len = 100;
