@@ -189,12 +189,8 @@ size_t OpenDDLParser::getBufferSize() const {
 
 void OpenDDLParser::clear() {
     m_buffer.resize(0);
-    if (nullptr != m_context) {
-        delete m_context;
-        m_context = nullptr;
-    }
-
-    //    DDLNode::releaseNodes();
+    delete m_context;
+    m_context = nullptr;
 }
 
 bool OpenDDLParser::validate() {
