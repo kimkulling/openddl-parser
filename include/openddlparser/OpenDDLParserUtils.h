@@ -54,7 +54,9 @@ inline bool isSeparator(T in) {
     return false;
 }
 
-static const unsigned char chartype_table[256] = {
+const size_t CharTableSize = 256;
+
+static const unsigned char chartype_table[CharTableSize] = {
     0,
     0,
     0,
@@ -318,6 +320,10 @@ static const unsigned char chartype_table[256] = {
 
 template <class T>
 inline bool isNumeric(const T in) {
+    if (static_cast<size_T>(in) >= CharTableSize) {
+        return '\0';    
+    }
+    
     return (chartype_table[static_cast<size_t>(in)] == 1);
 }
 
