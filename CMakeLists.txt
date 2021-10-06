@@ -9,6 +9,7 @@ SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
 option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts"                                         OFF )
 option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser."                         ON )
 option( COVERALLS               "Generate coveralls data"                                                     OFF )
+option( BUILD_TESTS             "Set to OFF to not build tests by default"                                    OFF )
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -97,7 +98,7 @@ SET ( openddl_parser_src
     include/openddlparser/TPoolAllocator.h
     README.md
 )
- 
+
 SOURCE_GROUP( code            FILES ${openddl_parser_src} )
 
 if ( DDL_STATIC_LIBRARY )
@@ -110,47 +111,49 @@ else()
 	)
 endif()
 
-SET ( GTEST_PATH contrib/gtest-1.7.0 )
+if (BUILD_TESTS)
+    SET ( GTEST_PATH contrib/gtest-1.7.0 )
 
-SET ( gtest_src
-    ${GTEST_PATH}/src/gtest-death-test.cc
-    ${GTEST_PATH}/src/gtest-filepath.cc
-    ${GTEST_PATH}/src/gtest-internal-inl.h
-    ${GTEST_PATH}/src/gtest-port.cc
-    ${GTEST_PATH}/src/gtest-printers.cc
-    ${GTEST_PATH}/src/gtest-test-part.cc
-    ${GTEST_PATH}/src/gtest-typed-test.cc
-    ${GTEST_PATH}/src/gtest.cc
-)
+    SET ( gtest_src
+        ${GTEST_PATH}/src/gtest-death-test.cc
+        ${GTEST_PATH}/src/gtest-filepath.cc
+        ${GTEST_PATH}/src/gtest-internal-inl.h
+        ${GTEST_PATH}/src/gtest-port.cc
+        ${GTEST_PATH}/src/gtest-printers.cc
+        ${GTEST_PATH}/src/gtest-test-part.cc
+        ${GTEST_PATH}/src/gtest-typed-test.cc
+        ${GTEST_PATH}/src/gtest.cc
+    )
 
-SET( openddl_parser_unittest_src  
-    test/UnitTestCommon.h
-    test/DDLNodeTest.cpp
-    test/OpenDDLCommonTest.cpp
-    test/OpenDDLExportTest.cpp
-    test/OpenDDLParserTest.cpp
-    test/OpenDDLParserUtilsTest.cpp
-    test/OpenDDLStreamTest.cpp
-    test/OpenDDLIntegrationTest.cpp
-    test/ValueTest.cpp
-    test/OpenDDLDefectsTest.cpp
-	test/OssFuzzTest.cpp
-    test/main.cpp
-)
-add_definitions(-DOPENDDL_TEST_DATA="${CMAKE_CURRENT_LIST_DIR}/test/TestData")
+    SET( openddl_parser_unittest_src
+        test/UnitTestCommon.h
+        test/DDLNodeTest.cpp
+        test/OpenDDLCommonTest.cpp
+        test/OpenDDLExportTest.cpp
+        test/OpenDDLParserTest.cpp
+        test/OpenDDLParserUtilsTest.cpp
+        test/OpenDDLStreamTest.cpp
+        test/OpenDDLIntegrationTest.cpp
+        test/ValueTest.cpp
+        test/OpenDDLDefectsTest.cpp
+        test/OssFuzzTest.cpp
+        test/main.cpp
+    )
+    add_definitions(-DOPENDDL_TEST_DATA="${CMAKE_CURRENT_LIST_DIR}/test/TestData")
 
-SOURCE_GROUP( code  FILES ${openddl_parser_unittest_src} )
-SOURCE_GROUP( gtest FILES ${gtest_src} )
+    SOURCE_GROUP( code  FILES ${openddl_parser_unittest_src} )
+    SOURCE_GROUP( gtest FILES ${gtest_src} )
 
-ADD_EXECUTABLE( openddl_parser_unittest 
-    ${gtest_src}
-    ${openddl_parser_unittest_src}
-)
+    ADD_EXECUTABLE( openddl_parser_unittest
+        ${gtest_src}
+        ${openddl_parser_unittest_src}
+    )
 
-target_link_libraries( openddl_parser_unittest openddl_parser ${CMAKE_THREAD_LIBS_INIT} )
+    target_link_libraries( openddl_parser_unittest openddl_parser ${CMAKE_THREAD_LIBS_INIT} )
+endif ()
 
-SET( openddl_parser_demo_src  
-    demo/main.cpp 
+SET( openddl_parser_demo_src
+    demo/main.cpp
 )
 
 if (COVERALLS)
@@ -165,6 +168,6 @@ endif()
 
 ADD_EXECUTABLE( openddl_parser_demo
     ${openddl_parser_demo_src}
-) 
+)
 
 target_link_libraries( openddl_parser_demo openddl_parser )
