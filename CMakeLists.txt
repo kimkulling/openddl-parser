@@ -9,7 +9,8 @@ SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
 option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts"                                         OFF )
 option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser."                         ON )
 option( COVERALLS               "Generate coveralls data"                                                     OFF )
-option( BUILD_TESTS             "Set to OFF to not build tests by default"                                    OFF )
+option( BUILD_TESTS             "Set to OFF to not build tests by default"                                    ON )
+option( BUILD_PARSER_DEMO       "Set to OFF to opt out building parser demo"                                  ON )
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -152,22 +153,25 @@ if (BUILD_TESTS)
     target_link_libraries( openddl_parser_unittest openddl_parser ${CMAKE_THREAD_LIBS_INIT} )
 endif ()
 
-SET( openddl_parser_demo_src
-    demo/main.cpp
-)
+if (BUILD_PARSER_DEMO)
+    SET( openddl_parser_demo_src
+        demo/main.cpp
+    )
 
-if (COVERALLS)
-    set(COVERAGE_SRCS     ${gtest_src} ${openddl_parser_unittest_src} )
+    if (COVERALLS)
+        set(COVERAGE_SRCS     ${gtest_src} ${openddl_parser_unittest_src} )
 
-    # Create the coveralls target.
-    coveralls_setup(
-        "${COVERAGE_SRCS}" # The source files.
-        ON                 # If we should upload.
-        "${PROJECT_SOURCE_DIR}/cmake/") # (Optional) Alternate project cmake module path.
-endif()
+        # Create the coveralls target.
+        coveralls_setup(
+            "${COVERAGE_SRCS}" # The source files.
+            ON                 # If we should upload.
+            "${PROJECT_SOURCE_DIR}/cmake/") # (Optional) Alternate project cmake module path.
+    endif()
 
-ADD_EXECUTABLE( openddl_parser_demo
-    ${openddl_parser_demo_src}
-)
+    ADD_EXECUTABLE( openddl_parser_demo
+        ${openddl_parser_demo_src}
+    )
 
-target_link_libraries( openddl_parser_demo openddl_parser )
+    target_link_libraries( openddl_parser_demo openddl_parser )
+endif ()
+
