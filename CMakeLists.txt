@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
+CMAKE_MINIMUM_REQUIRED( VERSION 3.1 )
 PROJECT( OpenDDL-Parser )
 SET ( OPENDDL_PARSER_VERSION_MAJOR 0 )
 SET ( OPENDDL_PARSER_VERSION_MINOR 1 )
@@ -103,13 +103,9 @@ SET ( openddl_parser_src
 SOURCE_GROUP( code            FILES ${openddl_parser_src} )
 
 if ( DDL_STATIC_LIBRARY )
-	ADD_LIBRARY( openddl_parser STATIC
-		${openddl_parser_src}
-	)
+	ADD_LIBRARY( openddl_parser STATIC ${openddl_parser_src})
 else()
-	ADD_LIBRARY( openddl_parser SHARED
-		${openddl_parser_src}
-	)
+	ADD_LIBRARY( openddl_parser SHARED ${openddl_parser_src})
 endif()
 
 if (BUILD_TESTS)
@@ -175,3 +171,8 @@ if (BUILD_PARSER_DEMO)
     target_link_libraries( openddl_parser_demo openddl_parser )
 endif ()
 
+install(TARGETS openddl_parser
+        EXPORT  openddl_parser
+        LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_TARGET_NAME}")
