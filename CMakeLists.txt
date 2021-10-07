@@ -82,13 +82,7 @@ IF ( DOXYGEN_FOUND )
         COMMENT "Generating API documentation with Doxygen" VERBATIM )
 ENDIF ( DOXYGEN_FOUND )
 
-SET ( openddl_parser_src
-    code/OpenDDLCommon.cpp
-    code/OpenDDLExport.cpp
-    code/OpenDDLParser.cpp
-    code/OpenDDLStream.cpp
-    code/DDLNode.cpp
-    code/Value.cpp
+SET ( openddl_parser_headers
     include/openddlparser/OpenDDLCommon.h
     include/openddlparser/OpenDDLExport.h
     include/openddlparser/OpenDDLParser.h
@@ -97,16 +91,26 @@ SET ( openddl_parser_src
     include/openddlparser/DDLNode.h
     include/openddlparser/Value.h
     include/openddlparser/TPoolAllocator.h
+)
+SET ( openddl_parser_src
+    code/OpenDDLCommon.cpp
+    code/OpenDDLExport.cpp
+    code/OpenDDLParser.cpp
+    code/OpenDDLStream.cpp
+    code/DDLNode.cpp
+    code/Value.cpp
     README.md
 )
 
 SOURCE_GROUP( code            FILES ${openddl_parser_src} )
 
 if ( DDL_STATIC_LIBRARY )
-	ADD_LIBRARY( openddl_parser STATIC ${openddl_parser_src})
+	ADD_LIBRARY( openddl_parser STATIC ${openddl_parser_src} ${openddl_parser_headers})
 else()
-	ADD_LIBRARY( openddl_parser SHARED ${openddl_parser_src})
+	ADD_LIBRARY( openddl_parser SHARED ${openddl_parser_src} ${openddl_parser_headers})
 endif()
+
+set_target_properties( openddl_parser PROPERTIES PUBLIC_HEADER "${openddl_parser_headers}")
 
 if (BUILD_TESTS)
     SET ( GTEST_PATH contrib/gtest-1.7.0 )
