@@ -1,10 +1,10 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.1 )
 PROJECT( OpenDDL-Parser )
-SET ( OPENDDL_PARSER_VERSION_MAJOR 0 )
-SET ( OPENDDL_PARSER_VERSION_MINOR 1 )
-SET ( OPENDDL_PARSER_VERSION_PATCH 0 )
-SET ( OPENDDL_PARSER_VERSION ${OPENDDL_PARSER_VERSION_MAJOR}.${OPENDDL_PARSER_VERSION_MINOR}.${OPENDDL_PARSER_VERSION_PATCH} )
-SET ( PROJECT_VERSION "${OPENDDL_PARSER_VERSION}" )
+SET ( openddlparser_VERSION_MAJOR 0 )
+SET ( openddlparser_VERSION_MINOR 1 )
+SET ( openddlparser_VERSION_PATCH 0 )
+SET ( openddlparser_VERSION ${openddlparser_VERSION_MAJOR}.${openddlparser_VERSION_MINOR}.${openddlparser_VERSION_PATCH} )
+SET ( PROJECT_VERSION "${openddlparser_VERSION}" )
 
 option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts"                                         OFF )
 option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser."                         ON )
@@ -82,7 +82,7 @@ IF ( DOXYGEN_FOUND )
         COMMENT "Generating API documentation with Doxygen" VERBATIM )
 ENDIF ( DOXYGEN_FOUND )
 
-SET ( openddl_parser_headers
+SET ( openddlparser_headers
     include/openddlparser/OpenDDLCommon.h
     include/openddlparser/OpenDDLExport.h
     include/openddlparser/OpenDDLParser.h
@@ -92,7 +92,7 @@ SET ( openddl_parser_headers
     include/openddlparser/Value.h
     include/openddlparser/TPoolAllocator.h
 )
-SET ( openddl_parser_src
+SET ( openddlparser_src
     code/OpenDDLCommon.cpp
     code/OpenDDLExport.cpp
     code/OpenDDLParser.cpp
@@ -102,15 +102,15 @@ SET ( openddl_parser_src
     README.md
 )
 
-SOURCE_GROUP( code            FILES ${openddl_parser_src} )
+SOURCE_GROUP( code            FILES ${openddlparser_src} )
 
 if ( DDL_STATIC_LIBRARY )
-	ADD_LIBRARY( openddl_parser STATIC ${openddl_parser_src} ${openddl_parser_headers})
+	ADD_LIBRARY( openddlparser STATIC ${openddlparser_src} ${openddlparser_headers})
 else()
-	ADD_LIBRARY( openddl_parser SHARED ${openddl_parser_src} ${openddl_parser_headers})
+	ADD_LIBRARY( openddlparser SHARED ${openddlparser_src} ${openddlparser_headers})
 endif()
 
-set_target_properties( openddl_parser PROPERTIES PUBLIC_HEADER "${openddl_parser_headers}")
+set_target_properties( openddlparser PROPERTIES PUBLIC_HEADER "${openddlparser_headers}")
 
 if (BUILD_TESTS)
     SET ( GTEST_PATH contrib/gtest-1.7.0 )
@@ -126,7 +126,7 @@ if (BUILD_TESTS)
         ${GTEST_PATH}/src/gtest.cc
     )
 
-    SET( openddl_parser_unittest_src
+    SET( openddlparser_unittest_src
         test/UnitTestCommon.h
         test/DDLNodeTest.cpp
         test/OpenDDLCommonTest.cpp
@@ -142,24 +142,24 @@ if (BUILD_TESTS)
     )
     add_definitions(-DOPENDDL_TEST_DATA="${CMAKE_CURRENT_LIST_DIR}/test/TestData")
 
-    SOURCE_GROUP( code  FILES ${openddl_parser_unittest_src} )
+    SOURCE_GROUP( code  FILES ${openddlparser_unittest_src} )
     SOURCE_GROUP( gtest FILES ${gtest_src} )
 
-    ADD_EXECUTABLE( openddl_parser_unittest
+    ADD_EXECUTABLE( openddlparser_unittest
         ${gtest_src}
-        ${openddl_parser_unittest_src}
+        ${openddlparser_unittest_src}
     )
 
-    target_link_libraries( openddl_parser_unittest openddl_parser ${CMAKE_THREAD_LIBS_INIT} )
+    target_link_libraries( openddlparser_unittest openddlparser ${CMAKE_THREAD_LIBS_INIT} )
 endif ()
 
 if (BUILD_PARSER_DEMO)
-    SET( openddl_parser_demo_src
+    SET( openddlparser_demo_src
         demo/main.cpp
     )
 
     if (COVERALLS)
-        set(COVERAGE_SRCS     ${gtest_src} ${openddl_parser_unittest_src} )
+        set(COVERAGE_SRCS     ${gtest_src} ${openddlparser_unittest_src} )
 
         # Create the coveralls target.
         coveralls_setup(
@@ -168,17 +168,22 @@ if (BUILD_PARSER_DEMO)
             "${PROJECT_SOURCE_DIR}/cmake/") # (Optional) Alternate project cmake module path.
     endif()
 
-    ADD_EXECUTABLE( openddl_parser_demo
-        ${openddl_parser_demo_src}
+    ADD_EXECUTABLE( openddlparser_demo
+        ${openddlparser_demo_src}
     )
 
-    target_link_libraries( openddl_parser_demo openddl_parser )
+    target_link_libraries( openddlparser_demo openddlparser )
 endif ()
 
 include(GNUInstallDirs)
 
-install(TARGETS openddl_parser
-        EXPORT  openddl_parser
+install(TARGETS openddlparser
+        EXPORT  openddlparser-targets
         LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/openddlparser")
+
+install(EXPORT openddlparser-targets
+    FILE openddlparser-config.cmake
+    NAMESPACE openddlparser::
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/openddlparser")
