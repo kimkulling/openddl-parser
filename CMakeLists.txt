@@ -175,6 +175,8 @@ if (BUILD_PARSER_DEMO)
     target_link_libraries( openddl_parser_demo openddl_parser )
 endif ()
 
+include(GNUInstallDirs)
+
 install(TARGETS openddl_parser
         EXPORT  openddl_parser
         LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
