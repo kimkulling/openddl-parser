@@ -9,8 +9,8 @@ SET ( PROJECT_VERSION "${openddlparser_VERSION}" )
 option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts"                                         OFF )
 option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser."                         ON )
 option( COVERALLS               "Generate coveralls data"                                                     OFF )
-option( BUILD_TESTS             "Set to OFF to not build tests by default"                                    ON )
-option( BUILD_PARSER_DEMO       "Set to OFF to opt out building parser demo"                                  ON )
+option( DDL_BUILD_TESTS         "Set to OFF to not build tests by default"                                    ON )
+option( DDL_BUILD_PARSER_DEMO   "Set to OFF to opt out building parser demo"                                  ON )
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -112,7 +112,7 @@ endif()
 
 set_target_properties( openddlparser PROPERTIES PUBLIC_HEADER "${openddlparser_headers}")
 
-if (BUILD_TESTS)
+if (DDL_BUILD_TESTS)
     SET ( GTEST_PATH contrib/gtest-1.7.0 )
 
     SET ( gtest_src
@@ -153,7 +153,7 @@ if (BUILD_TESTS)
     target_link_libraries( openddlparser_unittest openddlparser ${CMAKE_THREAD_LIBS_INIT} )
 endif ()
 
-if (BUILD_PARSER_DEMO)
+if (DDL_BUILD_PARSER_DEMO)
     SET( openddlparser_demo_src
         demo/main.cpp
     )
