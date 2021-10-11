@@ -320,10 +320,10 @@ static const unsigned char chartype_table[CharTableSize] = {
 
 template <class T>
 inline bool isNumeric(const T in) {
-    if (static_cast<size_T>(in) >= CharTableSize) {
-        return '\0';    
+    if (static_cast<size_t>(in) >= CharTableSize) {
+        return '\0';
     }
-    
+
     return (chartype_table[static_cast<size_t>(in)] == 1);
 }
 
