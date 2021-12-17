@@ -59,11 +59,11 @@ USE_ODDLPARSER_NS;
 
 int main( int argc, char *argv[] ) {
     if( argc < 3 ) {
-        return 1;
+        return Error;
     }
 
     char *filename( nullptr );
-    if( 0 == strncmp( FileOption, argv[ 1 ], strlen( FileOption ) ) ) {
+    if( 0 == strncmp( FileOption, argv[1], strlen( FileOption ) ) ) {
         filename = argv[ 2 ];
     }
     std::cout << "file to import: " << filename << std::endl;   
@@ -75,24 +75,27 @@ int main( int argc, char *argv[] ) {
     FILE *fileStream = fopen( filename, "r+" );
     if( NULL == filename ) {
         std::cerr << "Cannot open file " << filename << std::endl;
-        return 1;
+        return Error;
     }
 
     // obtain file size:
     fseek( fileStream, 0, SEEK_END );
-    const size_t size( ftell( fileStream ) );   
+    const size_t size = ftell( fileStream );   
     rewind( fileStream );   
     if( size > 0 ) {
         char *buffer = new char[ size ];
-        const size_t readSize( fread( buffer, sizeof( char ), size, fileStream ) );
+        const size_t readSize = fread( buffer, sizeof( char ), size, fileStream );
         assert( readSize == size );
+
+        // Set the memory buffer
         OpenDDLParser theParser;
         theParser.setBuffer( buffer, size );
-        const bool result( theParser.parse() );
-        if( !result ) {
+        if( !theParser.parse() ) {
             std::cerr << "Error while parsing file " << filename << "." << std::endl;
+            return Error;
         }
     }
+  
     return 0;
 }
 
