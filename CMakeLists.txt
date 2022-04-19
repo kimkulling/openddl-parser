@@ -181,6 +181,7 @@ install(TARGETS openddlparser
         EXPORT  openddlparser-targets
         LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        INCLUDES      DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
         PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/openddlparser")
 
 install(EXPORT openddlparser-targets
