@@ -1,10 +1,14 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.1 )
 PROJECT( OpenDDL-Parser )
-SET ( openddlparser_VERSION_MAJOR 0 )
-SET ( openddlparser_VERSION_MINOR 1 )
-SET ( openddlparser_VERSION_PATCH 0 )
-SET ( openddlparser_VERSION ${openddlparser_VERSION_MAJOR}.${openddlparser_VERSION_MINOR}.${openddlparser_VERSION_PATCH} )
+# read version number from cpp file of the form: static const char *Version = "0.4.0";
+file ( READ code/OpenDDLParser.cpp _ver )
+string( REGEX MATCH "static const char [*]Version[ ]*=[ ]*\"[^\"]*\"" _ver_line "${_ver}" )
+string( REGEX MATCH "[0-9]+\.[0-9]+\.[0-9]+" openddlparser_VERSION "${_ver_line}" )
 SET ( PROJECT_VERSION "${openddlparser_VERSION}" )
+if ( "${PROJECT_VERSION}" STREQUAL "" )
+    message( FATAL_ERROR "Cannot find 'static const char *Version' in 'code/OpenDDLParser.cpp'" )
+endif()
+message(STATUS "openddlparser_VERSION: ${openddlparser_VERSION}")
 
 option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts"                                         OFF )
 option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser."                         ON )
@@ -176,6 +180,7 @@ if (DDL_BUILD_PARSER_DEMO)
 endif ()
 
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 install(TARGETS openddlparser
         EXPORT  openddlparser-targets
@@ -187,4 +192,12 @@ install(TARGETS openddlparser
 install(EXPORT openddlparser-targets
     FILE openddlparser-config.cmake
     NAMESPACE openddlparser::
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/openddlparser")
+
+write_basic_package_version_file(
+    "${CMAKE_BINARY_DIR}/openddlparser-config-version.cmake"
+    COMPATIBILITY SameMajorVersion)
+
+install(
+    FILES "${CMAKE_BINARY_DIR}/openddlparser-config-version.cmake"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/openddlparser")
