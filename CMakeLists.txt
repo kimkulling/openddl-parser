@@ -180,6 +180,7 @@ if (DDL_BUILD_PARSER_DEMO)
 endif ()
 
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 install(TARGETS openddlparser
         EXPORT  openddlparser-targets
@@ -191,4 +192,12 @@ install(TARGETS openddlparser
 install(EXPORT openddlparser-targets
     FILE openddlparser-config.cmake
     NAMESPACE openddlparser::
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/openddlparser")
+
+write_basic_package_version_file(
+    "${CMAKE_BINARY_DIR}/openddlparser-config-version.cmake"
+    COMPATIBILITY SameMajorVersion)
+
+install(
+    FILES "${CMAKE_BINARY_DIR}/openddlparser-config-version.cmake"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/openddlparser")
