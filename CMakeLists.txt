@@ -16,8 +16,16 @@ option( COVERALLS               "Generate coveralls data"                       
 option( DDL_BUILD_TESTS         "Set to OFF to not build tests by default"                                    ON )
 option( DDL_BUILD_PARSER_DEMO   "Set to OFF to opt out building parser demo"                                  ON )
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
+string(COMPARE EQUAL "${CMAKE_CXX_STANDARD}" "" no_cmake_cxx_standard_set)
+if(no_cmake_cxx_standard_set)
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    message(STATUS "Using default C++ standard ${CMAKE_CXX_STANDARD}")
+else()
+    message(STATUS "Using user specified C++ standard ${CMAKE_CXX_STANDARD}")
+endif()
 
 if( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX )
     find_package(Threads)
