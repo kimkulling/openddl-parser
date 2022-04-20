@@ -11,7 +11,15 @@ endif()
 message(STATUS "openddlparser_VERSION: ${openddlparser_VERSION}")
 
 option( DDL_DEBUG_OUTPUT        "Set to ON to use output debug texts"                                         OFF )
-option( DDL_STATIC_LIBRARY		"Set to ON to build static libary of OpenDDL Parser."                         ON )
+option( DDL_STATIC_LIBRARY		"Deprecated, use BUILD_SHARED_LIBS instead."                                  ON )
+# for backwards compatibility use DDL_STATIC_LIBRARY as initial value for cmake variable BUILD_SHARED_LIBS
+# https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html
+if ( DDL_STATIC_LIBRARY )
+    set ( build_shared_libs_default OFF )
+else()
+    set ( build_shared_libs_default ON )
+endif()
+option( BUILD_SHARED_LIBS		"Set to ON to build static libary of OpenDDL Parser."                         ${build_shared_libs_default} )
 option( COVERALLS               "Generate coveralls data"                                                     OFF )
 option( DDL_BUILD_TESTS         "Set to OFF to not build tests by default"                                    ON )
 option( DDL_BUILD_PARSER_DEMO   "Set to OFF to opt out building parser demo"                                  ON )
@@ -25,7 +33,7 @@ else()
     add_definitions( -D_CRT_SECURE_NO_WARNINGS )
 endif()
 
-if ( DDL_STATIC_LIBRARY )
+if ( NOT BUILD_SHARED_LIBS )
 	add_definitions( -DOPENDDL_STATIC_LIBARY )
 endif()
 
@@ -108,11 +116,7 @@ SET ( openddlparser_src
 
 SOURCE_GROUP( code            FILES ${openddlparser_src} )
 
-if ( DDL_STATIC_LIBRARY )
-	ADD_LIBRARY( openddlparser STATIC ${openddlparser_src} ${openddlparser_headers})
-else()
-	ADD_LIBRARY( openddlparser SHARED ${openddlparser_src} ${openddlparser_headers})
-endif()
+ADD_LIBRARY( openddlparser ${openddlparser_src} ${openddlparser_headers})
 
 set_target_properties( openddlparser PROPERTIES PUBLIC_HEADER "${openddlparser_headers}")
 
