@@ -196,6 +196,7 @@ include(CMakePackageConfigHelpers)
 
 install(TARGETS openddlparser
         EXPORT  openddlparser-targets
+        RUNTIME       DESTINATION "${CMAKE_INSTALL_BINDIR}"
         LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         INCLUDES      DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
