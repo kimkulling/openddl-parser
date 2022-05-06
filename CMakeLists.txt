@@ -91,7 +91,6 @@ SET ( openddlparser_src
     code/OpenDDLStream.cpp
     code/DDLNode.cpp
     code/Value.cpp
-    README.md
 )
 
 SOURCE_GROUP( code            FILES ${openddlparser_src} )
@@ -125,7 +124,6 @@ if (DDL_BUILD_TESTS)
     SET ( gtest_src
         ${GTEST_PATH}/src/gtest-death-test.cc
         ${GTEST_PATH}/src/gtest-filepath.cc
-        ${GTEST_PATH}/src/gtest-internal-inl.h
         ${GTEST_PATH}/src/gtest-port.cc
         ${GTEST_PATH}/src/gtest-printers.cc
         ${GTEST_PATH}/src/gtest-test-part.cc
@@ -134,7 +132,6 @@ if (DDL_BUILD_TESTS)
     )
 
     SET( openddlparser_unittest_src
-        test/UnitTestCommon.h
         test/DDLNodeTest.cpp
         test/OpenDDLCommonTest.cpp
         test/OpenDDLExportTest.cpp
