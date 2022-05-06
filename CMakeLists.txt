@@ -106,7 +106,12 @@ target_include_directories(openddlparser
 
 target_compile_features(openddlparser PUBLIC cxx_std_11)
 
-if(MSVC AND NOT BUILD_SHARED_LIBS)
+if(BUILD_SHARED_LIBS)
+    set_target_properties(openddlparser PROPERTIES
+        CXX_VISIBILITY_PRESET hidden
+        VISIBILITY_INLINES_HIDDEN TRUE
+    )
+else()
     target_compile_definitions(openddlparser PUBLIC OPENDDL_STATIC_LIBARY)
 endif()
 
