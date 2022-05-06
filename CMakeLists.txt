@@ -96,7 +96,7 @@ SET ( openddlparser_src
 
 SOURCE_GROUP( code            FILES ${openddlparser_src} )
 
-ADD_LIBRARY( openddlparser ${openddlparser_src} ${openddlparser_headers})
+ADD_LIBRARY( openddlparser ${openddlparser_src})
 
 target_include_directories(openddlparser
     PUBLIC
