@@ -25,13 +25,9 @@ option( DDL_DOCUMENTATION       "Set to ON to opt in generating API documentatio
 option( DDL_BUILD_TESTS         "Set to OFF to not build tests by default"                                    ON )
 option( DDL_BUILD_PARSER_DEMO   "Set to OFF to opt out building parser demo"                                  ON )
 
-if(MSVC)
-    add_definitions( -D_CRT_SECURE_NO_WARNINGS )
-endif()
-
 if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
-    add_definitions(-DGTEST_HAS_TR1_TUPLE=0)
+    add_definitions(-DGTEST_HAS_TR1_TUPLE=0 -D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 add_definitions( -D_VARIADIC_MAX=10 )
