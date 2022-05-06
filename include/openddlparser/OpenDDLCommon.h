@@ -36,11 +36,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define TAG_DLL_EXPORT __declspec(dllexport)
 #define TAG_DLL_IMPORT __declspec(dllimport)
-#ifdef OPENDDLPARSER_BUILD
+#ifdef openddlparser_EXPORTS
 #define DLL_ODDLPARSER_EXPORT TAG_DLL_EXPORT
 #else
 #define DLL_ODDLPARSER_EXPORT TAG_DLL_IMPORT
-#endif // OPENDDLPARSER_BUILD
+#endif // openddlparser_EXPORTS
 #pragma warning(disable : 4251)
 #else
 #define DLL_ODDLPARSER_EXPORT
