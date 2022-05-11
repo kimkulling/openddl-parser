@@ -97,11 +97,7 @@ SOURCE_GROUP( code            FILES ${openddlparser_src} )
 
 ADD_LIBRARY( openddlparser ${openddlparser_src})
 
-target_include_directories(openddlparser
-    PUBLIC
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
+target_include_directories(openddlparser PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
 
 target_compile_features(openddlparser PUBLIC cxx_std_11)
 
@@ -194,6 +190,7 @@ install(TARGETS openddlparser
         RUNTIME       DESTINATION "${CMAKE_INSTALL_BINDIR}"
         LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        INCLUDES      DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
         PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/openddlparser")
 
 export(EXPORT openddlparser-targets
