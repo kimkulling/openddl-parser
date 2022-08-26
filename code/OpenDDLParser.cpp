@@ -30,7 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 
 #ifdef _WIN32
-#include <windows.h>
+#   define WIN32_LEAN_AND_MEAN
+#   include <windows.h>
 #endif // _WIN32
 
 BEGIN_ODDLPARSER_NS
