@@ -451,7 +451,7 @@ DDLNode *OpenDDLParser::top() {
         return nullptr;
     }
 
-    DDLNode *top(m_stack.back());
+    DDLNode *top = m_stack.back();
     return top;
 }
 
@@ -838,6 +838,13 @@ char *OpenDDLParser::parseHexaLiteral(char *in, char *end, Value **data) {
     int value(0);
     while (pos > 0) {
         int v = hex2Decimal(*start);
+        if (v < 0) {
+            while (isEndofLine(*in)) {
+                ++in;
+            }
+            return in;
+        }
+            
         --pos;
         value = (value << 4) | v;
         ++start;
