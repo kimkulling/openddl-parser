@@ -15,9 +15,11 @@ option( DDL_STATIC_LIBRARY		"Deprecated, use BUILD_SHARED_LIBS instead."        
 # for backwards compatibility use DDL_STATIC_LIBRARY as initial value for cmake variable BUILD_SHARED_LIBS
 # https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html
 if ( DDL_STATIC_LIBRARY )
-    set ( build_shared_libs_default OFF )
+  message("Building shared lib.")
+  set ( build_shared_libs_default OFF )
 else()
-    set ( build_shared_libs_default ON )
+  message("Building static lib.")
+  set ( build_shared_libs_default ON )
 endif()
 option( DDL_BUILD_SHARED_LIBS   "Set to ON to build shared libary of OpenDDL Parser."                         ${build_shared_libs_default} )
 option( COVERALLS               "Generate coveralls data"                                                     OFF )
