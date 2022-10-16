@@ -19,7 +19,7 @@ if ( DDL_STATIC_LIBRARY )
 else()
     set ( build_shared_libs_default ON )
 endif()
-option( BUILD_SHARED_LIBS		"Set to ON to build shared libary of OpenDDL Parser."                         ${build_shared_libs_default} )
+option( DDL_BUILD_SHARED_LIBS   "Set to ON to build shared libary of OpenDDL Parser."                         ${build_shared_libs_default} )
 option( COVERALLS               "Generate coveralls data"                                                     OFF )
 option( DDL_DOCUMENTATION       "Set to ON to opt in generating API documentation with Doxygen"               OFF )
 option( DDL_BUILD_TESTS         "Set to OFF to not build tests by default"                                    ON )
@@ -101,7 +101,7 @@ target_include_directories(openddlparser PUBLIC $<BUILD_INTERFACE:${PROJECT_SOUR
 
 target_compile_features(openddlparser PUBLIC cxx_std_11)
 
-if(BUILD_SHARED_LIBS)
+if(DDL_BUILD_SHARED_LIBS)
     set_target_properties(openddlparser PROPERTIES
         CXX_VISIBILITY_PRESET hidden
         VISIBILITY_INLINES_HIDDEN TRUE
