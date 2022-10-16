@@ -70,7 +70,7 @@ endif()
 
 # Include the doc component.
 if(DDL_DOCUMENTATION)
-    message("Generate documentation.")
+    message("Generate doxygen documentation.")
     find_package(Doxygen REQUIRED)
     CONFIGURE_FILE( doc/openddlparser_doc.in doc/doxygenfile @ONLY )
     add_custom_target(doc ALL
