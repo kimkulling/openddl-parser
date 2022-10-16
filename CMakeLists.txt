@@ -38,6 +38,7 @@ endif()
 add_definitions( -D_VARIADIC_MAX=10 )
 add_definitions( -DGTEST_HAS_PTHREAD=0 )
 if ( DDL_DEBUG_OUTPUT )
+    message("Enable debug output.")
     add_definitions( -DDDL_DEBUG_HEADER_NAME)
 endif()
 
@@ -64,10 +65,12 @@ if (COVERALLS)
     include(Coveralls)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    message("Enable coveralls.")
 endif()
 
 # Include the doc component.
 if(DDL_DOCUMENTATION)
+    message("Generate documentation.")
     find_package(Doxygen REQUIRED)
     CONFIGURE_FILE( doc/openddlparser_doc.in doc/doxygenfile @ONLY )
     add_custom_target(doc ALL
