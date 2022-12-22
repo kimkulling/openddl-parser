@@ -137,7 +137,7 @@ bool OpenDDLExport::writeNode(DDLNode *node, std::string &statement) {
     bool success(true);
     writeNodeHeader(node, statement);
     if (node->hasProperties()) {
-        success |= writeProperties(node, statement);
+        success = writeProperties(node, statement);
     }
     writeLineEnd(statement);
 
@@ -161,7 +161,7 @@ bool OpenDDLExport::writeNode(DDLNode *node, std::string &statement) {
 
     writeToStream(statement);
 
-    return true;
+    return success;
 }
 
 bool OpenDDLExport::writeNodeHeader(DDLNode *node, std::string &statement) {
