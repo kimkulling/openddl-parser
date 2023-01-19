@@ -324,7 +324,8 @@ inline bool isNumeric(const T in) {
         return '\0';
     }
 
-    return (chartype_table[static_cast<size_t>(in)] == 1);
+    size_t idx = static_cast<size_t>(in);
+    return idx < sizeof(chartype_table) && (chartype_table[idx] == 1);
 }
 
 template <class T>
