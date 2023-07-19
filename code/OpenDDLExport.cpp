@@ -108,7 +108,7 @@ bool OpenDDLExport::handleNode(DDLNode *node) {
     DDLNode *current(nullptr);
     DDLNodeIterator it(childs);
     std::string statement;
-    bool success(true);
+    bool success=true;
     while (it.getNext(&current)) {
         if (nullptr != current) {
             success |= writeNode(current, statement);
@@ -134,7 +134,7 @@ bool OpenDDLExport::writeToStream(const std::string &statement) {
 }
 
 bool OpenDDLExport::writeNode(DDLNode *node, std::string &statement) {
-    bool success(true);
+    bool success=true;
     writeNodeHeader(node, statement);
     if (node->hasProperties()) {
         success = writeProperties(node, statement);
