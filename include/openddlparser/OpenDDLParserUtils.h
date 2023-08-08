@@ -439,7 +439,7 @@ inline bool isEndofLine(const T in) {
 
 template <class T>
 inline static T *getNextSeparator(T *in, T *end) {
-    while (!isSeparator(*in) || in == end) {
+    while (in != end && !isSeparator(*in)) {
         ++in;
     }
     return in;
