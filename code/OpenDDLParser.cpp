@@ -72,7 +72,7 @@ const char *getTypeToken(Value::ValueType type) {
     return Grammar::PrimitiveTypeToken[(size_t)type];
 }
 
-static void logInvalidTokenError(char *in, const std::string &exp, OpenDDLParser::logCallback callback) {
+static void logInvalidTokenError(const char *in, const std::string &exp, OpenDDLParser::logCallback callback) {
     if (callback) {
         std::string full(in);
         std::string part(full.substr(0, 50));
@@ -419,8 +419,8 @@ char *OpenDDLParser::parseStructureBody(char *in, char *end, bool &error) {
         }
 
         in = lookForNextToken(in, end);
-        if (*in != '}') {
-            logInvalidTokenError(in, std::string(Grammar::CloseBracketToken), m_logCallback);
+        if (in == end || *in != '}') {
+            logInvalidTokenError(in == end ? "" : in, std::string(Grammar::CloseBracketToken), m_logCallback);
             return nullptr;
         } else {
             //in++;
@@ -737,7 +737,7 @@ char *OpenDDLParser::parseFloatingLiteral(char *in, char *end, Value **floating,
 
     in = lookForNextToken(in, end);
     char *start(in);
-    while (!isSeparator(*in) && in != end) {
+    while (in != end && !isSeparator(*in)) {
         ++in;
     }
 
@@ -912,10 +912,10 @@ char *OpenDDLParser::parseDataList(char *in, char *end, Value::ValueType type, V
     }
 
     in = lookForNextToken(in, end);
-    if (*in == '{') {
+    if (in != end && *in == '{') {
         ++in;
         Value *current(nullptr), *prev(nullptr);
-        while ('}' != *in) {
+        while (in != end && '}' != *in) {
             current = nullptr;
             in = lookForNextToken(in, end);
             if (Value::ValueType::ddl_ref == type) {
@@ -973,11 +973,12 @@ char *OpenDDLParser::parseDataList(char *in, char *end, Value::ValueType type, V
             }
 
             in = getNextSeparator(in, end);
-            if (',' != *in && Grammar::CloseBracketToken[0] != *in && !isSpace(*in)) {
+            if (in == end || (',' != *in && Grammar::CloseBracketToken[0] != *in && !isSpace(*in))) {
                 break;
             }
         }
-        ++in;
+        if (in != end)
+            ++in;
     }
 
     return in;
