@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------------------------
 The MIT License (MIT)
 
-Copyright (c) 2014-2020 Kim Kulling
+Copyright (c) 2014-2025 Kim Kulling
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -53,10 +53,10 @@ public:
     friend class OpenDDLParser;
 
     /// @brief  The child-node-list type.
-    typedef std::vector<DDLNode *> DllNodeList;
+    using DllNodeList = std::vector<DDLNode *> ;
 
     /// @brief  The child-node-list iterator.
-    typedef std::vector<DDLNode *>::iterator DDLNodeIt;
+    using DDLNodeIt = std::vector<DDLNode *>::iterator ;
 
 public:
     ///	@brief  The class destructor.
