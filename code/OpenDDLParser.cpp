@@ -297,7 +297,8 @@ char *OpenDDLParser::parseHeader(char *in, char *end) {
         in = lookForNextToken(in, end);
         if (in != end && *in == Grammar::OpenPropertyToken[0]) {
             in++;
-            Property *prop{nullptr}, *prev{nullptr};
+            Property *prop{nullptr};
+            Property  *prev{nullptr};
             while (in != end && *in != Grammar::ClosePropertyToken[0]) {
                 in = OpenDDLParser::parseProperty(in, end, &prop);
                 in = lookForNextToken(in, end);
