@@ -624,6 +624,10 @@ char *OpenDDLParser::parsePrimitiveDataType(char *in, char *end, Value::ValueTyp
     return in;
 }
 
+static bool is_comma_or_not_end(char *in, char *end) {
+    return in != end && Grammar::CommaSeparator[0] == *in;
+}
+
 char *OpenDDLParser::parseReference(char *in, char *end, std::vector<Name *> &names) {
     if (nullptr == in || in == end) {
         return in;
@@ -634,9 +638,9 @@ char *OpenDDLParser::parseReference(char *in, char *end, std::vector<Name *> &na
     if (nextName) {
         names.push_back(nextName);
     }
-    while (Grammar::CommaSeparator[0] == *in) {
+    while (is_comma_or_not_end(in, end)) {
         in = getNextSeparator(in, end);
-        if (Grammar::CommaSeparator[0] == *in) {
+        if (is_comma_or_not_end(in, end)) {
             in = parseName(in, end, &nextName);
             if (nextName) {
                 names.push_back(nextName);
