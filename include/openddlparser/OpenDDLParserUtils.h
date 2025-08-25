@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------------------------
 The MIT License (MIT)
 
-Copyright (c) 2014-2020 Kim Kulling
+Copyright (c) 2014-2025 Kim Kulling
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -54,9 +54,9 @@ inline bool isSeparator(T in) {
     return false;
 }
 
-const size_t CharTableSize = 256;
+constexpr size_t CharTableSize = 256;
 
-static const unsigned char chartype_table[CharTableSize] = {
+static constexpr unsigned char chartype_table[CharTableSize] = {
     0,
     0,
     0,

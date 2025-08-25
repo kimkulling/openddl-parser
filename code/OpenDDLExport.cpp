@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------------------------
 The MIT License (MIT)
 
-Copyright (c) 2014-2020 Kim Kulling
+Copyright (c) 2014-2025 Kim Kulling
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 BEGIN_ODDLPARSER_NS
 
-struct DDLNodeIterator {
+struct DDLNodeIterator final {
     const DDLNode::DllNodeList &m_childs;
     size_t m_idx;
 
@@ -38,9 +38,7 @@ struct DDLNodeIterator {
         // empty
     }
 
-    ~DDLNodeIterator() {
-        // empty
-    }
+    ~DDLNodeIterator() = default;
 
     bool getNext(DDLNode **node) {
         if (m_childs.size() > (m_idx + 1)) {

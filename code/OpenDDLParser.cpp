@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------------------------------------
 The MIT License (MIT)
 
-Copyright (c) 2014-2020 Kim Kulling
+Copyright (c) 2014-2025 Kim Kulling
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -42,15 +42,15 @@ static const char *Version = "0.4.0";
 
 namespace Grammar {
 
-static const char *OpenBracketToken = "{";
-static const char *CloseBracketToken = "}";
-static const char *OpenPropertyToken = "(";
-static const char *ClosePropertyToken = ")";
-static const char *OpenArrayToken = "[";
-static const char *CloseArrayToken = "]";
-static const char *BoolTrue = "true";
-static const char *BoolFalse = "false";
-static const char *CommaSeparator = ",";
+static constexpr char OpenBracketToken[] = "{";
+static constexpr char CloseBracketToken[] = "}";
+static constexpr char OpenPropertyToken[] = "(";
+static constexpr char ClosePropertyToken[] = ")";
+static constexpr char OpenArrayToken[] = "[";
+static constexpr char CloseArrayToken[] = "]";
+static constexpr char BoolTrue[] = "true";
+static constexpr char BoolFalse[] = "false";
+static constexpr char CommaSeparator[] = ",";
 
 static const char *PrimitiveTypeToken[(size_t)Value::ValueType::ddl_types_max] = {
     "bool",
@@ -68,6 +68,7 @@ static const char *PrimitiveTypeToken[(size_t)Value::ValueType::ddl_types_max] =
     "string",
     "ref"
 };
+
 } // Namespace Grammar
 
 const char *getTypeToken(Value::ValueType type) {
@@ -108,8 +109,8 @@ static DDLNode *createDDLNode(Text *id, OpenDDLParser *parser) {
         return nullptr;
     }
 
-    const std::string type(id->m_buffer);
-    DDLNode *parent(parser->top());
+    const std::string type{id->m_buffer};
+    DDLNode *parent = parser->top();
     DDLNode *node = DDLNode::create(type, "", parent);
 
     return node;
@@ -266,7 +267,7 @@ char *OpenDDLParser::parseHeader(char *in, char *end) {
         return in;
     }
 
-    Text *id(nullptr);
+    Text *id{nullptr};
     in = OpenDDLParser::parseIdentifier(in, end, &id);
 
 #ifdef DEBUG_HEADER_NAME
@@ -284,7 +285,7 @@ char *OpenDDLParser::parseHeader(char *in, char *end) {
         }
         delete id;
 
-        Name *name(nullptr);
+        Name *name{nullptr};
         in = OpenDDLParser::parseName(in, end, &name);
         if (nullptr != name && nullptr != node && nullptr != name->m_id->m_buffer) {
             const std::string nodeName(name->m_id->m_buffer);
@@ -292,11 +293,12 @@ char *OpenDDLParser::parseHeader(char *in, char *end) {
             delete name;
         }
 
-        Property *first(nullptr);
+        Property *first{nullptr};
         in = lookForNextToken(in, end);
         if (in != end && *in == Grammar::OpenPropertyToken[0]) {
             in++;
-            Property *prop(nullptr), *prev(nullptr);
+            Property *prop{nullptr};
+            Property  *prev{nullptr};
             while (in != end && *in != Grammar::ClosePropertyToken[0]) {
                 in = OpenDDLParser::parseProperty(in, end, &prop);
                 in = lookForNextToken(in, end);
@@ -338,7 +340,7 @@ char *OpenDDLParser::parseStructure(char *in, char *end) {
         return in;
     }
 
-    bool error(false);
+    bool error{false};
     in = lookForNextToken(in, end);
     if (in != end) {
         if (*in == *Grammar::OpenBracketToken) {
@@ -348,8 +350,7 @@ char *OpenDDLParser::parseStructure(char *in, char *end) {
                 if (in == nullptr) {
                     return nullptr;
                 }
-            } while (in  != end &&
-                     *in != *Grammar::CloseBracketToken);
+            } while (in  != end && *in != *Grammar::CloseBracketToken);
             if (in != end) {
                 ++in;
             }
