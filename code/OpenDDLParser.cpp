@@ -696,7 +696,7 @@ char *OpenDDLParser::parseIntegerLiteral(char *in, char *end, Value **integer, V
 
     in = lookForNextToken(in, end);
     char *start(in);
-    while (!isSeparator(*in) && in != end) {
+    while (in != end && !isSeparator(*in)) {
         ++in;
     }
 
@@ -755,7 +755,7 @@ char *OpenDDLParser::parseFloatingLiteral(char *in, char *end, Value **floating,
     }
 
     // parse the float value
-    bool ok(false);
+    bool ok{false};
     if (isHexLiteral(start, end)) {
         parseHexaLiteral(start, end, floating);
         return in;
